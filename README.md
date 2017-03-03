@@ -1,6 +1,9 @@
 ![GitHub Logo](/doc/media/Grbl Logo 250px.png)
 
-###Version for ATmega644(p) with some additions, suited for MaXYposi board (german Make: 2/2017)
+###Version for ATmega644(p) 
+
+with multiple additions, suited for MaXYposi board (german Make: magazine, issue 2/2017)
+
 * 16 Output ports via HC595 SRs on SPI
 * 32 Input ports via HC165 SRs on SPI
 * Support for dial/handwheel
