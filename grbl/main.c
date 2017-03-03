@@ -19,7 +19,7 @@
   along with Grbl.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#include "grbl.h"
+#include "grbl_644.h"
 
 
 // Declare system global variable structure
@@ -32,15 +32,42 @@ volatile uint8_t sys_rt_exec_alarm;   // Global realtime executor bitflag variab
 volatile uint8_t sys_rt_exec_motion_override; // Global realtime executor bitflag variable for motion-based overrides.
 volatile uint8_t sys_rt_exec_accessory_override; // Global realtime executor bitflag variable for spindle/coolant overrides.
 
+#ifdef CMD_FEED_OVR_DIRECT
+	volatile uint8_t sys_rt_exec_motion_override_direct; // -cm
+#endif
+
+#ifdef DEVICE_ADDR_ENABLE //-cm
+	uint8_t device_id_from_host;
+	uint8_t device_id_jumpered;
+#endif
+
 
 int main(void)
 {
+	
+#ifdef DEVICE_ADDR_ENABLE
+	// default enabled upon receipt of non-matching device ID realtime cmd -cm
+		DEVICE_ADDR_PORT |= (1<<DEVICE_ADDR_JP1)|(1<<DEVICE_ADDR_JP2);	
+		DEVICE_ADDR_DDR &= ~((1<<DEVICE_ADDR_JP1)|(1<<DEVICE_ADDR_JP2));	
+		device_id_jumpered = (DEVICE_ADDR_PIN & ((1<<DEVICE_ADDR_JP1)|(1<<DEVICE_ADDR_JP2))) >> DEVICE_ADDR_JP1;
+		device_id_jumpered = ~device_id_jumpered & 3;
+		device_id_from_host = 0;
+// Delay according to device ID to prevent multiple devices sending startup message at same time -cm
+	  int32_t countdown;
+		for(countdown = 20000 * device_id_jumpered; countdown > 0; countdown--) {
+			__asm__("nop\n\t"); 
+			__asm__("nop\n\t"); 
+			__asm__("nop\n\t"); 
+			__asm__("nop\n\t"); 
+		}
+#endif
+
   // Initialize system upon power-up.
   serial_init();   // Setup serial baud rate and interrupts
   settings_init(); // Load Grbl settings from EEPROM
   stepper_init();  // Configure stepper pins and interrupt timers
   system_init();   // Configure pinout pins and pin-change interrupt
-
+  
   memset(sys_position,0,sizeof(sys_position)); // Clear machine position.
   sei(); // Enable interrupts
 
@@ -63,6 +90,7 @@ int main(void)
     if (bit_istrue(settings.flags,BITFLAG_HOMING_ENABLE)) { sys.state = STATE_ALARM; }
   #endif
 
+	
   // Grbl initialization loop upon power-up or a system abort. For the latter, all processes
   // will return to this loop to be cleanly re-initialized.
   for(;;) {
@@ -79,6 +107,9 @@ int main(void)
     sys_rt_exec_state = 0;
     sys_rt_exec_alarm = 0;
     sys_rt_exec_motion_override = 0;
+#ifdef CMD_FEED_OVR_DIRECT
+    sys_rt_exec_motion_override_direct = 0; // -cm
+#endif
     sys_rt_exec_accessory_override = 0;
 
     // Reset Grbl primary systems.
@@ -91,6 +122,12 @@ int main(void)
     plan_reset(); // Clear block buffer and planner variables
     st_reset(); // Clear stepper subsystem variables.
 
+#ifdef SPI_SR
+    spi_init();
+#endif
+#ifdef JOGPAD
+    jogpad_init();
+#endif
     // Sync cleared gcode and planner positions to current system position.
     plan_sync_position();
     gc_sync_position();

@@ -19,8 +19,7 @@
   along with Grbl.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#include "grbl.h"
-
+#include "grbl_644.h"
 
 #ifdef VARIABLE_SPINDLE
   static float pwm_gradient; // Precalulated value to speed up rpm to PWM conversions.
@@ -107,6 +106,10 @@ void spindle_stop()
       SPINDLE_ENABLE_PORT &= ~(1<<SPINDLE_ENABLE_BIT); // Set pin to low
     #endif
   #endif
+
+// send to LED SR register HC595 -cm
+  MACHINE_OUT_SR &= ~((1<<SPINDLE_ENABLE_SR)|(1<<SPINDLE_DIRECTION_SR)); // Set pin to low
+  spi_txrx_inout();
 }
 
 
@@ -126,13 +129,18 @@ void spindle_stop()
         #else
           SPINDLE_ENABLE_PORT |= (1<<SPINDLE_ENABLE_BIT);
         #endif
+			  MACHINE_OUT_SR |= (1<<SPINDLE_ENABLE_SR); // Set pin to low
+			  spi_txrx_inout();
       }
     #else
       if (pwm_value == SPINDLE_PWM_OFF_VALUE) {
         SPINDLE_TCCRA_REGISTER &= ~(1<<SPINDLE_COMB_BIT); // Disable PWM. Output voltage is zero.
+			  MACHINE_OUT_SR &= ~(1<<SPINDLE_ENABLE_SR); // Set pin to low
       } else {
         SPINDLE_TCCRA_REGISTER |= (1<<SPINDLE_COMB_BIT); // Ensure PWM output is enabled.
+			  MACHINE_OUT_SR |= (1<<SPINDLE_ENABLE_SR); // Set pin to low
       }
+		  spi_txrx_inout();
     #endif
   }
 
@@ -188,9 +196,12 @@ void spindle_stop()
     #ifndef USE_SPINDLE_DIR_AS_ENABLE_PIN
       if (state == SPINDLE_ENABLE_CW) {
         SPINDLE_DIRECTION_PORT &= ~(1<<SPINDLE_DIRECTION_BIT);
+		    MACHINE_OUT_SR &= ~(1<<SPINDLE_DIRECTION_SR);
       } else {
         SPINDLE_DIRECTION_PORT |= (1<<SPINDLE_DIRECTION_BIT);
+		    MACHINE_OUT_SR |= (1<<SPINDLE_DIRECTION_SR);
       }
+    spi_txrx_inout();
     #endif
   
     #ifdef VARIABLE_SPINDLE
@@ -209,8 +220,11 @@ void spindle_stop()
       #else
         SPINDLE_ENABLE_PORT |= (1<<SPINDLE_ENABLE_BIT);
       #endif    
+  	  MACHINE_OUT_SR |= (1<<SPINDLE_ENABLE_SR); // Set pin to high
+    	spi_txrx_inout();
     #endif
   
+	  
   }
   
   sys.report_ovr_counter = 0; // Set to report change immediately

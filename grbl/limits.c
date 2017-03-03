@@ -19,7 +19,7 @@
   along with Grbl.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#include "grbl.h"
+#include "grbl_644.h"
 
 
 // Homing axis search distance multiplier. Computed by this value times the cycle travel.
@@ -59,7 +59,9 @@ void limits_init()
 void limits_disable()
 {
   LIMIT_PCMSK &= ~LIMIT_MASK;  // Disable specific pins of the Pin Change Interrupt
-  PCICR &= ~(1 << LIMIT_INT);  // Disable Pin Change Interrupt
+#ifndef DIAL
+  PCICR &= ~(1 << LIMIT_INT);  // Disable Pin Change Interrupt -cm
+#endif
 }
 
 
@@ -98,6 +100,13 @@ uint8_t limits_get_state()
 #ifndef ENABLE_SOFTWARE_DEBOUNCE
   ISR(LIMIT_INT_vect) // DEFAULT: Limit pin change interrupt process.
   {
+
+#ifdef DIAL
+    // first check Encoder Wheel on same pins
+    check_encoder_hook(LIMIT_PIN);
+    if ((LIMIT_PIN & LIMIT_MASK) == LIMIT_MASK) return;
+#endif
+    
     // Ignore limit switches if already in an alarm state or in-process of executing an alarm.
     // When in the alarm state, Grbl should have been reset or will force a reset, so any pending
     // moves in the planner and serial buffers are all cleared and newly sent blocks will be
@@ -120,7 +129,15 @@ uint8_t limits_get_state()
   }
 #else // OPTIONAL: Software debounce limit pin routine.
   // Upon limit pin change, enable watchdog timer to create a short delay. 
-  ISR(LIMIT_INT_vect) { if (!(WDTCSR & (1<<WDIE))) { WDTCSR |= (1<<WDIE); } }
+  ISR(LIMIT_INT_vect) {
+#ifdef DIAL
+    // first check Encoder Wheel on same pins
+    check_encoder_hook(LIMIT_PIN);
+    if ((LIMIT_PIN & LIMIT_MASK) == LIMIT_MASK) return;  // Enable internal pull-up resistors. Normal high operation.
+#endif
+    if (!(WDTCSR & (1<<WDIE))) { WDTCSR |= (1<<WDIE); } 
+  }
+  
   ISR(WDT_vect) // Watchdog timer ISR
   {
     WDTCSR &= ~(1<<WDIE); // Disable watchdog timer. 
@@ -163,6 +180,12 @@ void limits_go_home(uint8_t cycle_mask)
   float max_travel = 0.0;
   uint8_t idx;
   for (idx=0; idx<N_AXIS; idx++) {
+  	
+#ifdef SPI_DISP  	
+		sr_dispstate_1 = sys.state; 		// Homing-Status auch an Display -cm
+		spi_tx_axis(idx); 							// jede Achse
+#endif		
+
     // Initialize step pin masks
     step_pin[idx] = get_step_pin_mask(idx);
     #ifdef COREXY
@@ -231,6 +254,10 @@ void limits_go_home(uint8_t cycle_mask)
     st_prep_buffer(); // Prep and fill segment buffer from newly planned block.
     st_wake_up(); // Initiate motion
     do {
+			#ifdef SPI_SR  	
+		  	set_led_status();   // Status-LED-Port setzen -cm
+				spi_txrx_inout();
+			#endif 	
       if (approach) {
         // Check limit state. Lock out cycle axes when they change.
         limit_state = limits_get_state();

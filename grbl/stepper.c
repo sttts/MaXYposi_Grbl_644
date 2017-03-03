@@ -19,7 +19,7 @@
   along with Grbl.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#include "grbl.h"
+#include "grbl_644.h"
 
 
 // Some useful constants.
@@ -232,12 +232,18 @@ void st_wake_up()
 
   // Enable Stepper Driver Interrupt
   TIMSK1 |= (1<<OCIE1A);
+	#ifdef debug_spi
+  	printPgmString(PSTR("[MSG:STEPPER WAKEUP]\r\n"));
+  #endif
 }
 
 
 // Stepper shutdown
 void st_go_idle()
 {
+	#ifdef debug_spi
+  	printPgmString(PSTR("[MSG:STEPPER IDLE]\r\n"));
+  #endif
   // Disable Stepper Driver Interrupt. Allow Stepper Port Reset Interrupt to finish, if active.
   TIMSK1 &= ~(1<<OCIE1A); // Disable Timer1 interrupt
   TCCR1B = (TCCR1B & ~((1<<CS12) | (1<<CS11))) | (1<<CS10); // Reset clock to no prescaling.
@@ -484,6 +490,9 @@ void st_reset()
   // Initialize stepper driver idle state.
   st_go_idle();
 
+	#ifdef debug_spi
+  	printPgmString(PSTR("[MSG:STEPPER RESET]\r\n"));
+  #endif
   // Initialize stepper algorithm variables.
   memset(&prep, 0, sizeof(st_prep_t));
   memset(&st, 0, sizeof(stepper_t));
@@ -526,6 +535,9 @@ void stepper_init()
   TIMSK0 |= (1<<TOIE0); // Enable Timer0 overflow interrupt
   #ifdef STEP_PULSE_DELAY
     TIMSK0 |= (1<<OCIE0A); // Enable Timer0 Compare Match A interrupt
+  #endif
+	#ifdef debug_spi
+  	printPgmString(PSTR("[MSG:STEPPER INIT]\r\n"));
   #endif
 }
 

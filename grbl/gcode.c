@@ -19,7 +19,7 @@
   along with Grbl.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#include "grbl.h"
+#include "grbl_644.h"
 
 // NOTE: Max line number is defined by the g-code standard to be 99999. It seems to be an
 // arbitrary value, and some GUIs may require more. So we increased it based on a max safe
@@ -260,18 +260,27 @@ uint8_t gc_execute_line(char *line)
               case 5: gc_block.modal.spindle = SPINDLE_DISABLE; break;
             }
             break;
-          #ifdef ENABLE_M7
-            case 7: case 8: case 9:
-          #else
-            case 8: case 9:
-          #endif
-            word_bit = MODAL_GROUP_M8;
-            switch(int_value) {
+          case 7:	case 8: case 9:	// added M6 -cm          
+            word_bit = MODAL_GROUP_M8; 
+            switch(int_value) {      
               #ifdef ENABLE_M7
                 case 7: gc_block.modal.coolant = COOLANT_MIST_ENABLE; break;
               #endif
               case 8: gc_block.modal.coolant = COOLANT_FLOOD_ENABLE; break;
               case 9: gc_block.modal.coolant = COOLANT_DISABLE; break;
+            }
+            break;
+          case 100: case 101: case 102: case 103: case 104: case 105: case 106:  case 107: 
+            word_bit = MODAL_GROUP_M100; 
+            switch(int_value) {      
+              case 100: gc_block.modal.coolant = ATC_ENABLE; break;	// added M100 group -cm
+              case 101: gc_block.modal.coolant = ATC_DISABLE; break;
+              case 102: gc_block.modal.coolant = AUX1_ENABLE; break;
+              case 103: gc_block.modal.coolant = AUX1_DISABLE; break;
+              case 104: gc_block.modal.coolant = AUX2_ENABLE; break;
+              case 105: gc_block.modal.coolant = AUX2_DISABLE; break;
+              case 106: gc_block.modal.coolant = AUX3_ENABLE; break;
+              case 107: gc_block.modal.coolant = AUX3_DISABLE; break;
             }
             break;
           #ifdef ENABLE_PARKING_OVERRIDE_CONTROL
@@ -437,7 +446,7 @@ uint8_t gc_execute_line(char *line)
   // [8. Coolant control ]: N/A
   // [9. Override control ]: Not supported except for a Grbl-only parking motion override control.
   #ifdef ENABLE_PARKING_OVERRIDE_CONTROL
-    if (bit_istrue(command_words,bit(MODAL_GROUP_M9))) { // Already set as enabled in parser.
+    if (gc_block.modal.override == OVERRIDE_PARKING_MOTION) {
       if (bit_istrue(value_words,bit(WORD_P))) {
         if (gc_block.values.p == 0.0) { gc_block.modal.override = OVERRIDE_DISABLED; }
         bit_false(value_words,bit(WORD_P));
@@ -1102,13 +1111,7 @@ uint8_t gc_execute_line(char *line)
       gc_state.modal.coord_select = 0; // G54
       gc_state.modal.spindle = SPINDLE_DISABLE;
       gc_state.modal.coolant = COOLANT_DISABLE;
-      #ifdef ENABLE_PARKING_OVERRIDE_CONTROL
-        #ifdef DEACTIVATE_PARKING_UPON_INIT
-          gc_state.modal.override = OVERRIDE_DISABLED;
-        #else
-          gc_state.modal.override = OVERRIDE_PARKING_MOTION;
-        #endif
-      #endif
+      // gc_state.modal.override = OVERRIDE_DISABLE; // Not supported.
 
       #ifdef RESTORE_OVERRIDES_AFTER_PROGRAM_END
         sys.f_override = DEFAULT_FEED_OVERRIDE;
@@ -1154,7 +1157,7 @@ uint8_t gc_execute_line(char *line)
    group 7 = {G41, G42} cutter radius compensation (G40 is supported)
    group 8 = {G43} tool length offset (G43.1/G49 are supported)
    group 8 = {M7*} enable mist coolant (* Compile-option)
-   group 9 = {M48, M49, M56*} enable/disable override switches (* Compile-option)
+   group 9 = {M48, M49} enable/disable feed and speed override switches
    group 10 = {G98, G99} return mode canned cycles
    group 13 = {G61.1, G64} path control mode (G61 is supported)
 */

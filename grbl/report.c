@@ -26,8 +26,12 @@
   methods to accomodate their needs.
 */
 
-#include "grbl.h"
+#include "grbl_644.h"
 
+#ifdef DEVICE_ADDR_ENABLE //-cm
+	extern uint8_t device_id_from_host;
+	extern uint8_t device_id_jumpered;
+#endif
 
 // Internal report utilities to reduce flash with repetitive tasks turned into functions.
 void report_util_setting_prefix(uint8_t n) { serial_write('$'); print_uint8_base10(n); serial_write('='); }
@@ -177,7 +181,6 @@ void report_grbl_help() {
   printPgmString(PSTR("[HLP:$$ $# $G $I $N $x=val $Nx=line $J=line $SLP $C $X $H ~ ! ? ctrl-x]\r\n"));    
 }
 
-
 // Grbl global settings print out.
 // NOTE: The numbering scheme here must correlate to storing in settings.c
 void report_grbl_settings() {
@@ -316,19 +319,19 @@ void report_gcode_modes()
     case SPINDLE_DISABLE : serial_write('5'); break;
   }
 
+  report_util_gcode_modes_M();
   #ifdef ENABLE_M7
     if (gc_state.modal.coolant) { // Note: Multiple coolant states may be active at the same time.
-      if (gc_state.modal.coolant & PL_COND_FLAG_COOLANT_MIST) { report_util_gcode_modes_M(); serial_write('7'); }
-      if (gc_state.modal.coolant & PL_COND_FLAG_COOLANT_FLOOD) { report_util_gcode_modes_M(); serial_write('8'); }
-    } else { report_util_gcode_modes_M(); serial_write('9'); }
+      if (gc_state.modal.coolant & PL_COND_FLAG_COOLANT_MIST) { serial_write('7'); }
+      if (gc_state.modal.coolant & PL_COND_FLAG_COOLANT_FLOOD) { serial_write('8'); }
+    } else { serial_write('9'); }
   #else
-    report_util_gcode_modes_M();
     if (gc_state.modal.coolant) { serial_write('8'); }
     else { serial_write('9'); }
   #endif
 
   #ifdef ENABLE_PARKING_OVERRIDE_CONTROL
-    if (sys.override_ctrl == OVERRIDE_PARKING_MOTION) { 
+    if (sys.override_ctrl) { 
       report_util_gcode_modes_M();
       print_uint8_base10(56);
     }
@@ -369,7 +372,7 @@ void report_execute_startup_message(char *line, uint8_t status_code)
 // Prints build info line
 void report_build_info(char *line)
 {
-  printPgmString(PSTR("[VER:" GRBL_VERSION "." GRBL_VERSION_BUILD ":"));
+  printPgmString(PSTR("[VER:" GRBL_VERSION ",BUILD:" GRBL_VERSION_BUILD));
   printString(line);
   report_util_feedback_line_feed();
   printPgmString(PSTR("[OPT:")); // Generate compile-time build option list
@@ -395,7 +398,7 @@ void report_build_info(char *line)
     serial_write('H');
   #endif
   #ifdef LIMITS_TWO_SWITCHES_ON_AXES
-    serial_write('T');
+    serial_write('L');
   #endif
   #ifdef ALLOW_FEED_OVERRIDE_DURING_PROBE_CYCLES
     serial_write('A');
@@ -435,11 +438,24 @@ void report_build_info(char *line)
   #endif
 
   // NOTE: Compiled values, like override increments/max/min values, may be added at some point later.
-  serial_write(',');
-  print_uint8_base10(BLOCK_BUFFER_SIZE-1);
-  serial_write(',');
-  print_uint8_base10(RX_BUFFER_SIZE);
-
+  // These will likely have a comma delimiter to separate them.  
+  
+  // Weitere Optionen von -cm 
+  #ifdef DEVICE_ADDR_ENABLE
+    printPgmString(PSTR("," PROC_NAME)); // Device Address set by jumper
+    printPgmString(PSTR(",ADDR:")); // Device Address set by jumper
+    print_uint8_base10(device_id_jumpered); // -cm
+  #endif
+  #ifdef SPI_SR
+    printPgmString(PSTR(",SPI_SR")); 
+  #endif
+  #ifdef SPI_DISP
+    printPgmString(PSTR(",SPI_DISP"));
+  #endif
+  #ifdef JOGPAD
+    printPgmString(PSTR(",JOGPAD")); 
+  #endif
+    
   report_util_feedback_line_feed();
 }
 
@@ -469,7 +485,29 @@ void report_realtime_status()
   // Report current machine state and sub-states
   serial_write('<');
   switch (sys.state) {
-    case STATE_IDLE: printPgmString(PSTR("Idle")); break;
+    case STATE_IDLE: {
+   		if (jog_zero_request_flag) { 							// report zero request all -cm
+   			  if (jog_zero_request_flag == 7) {
+	    				printPgmString(PSTR("ZeroAll"));
+   			  } else {
+	     			if (jog_zero_request_flag & 1) {
+	    				printPgmString(PSTR("ZeroX"));
+	    				if (jog_zero_request_flag > 1) {serial_write('.');} 
+	    			}
+	    			if (jog_zero_request_flag & 2) {
+	    				printPgmString(PSTR("ZeroY"));
+	    				if (jog_zero_request_flag > 4) {serial_write('.');} 
+	    			} 
+	    			if (jog_zero_request_flag & 4) {
+	    				printPgmString(PSTR("ZeroZ"));
+   			  	}
+    			} 
+    			jog_zero_request_flag = 0;
+    		} else {
+   				printPgmString(PSTR("Idle")); 
+    		}    				
+    		break;
+    	}
     case STATE_CYCLE: printPgmString(PSTR("Run")); break;
     case STATE_HOLD:
       if (!(sys.suspend & SUSPEND_JOG_CANCEL)) {
@@ -546,19 +584,21 @@ void report_realtime_status()
     #endif
   #endif
 
-  // Report realtime feed speed
-  #ifdef REPORT_FIELD_CURRENT_FEED_SPEED
-    #ifdef VARIABLE_SPINDLE
-      printPgmString(PSTR("|FS:"));
-      printFloat_RateValue(st_get_realtime_rate());
-      serial_write(',');
-      printFloat(sys.spindle_speed,N_DECIMAL_RPMVALUE);
-    #else
-      printPgmString(PSTR("|F:"));
-      printFloat_RateValue(st_get_realtime_rate());
-    #endif      
-  #endif
-
+  // Report realtime feed speed (only if no REPORT_FIELD_OVERRIDES) -cm
+  #ifndef REPORT_FIELD_OVERRIDES
+	  #ifdef REPORT_FIELD_CURRENT_FEED_SPEED
+	    #ifdef VARIABLE_SPINDLE
+	      printPgmString(PSTR("|FS:"));
+	      printFloat_RateValue(st_get_realtime_rate());
+	      serial_write(',');
+	      printFloat(sys.spindle_speed,N_DECIMAL_RPMVALUE);
+	    #else
+	      printPgmString(PSTR("|F:"));
+	      printFloat_RateValue(st_get_realtime_rate());
+	    #endif      
+	  #endif
+	#endif
+	
   #ifdef REPORT_FIELD_PIN_STATE
     uint8_t lim_pin_state = limits_get_state();
     uint8_t ctrl_pin_state = system_control_get_state();
@@ -581,6 +621,28 @@ void report_realtime_status()
       }
     }
   #endif
+  #ifdef REPORT_FIELD_SR_INP_STATE
+    // report SR inputs -cm
+    if (sr_inputs_0 | sr_inputs_1 | sr_inputs_2 | sr_inputs_3) {
+      printPgmString(PSTR("|SRin:"));
+	    print_uint8_base10(sr_inputs_0);
+      serial_write(',');
+	    print_uint8_base10(sr_inputs_1);
+      serial_write(',');
+	    print_uint8_base10(sr_inputs_2);
+      serial_write(',');
+	    print_uint8_base10(sr_inputs_3);
+    }
+  #endif
+  #ifdef REPORT_FIELD_SR_OUT_STATE
+    // report SR outputs -cm
+    if (sr_outputs_0 | sr_outputs_1) {
+      printPgmString(PSTR("|SRout:"));
+	    print_uint8_base10(sr_outputs_0);
+      serial_write(',');
+	    print_uint8_base10(sr_outputs_1);
+    }
+  #endif
 
   #ifdef REPORT_FIELD_WORK_COORD_OFFSET
     if (sys.report_wco_counter > 0) { sys.report_wco_counter--; }
@@ -597,6 +659,19 @@ void report_realtime_status()
   #ifdef REPORT_FIELD_OVERRIDES
     if (sys.report_ovr_counter > 0) { sys.report_ovr_counter--; }
     else {
+		  // Report realtime feed speed
+		  #ifdef REPORT_FIELD_CURRENT_FEED_SPEED
+		    #ifdef VARIABLE_SPINDLE
+		      printPgmString(PSTR("|FS:"));
+		      printFloat_RateValue(st_get_realtime_rate());
+		      serial_write(',');
+		      printFloat(sys.spindle_speed,N_DECIMAL_RPMVALUE);
+		    #else
+		      printPgmString(PSTR("|F:"));
+		      printFloat_RateValue(st_get_realtime_rate());
+		    #endif      
+		  #endif
+
       if (sys.state & (STATE_HOMING | STATE_CYCLE | STATE_HOLD | STATE_JOG | STATE_SAFETY_DOOR)) {
         sys.report_ovr_counter = (REPORT_OVR_REFRESH_BUSY_COUNT-1); // Reset counter for slow refresh
       } else { sys.report_ovr_counter = (REPORT_OVR_REFRESH_IDLE_COUNT-1); }

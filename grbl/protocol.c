@@ -19,7 +19,7 @@
   along with Grbl.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#include "grbl.h"
+#include "grbl_644.h"
 
 // Define line flags. Includes comment type tracking and line overflow detection.
 #define LINE_FLAG_OVERFLOW bit(0)
@@ -30,6 +30,14 @@
 static char line[LINE_BUFFER_SIZE]; // Line to be executed. Zero-terminated.
 
 static void protocol_exec_rt_suspend();
+
+static const __flash uint8_t feed_ovr_lookup[16] =
+{
+	0x01U, 0x02U, 0x03U, 0x05U, 
+	0x08U, 0x10U, 0x20U, 0x30U,
+	0x40U, 0x50U, 0x60U, 0x78U,
+	0x90U, 0xB0U, 0xD0U, 0xF0U
+	};
 
 
 /*
@@ -72,6 +80,20 @@ void protocol_main_loop()
   uint8_t char_counter = 0;
   uint8_t c;
   for (;;) {
+		
+		#ifdef SPI_DISP
+			// laufend Achsenpositionen senden, eine pro Durchlauf (Round Robin) -cm
+			spi_tx_axis_roundrobin();	
+		#endif
+					
+		#ifdef JOGPAD
+			jogpad_check();
+		#else	
+			#ifdef SPI_SR
+				// laufend Ports abfragen und gleichzeitig Ausgangsports senden -cm
+				spi_txrx_inout();		// sonst in jogpad_check()
+			#endif
+		#endif
 
     // Process one line of incoming serial data, as the data becomes available. Performs an
     // initial filtering by removing spaces and comments and capitalizing all letters.
@@ -151,6 +173,7 @@ void protocol_main_loop()
       }
     }
 
+		
     // If there are no more characters in the serial read buffer to be processed and executed,
     // this indicates that g-code streaming has either filled the planner buffer or has
     // completed. In either case, auto-cycle start, if enabled, any queued moves.
@@ -429,6 +452,25 @@ void protocol_exec_rt_system()
       plan_cycle_reinitialize();
     }
   }
+  
+#ifdef CMD_FEED_OVR_DIRECT
+  // Execute direct overrides -cm
+  rt_exec = sys_rt_exec_motion_override_direct; // Copy volatile sys_rt_exec_motion_override
+  if (rt_exec) {
+    system_clear_exec_motion_overrides(); // Clear all motion override flags.
+    uint8_t new_f_override =  sys.f_override;
+    new_f_override = feed_ovr_lookup[rt_exec];
+    new_f_override = min(new_f_override,MAX_FEED_RATE_OVERRIDE);
+    new_f_override = max(new_f_override,MIN_FEED_RATE_OVERRIDE);
+
+    if (new_f_override != sys.f_override) {
+      sys.f_override = new_f_override;
+      sys.report_ovr_counter = 0; // Set to report change immediately
+      plan_update_velocity_profile_parameters();
+      plan_cycle_reinitialize();
+    }
+  }
+#endif
 
   rt_exec = sys_rt_exec_accessory_override;
   if (rt_exec) {
@@ -541,6 +583,11 @@ static void protocol_exec_rt_suspend()
   #endif
 
   while (sys.suspend) {
+		#ifdef SPI_SR
+			// laufend Ports abfragen und gleichzeitig Ausgangsports senden -cm
+			set_led_status();
+			spi_txrx_inout();		// sonst in jogpad_check()
+		#endif
 
     if (sys.abort) { return; }
 
@@ -579,7 +626,7 @@ static void protocol_exec_rt_suspend()
             if ((bit_istrue(settings.flags,BITFLAG_HOMING_ENABLE)) &&
                             (parking_target[PARKING_AXIS] < PARKING_TARGET) &&
                             bit_isfalse(settings.flags,BITFLAG_LASER_MODE) &&
-                            (sys.override_ctrl == OVERRIDE_PARKING_MOTION)) {
+                            !sys.override_ctrl) {
             #else
             if ((bit_istrue(settings.flags,BITFLAG_HOMING_ENABLE)) &&
                             (parking_target[PARKING_AXIS] < PARKING_TARGET) &&
@@ -650,7 +697,7 @@ static void protocol_exec_rt_suspend()
               // NOTE: State is will remain DOOR, until the de-energizing and retract is complete.
               #ifdef ENABLE_PARKING_OVERRIDE_CONTROL
               if (((settings.flags & (BITFLAG_HOMING_ENABLE|BITFLAG_LASER_MODE)) == BITFLAG_HOMING_ENABLE) &&
-                   (sys.override_ctrl == OVERRIDE_PARKING_MOTION)) {
+                  !sys.override_ctrl) {
               #else
               if ((settings.flags & (BITFLAG_HOMING_ENABLE|BITFLAG_LASER_MODE)) == BITFLAG_HOMING_ENABLE) {
               #endif
@@ -689,7 +736,7 @@ static void protocol_exec_rt_suspend()
               // Execute slow plunge motion from pull-out position to resume position.
               #ifdef ENABLE_PARKING_OVERRIDE_CONTROL
               if (((settings.flags & (BITFLAG_HOMING_ENABLE|BITFLAG_LASER_MODE)) == BITFLAG_HOMING_ENABLE) &&
-                   (sys.override_ctrl == OVERRIDE_PARKING_MOTION)) {
+                  !sys.override_ctrl) {
               #else
               if ((settings.flags & (BITFLAG_HOMING_ENABLE|BITFLAG_LASER_MODE)) == BITFLAG_HOMING_ENABLE) {
               #endif

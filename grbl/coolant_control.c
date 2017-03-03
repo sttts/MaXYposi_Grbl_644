@@ -18,8 +18,7 @@
   along with Grbl.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#include "grbl.h"
-
+#include "grbl_644.h"
 
 void coolant_init()
 {
@@ -71,6 +70,8 @@ void coolant_stop()
       COOLANT_MIST_PORT &= ~(1 << COOLANT_MIST_BIT);
     #endif
   #endif
+  MACHINE_OUT_SR &= ~((1 << COOLANT_FLOOD_SR) | (1 << COOLANT_MIST_SR));
+  spi_txrx_inout();
 }
 
 
@@ -81,7 +82,6 @@ void coolant_stop()
 void coolant_set_state(uint8_t mode)
 {
   if (sys.abort) { return; } // Block during abort.  
-  
   if (mode == COOLANT_DISABLE) {
   
     coolant_stop(); 
@@ -94,19 +94,41 @@ void coolant_set_state(uint8_t mode)
       #else
         COOLANT_FLOOD_PORT |= (1 << COOLANT_FLOOD_BIT);
       #endif
+      MACHINE_OUT_SR |= (1 << COOLANT_FLOOD_SR);
     }
   
-    #ifdef ENABLE_M7
+	  
+	  #ifdef ENABLE_M7
       if (mode & COOLANT_MIST_ENABLE) {
         #ifdef INVERT_COOLANT_MIST_PIN
           COOLANT_MIST_PORT &= ~(1 << COOLANT_MIST_BIT);
         #else
           COOLANT_MIST_PORT |= (1 << COOLANT_MIST_BIT);
         #endif
+        MACHINE_OUT_SR |= (1 << COOLANT_MIST_SR);
       }
     #endif
   
-  }
+	}
+  
+  if (mode == ATC_ENABLE) {
+    MACHINE_OUT_SR |= (1 << ATC_SR);	// -cm
+  } else if (mode == ATC_DISABLE) {
+    MACHINE_OUT_SR &= ~(1 << ATC_SR);	// -cm
+  } else if (mode == AUX1_ENABLE) {
+    MACHINE_OUT_SR |= (1 << AUX1_SR);	// -cm
+  } else if (mode == AUX1_DISABLE) {
+    MACHINE_OUT_SR &= ~(1 << AUX1_SR);	// -cm    
+  } else if (mode == AUX2_ENABLE) {
+    MACHINE_OUT_SR |= (1 << AUX2_SR);	// -cm
+  } else if (mode == AUX2_DISABLE) {
+    MACHINE_OUT_SR &= ~(1 << AUX2_SR);	// -cm    
+  } else if (mode == AUX3_ENABLE) {
+    MACHINE_OUT_SR |= (1 << AUX3_SR);	// -cm
+  } else if (mode == AUX3_DISABLE) {
+    MACHINE_OUT_SR &= ~(1 << AUX3_SR);	// -cm
+	}
+  spi_txrx_inout();
   sys.report_ovr_counter = 0; // Set to report change immediately
 }
 
@@ -119,3 +141,4 @@ void coolant_sync(uint8_t mode)
   protocol_buffer_synchronize(); // Ensure coolant turns on when specified in program.
   coolant_set_state(mode);
 }
+

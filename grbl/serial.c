@@ -19,7 +19,7 @@
   along with Grbl.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#include "grbl.h"
+#include "grbl_644.h"
 
 #define RX_RING_BUFFER (RX_BUFFER_SIZE+1)
 #define TX_RING_BUFFER (TX_BUFFER_SIZE+1)
@@ -32,6 +32,10 @@ uint8_t serial_tx_buffer[TX_RING_BUFFER];
 uint8_t serial_tx_buffer_head = 0;
 volatile uint8_t serial_tx_buffer_tail = 0;
 
+#ifdef DEVICE_ADDR_ENABLE //-cm
+	extern uint8_t device_id_from_host;
+	extern uint8_t device_id_jumpered;
+#endif
 
 // Returns the number of bytes available in the RX serial buffer.
 uint8_t serial_get_rx_buffer_available()
@@ -144,9 +148,20 @@ ISR(SERIAL_RX)
 {
   uint8_t data = UDR0;
   uint8_t next_head;
-
+  
+#ifdef DEVICE_ADDR_ENABLE
+		  // Pick off realtime address ID command characters directly from the serial stream -cm
+		  if ((data >= 0xD0) && (data <= 0xDF)) { 
+				device_id_from_host = data & 0x0F;
+			}
+		  if (device_id_from_host != device_id_jumpered) { 
+					data = 0xEF;	// will be discarded
+			}
+#endif
+	 
   // Pick off realtime command characters directly from the serial stream. These characters are
   // not passed into the main buffer, but these set system state flag bits for realtime execution.
+  // Real-time control characters are extended ACSII only.
   switch (data) {
     case CMD_RESET:         mc_reset(); break; // Call motion control reset routine.
     case CMD_STATUS_REPORT: system_set_exec_state_flag(EXEC_STATUS_REPORT); break; // Set as true
@@ -154,6 +169,13 @@ ISR(SERIAL_RX)
     case CMD_FEED_HOLD:     system_set_exec_state_flag(EXEC_FEED_HOLD); break; // Set as true
     default :
       if (data > 0x7F) { // Real-time control characters are extended ACSII only.
+
+#ifdef CMD_FEED_OVR_DIRECT	// Direct feed override realtime command?
+        if (data > 0xF0) { 
+        	system_set_exec_motion_override_direct(data-0xF0);	// 1 to 15 -cm
+        }
+#endif
+
         switch(data) {
           case CMD_SAFETY_DOOR:   system_set_exec_state_flag(EXEC_SAFETY_DOOR); break; // Set as true
           case CMD_JOG_CANCEL:   
@@ -165,10 +187,12 @@ ISR(SERIAL_RX)
             case CMD_DEBUG_REPORT: {uint8_t sreg = SREG; cli(); bit_true(sys_rt_exec_debug,EXEC_DEBUG_REPORT); SREG = sreg;} break;
           #endif
           case CMD_FEED_OVR_RESET: system_set_exec_motion_override_flag(EXEC_FEED_OVR_RESET); break;
+          	
           case CMD_FEED_OVR_COARSE_PLUS: system_set_exec_motion_override_flag(EXEC_FEED_OVR_COARSE_PLUS); break;
           case CMD_FEED_OVR_COARSE_MINUS: system_set_exec_motion_override_flag(EXEC_FEED_OVR_COARSE_MINUS); break;
           case CMD_FEED_OVR_FINE_PLUS: system_set_exec_motion_override_flag(EXEC_FEED_OVR_FINE_PLUS); break;
           case CMD_FEED_OVR_FINE_MINUS: system_set_exec_motion_override_flag(EXEC_FEED_OVR_FINE_MINUS); break;
+          
           case CMD_RAPID_OVR_RESET: system_set_exec_motion_override_flag(EXEC_RAPID_OVR_RESET); break;
           case CMD_RAPID_OVR_MEDIUM: system_set_exec_motion_override_flag(EXEC_RAPID_OVR_MEDIUM); break;
           case CMD_RAPID_OVR_LOW: system_set_exec_motion_override_flag(EXEC_RAPID_OVR_LOW); break;
@@ -182,9 +206,11 @@ ISR(SERIAL_RX)
           #ifdef ENABLE_M7
             case CMD_COOLANT_MIST_OVR_TOGGLE: system_set_exec_accessory_override_flag(EXEC_COOLANT_MIST_OVR_TOGGLE); break;
           #endif
-        }
+        }        
         // Throw away any unfound extended-ASCII character by not passing it to the serial buffer.
+        
       } else { // Write character to buffer
+//				set_activity_led(); //-cm
         next_head = serial_rx_buffer_head + 1;
         if (next_head == RX_RING_BUFFER) { next_head = 0; }
 

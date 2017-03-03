@@ -44,7 +44,8 @@
 #define MODAL_GROUP_M4 11  // [M0,M1,M2,M30] Stopping
 #define MODAL_GROUP_M7 12 // [M3,M4,M5] Spindle turning
 #define MODAL_GROUP_M8 13 // [M7,M8,M9] Coolant control
-#define MODAL_GROUP_M9 14 // [M56] Override control
+#define MODAL_GROUP_M100 14 // [M6,M7,M8,M9] Coolant control -- added M6 -cm
+#define MODAL_GROUP_M9 15 // [M56] Override control
 
 // Define command actions for within execution-type modal groups (motion, stopping, non-modal). Used
 // internally by the parser to know which command to execute.
@@ -119,18 +120,22 @@
 #define COOLANT_FLOOD_ENABLE  PL_COND_FLAG_COOLANT_FLOOD // M8 (NOTE: Uses planner condition bit flag)
 #define COOLANT_MIST_ENABLE   PL_COND_FLAG_COOLANT_MIST  // M7 (NOTE: Uses planner condition bit flag)
 
+#define AUX1_ENABLE 4 	// M100
+#define AUX1_DISABLE 5 	// M101
+#define AUX2_ENABLE 6 	// M102
+#define AUX2_DISABLE 7 	// M103
+#define AUX3_ENABLE 8 	// M104
+#define AUX3_DISABLE 9 	// M105
+#define ATC_ENABLE 10 // M106 -cm
+#define ATC_DISABLE 11 // M107 -cm
+
 // Modal Group G8: Tool length offset
 #define TOOL_LENGTH_OFFSET_CANCEL 0 // G49 (Default: Must be zero)
 #define TOOL_LENGTH_OFFSET_ENABLE_DYNAMIC 1 // G43.1
 
 // Modal Group M9: Override control
-#ifdef DEACTIVATE_PARKING_UPON_INIT
-  #define OVERRIDE_DISABLED  0 // (Default: Must be zero)
-  #define OVERRIDE_PARKING_MOTION 1 // M56
-#else
-  #define OVERRIDE_PARKING_MOTION 0 // M56 (Default: Must be zero)
-  #define OVERRIDE_DISABLED  1 // Parking disabled.
-#endif
+#define OVERRIDE_DISABLED  0 // None (Default: Must be zero)
+#define OVERRIDE_PARKING_MOTION 1 // G56 (Default: Must be zero)
 
 // Modal Group G12: Active work coordinate system
 // N/A: Stores coordinate system value (54-59) to change to.

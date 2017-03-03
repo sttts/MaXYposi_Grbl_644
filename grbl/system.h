@@ -21,7 +21,7 @@
 #ifndef system_h
 #define system_h
 
-#include "grbl.h"
+#include "grbl_644.h"
 
 // Define system executor bit map. Used internally by realtime protocol as realtime command flags,
 // which notifies the main program to execute the specified realtime command asynchronously.
@@ -155,6 +155,13 @@ extern volatile uint8_t sys_rt_exec_state;   // Global realtime executor bitflag
 extern volatile uint8_t sys_rt_exec_alarm;   // Global realtime executor bitflag variable for setting various alarms.
 extern volatile uint8_t sys_rt_exec_motion_override; // Global realtime executor bitflag variable for motion-based overrides.
 extern volatile uint8_t sys_rt_exec_accessory_override; // Global realtime executor bitflag variable for spindle/coolant overrides.
+
+#ifdef CMD_FEED_OVR_DIRECT
+extern volatile uint8_t sys_rt_exec_motion_override_direct; // -cm
+#endif
+
+	
+
 
 #ifdef DEBUG
   #define EXEC_DEBUG_REPORT  bit(0)

@@ -1,3 +1,9 @@
+
+
+
+
+
+
 /*
   config.h - compile time configuration
   Part of Grbl
@@ -27,15 +33,15 @@
 
 #ifndef config_h
 #define config_h
-#include "grbl.h" // For Arduino IDE compatibility.
-
+#include "grbl_644.h" // For Arduino IDE compatibility.
 
 // Define CPU pin map and default settings.
 // NOTE: OEMs can avoid the need to maintain/update the defaults.h and cpu_map.h files and use only
 // one configuration file by placing their specific defaults and pin map at the bottom of this file.
 // If doing so, simply comment out these two defines and see instructions below.
-#define DEFAULTS_GENERIC
-#define CPU_MAP_ATMEGA328P // Arduino Uno CPU
+// #define DEFAULTS_GENERIC
+#define DEFAULTS_IGUS
+#define CPU_MAP_644P // Neue GRBL-Jog-Platine
 
 // Serial baud rate
 // #define BAUD_RATE 230400
@@ -72,6 +78,10 @@
 #define CMD_RAPID_OVR_RESET 0x95        // Restores rapid override value to 100%.
 #define CMD_RAPID_OVR_MEDIUM 0x96
 #define CMD_RAPID_OVR_LOW 0x97
+
+#define CMD_FEED_OVR_DIRECT       // Sets feed override value, 0xF1 = slowest, 0xFF = fastest -cm
+
+
 // #define CMD_RAPID_OVR_EXTRA_LOW 0x98 // *NOT SUPPORTED*
 #define CMD_SPINDLE_OVR_RESET 0x99      // Restores spindle override value to 100%.
 #define CMD_SPINDLE_OVR_COARSE_PLUS 0x9A
@@ -126,7 +136,7 @@
 // After homing, Grbl will set by default the entire machine space into negative space, as is typical
 // for professional CNC machines, regardless of where the limit switches are located. Uncomment this
 // define to force Grbl to always set the machine origin at the homed location despite switch orientation.
-// #define HOMING_FORCE_SET_ORIGIN // Uncomment to enable.
+#define HOMING_FORCE_SET_ORIGIN // Uncomment to enable.
 
 // Number of blocks Grbl executes upon startup. These blocks are stored in EEPROM, where the size
 // and addresses are defined in settings.h. With the current settings, up to 2 startup blocks may
@@ -139,8 +149,8 @@
 // values cannot be less than 0.001mm or 0.0001in, because machines can not be physically more
 // precise this. So, there is likely no need to change these, but you can if you need to here.
 // NOTE: Must be an integer value from 0 to ~4. More than 4 may exhibit round-off errors.
-#define N_DECIMAL_COORDVALUE_INCH 4 // Coordinate or position value in inches
-#define N_DECIMAL_COORDVALUE_MM   3 // Coordinate or position value in mm
+#define N_DECIMAL_COORDVALUE_INCH 3 // Coordinate or position value in inches
+#define N_DECIMAL_COORDVALUE_MM   2 // Coordinate or position value in mm
 #define N_DECIMAL_RATEVALUE_INCH  1 // Rate or velocity value in in/min
 #define N_DECIMAL_RATEVALUE_MM    0 // Rate or velocity value in mm/min
 #define N_DECIMAL_SETTINGVALUE    3 // Decimals for floating point setting values
@@ -166,7 +176,7 @@
 // Enables a second coolant control pin via the mist coolant g-code command M7 on the Arduino Uno
 // analog pin 4. Only use this option if you require a second coolant control pin.
 // NOTE: The M8 flood coolant control pin on analog pin 3 will still be functional regardless.
-// #define ENABLE_M7 // Disabled by default. Uncomment to enable.
+#define ENABLE_M7 // Disabled by default. Uncomment to enable.
 
 // This option causes the feed hold input to act as a safety door switch. A safety door, when triggered,
 // immediately forces a feed hold and then safely de-energizes the machine. Resuming is blocked until
@@ -240,7 +250,7 @@
 // note the allowable values in the descriptions following each define.
 #define DEFAULT_FEED_OVERRIDE           100 // 100%. Don't change this value.
 #define MAX_FEED_RATE_OVERRIDE          200 // Percent of programmed feed rate (100-255). Usually 120% or 200%
-#define MIN_FEED_RATE_OVERRIDE           10 // Percent of programmed feed rate (1-100). Usually 50% or 1%
+#define MIN_FEED_RATE_OVERRIDE            1 // Percent of programmed feed rate (1-100). Usually 50% or 1%
 #define FEED_OVERRIDE_COARSE_INCREMENT   10 // (1-99). Usually 10%.
 #define FEED_OVERRIDE_FINE_INCREMENT      1 // (1-99). Usually 1%.
 
@@ -422,7 +432,7 @@
 // NOTE: Uncomment to enable. The recommended delay must be > 3us, and, when added with the
 // user-supplied step pulse time, the total time must not exceed 127us. Reported successful
 // values for certain setups have ranged from 5 to 20us.
-// #define STEP_PULSE_DELAY 10 // Step pulse delay in microseconds. Default disabled.
+#define STEP_PULSE_DELAY 10 // Step pulse delay in microseconds. Default disabled.
 
 // The number of linear motions in the planner buffer to be planned at any give time. The vast
 // majority of RAM that Grbl uses is based on this buffer size. Only increase if there is extra
@@ -566,8 +576,8 @@
 // Configure options for the parking motion, if enabled.
 #define PARKING_AXIS Z_AXIS // Define which axis that performs the parking motion
 #define PARKING_TARGET -5.0 // Parking axis target. In mm, as machine coordinate [-max_travel,0].
-#define PARKING_RATE 500.0 // Parking fast rate after pull-out in mm/min.
-#define PARKING_PULLOUT_RATE 100.0 // Pull-out/plunge slow feed rate in mm/min.
+#define PARKING_RATE 1500.0 // Parking fast rate after pull-out in mm/min.
+#define PARKING_PULLOUT_RATE 200.0 // Pull-out/plunge slow feed rate in mm/min.
 #define PARKING_PULLOUT_INCREMENT 5.0 // Spindle pull-out and plunge distance in mm. Incremental distance.
                                       // Must be positive value or equal to zero.
 
@@ -575,10 +585,8 @@
 // These are controlled by `M56`, `M56 P1`, or `M56 Px` to enable and `M56 P0` to disable. 
 // The command is modal and will be set after a planner sync. Since it is g-code, it is 
 // executed in sync with g-code commands. It is not a real-time command.
-// NOTE: PARKING_ENABLE is required. By default, M56 is active upon initialization. Use 
-// DEACTIVATE_PARKING_UPON_INIT to set M56 P0 as the power-up default.
+// NOTE: PARKING_ENABLE is required.
 // #define ENABLE_PARKING_OVERRIDE_CONTROL   // Default disabled. Uncomment to enable
-// #define DEACTIVATE_PARKING_UPON_INIT // Default disabled. Uncomment to enable.
 
 // This option will automatically disable the laser during a feed hold by invoking a spindle stop
 // override immediately after coming to a stop. However, this also means that the laser still may
@@ -586,18 +594,60 @@
 // to ensure the laser doesn't inadvertently remain powered while at a stop and cause a fire.
 #define DISABLE_LASER_DURING_HOLD // Default enabled. Comment to disable.
 
-/* ---------------------------------------------------------------------------------------
-   OEM Single File Configuration Option
 
-   Instructions: Paste the cpu_map and default setting definitions below without an enclosing
-   #ifdef. Comment out the CPU_MAP_xxx and DEFAULT_xxx defines at the top of this file, and
-   the compiler will ignore the contents of defaults.h and cpu_map.h and use the definitions
-   below.
+#define PROC_NAME "644P" 	// issued with $I command -cm
+
+#define GRBL_VERSION "1.1f2"
+#define GRBL_VERSION_BUILD "02.03.2017"
+
+#define SPI_SR    // SPI shift I/O registers 2..4x HC165 and 2x HC595
+#define SPI_DISP  // LC Display unit with own ATmega88/168/328
+#define REPORT_FIELD_SR_INP_STATE       // "SRin:0,1,2,3" field in realtime report
+// #define REPORT_FIELD_SR_OUT_STATE    // "SRout:0,1" field in realtime report
+
+
+#define JOGPAD    // SR inputs used for manual jog (joystick, btns etc). SPI_SR needed.
+
+#define DIAL      // uncomment to disable hand wheel / dial  -cm
+#define DIAL_MM_FINE 0.01		  // detent step in mm
+#define DIAL_MM_COARSE 0.1		// detent step in mm when COARSE btn pressed
+#define DIAL_SLOW_FAC 0.2     // fac of max. axis seek rate (as set in EEPROM)
+#define DIAL_FAST_FAC 0.5
+
+#define ANALOG_JOYSTICK   // uncomment to disable analog joystick  -cm
+#define JOY_ADC_OFFS  20  // low speed behaviour
+#define ZERO_MSG          // issue message if ZERO buttons pressed, like [MSG: ZERO X] or [MSG: ZERO ALL]
+
+//#################################################################################################
+//################################### DEVICE ADDRESSING ###########################################
+//#################################################################################################
+/*
+	
+	Mit zwei Jumpern an DEVICE_ADDR_PORT kann eine Adresse zwischen 0 (kein 
+	Jumper) und 3 (beide Jumper) eingestellt werden. Wenn ein Adress-Befehl (real 
+	time command, 0xD0 to 0xD3) empfangen wurde, der nicht der eingestellten 
+	Adresse entspricht, wird GRBL ab sofort alle  Befehle (G-Codes sowie Realtime-
+	Befehle außer natürlich einem Adress-Befehl) ignorieren, Erst wenn GRBL wieder 
+	ein zur eingestellten Adresse passenden Adress-Befehl (0xD0 to 0xD3) empfängt, 
+	wird die Sperre aufgehoben. Nach einem Hardware-Reset ist die Sperre nicht 
+	aktiv.
+  
+  Dies ermöglicht es, mehr als eine GRBL-Board an einem seriellen Anschluss zu 
+  betreiben, z.B. für Maschinen mit mehr als drei Achsen. Sobald ein Adress-
+  Befehl gesendet wurde, ist nur noch ein Board aktiv. 
+  
+  Voraussetzung: TX des ATmega muss über Diode und Pull-Up "wired-or"-fähig sein.
+  
+	With DEVICE_ADDR_ENABLE defined, GRBL is enabled on startup and if address 
+	select 0xD0 to 0xD3 (real time command) is received and address select (data 
+	AND 0x03) is equal to address jumper setting. GRBL is disabled when other 
+	addresses in range 0xD0 to 0xD3 are issued by host. 0xD0 enables device 
+	address 0, 0xD1 enables device address 1 etc. Jumpered divice address is shown 
+	on $I info string.
+	
+	See cpu_map.h for details   -cm
 */
-
-// Paste CPU_MAP definitions here.
-
-// Paste default settings definitions here.
+#define DEVICE_ADDR_ENABLE 	// uncomment to disable device addressing -cm
 
 
 #endif

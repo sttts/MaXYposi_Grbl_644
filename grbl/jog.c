@@ -18,7 +18,7 @@
   along with Grbl.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#include "grbl.h"
+#include "grbl_644.h"
 
 
 // Sets up valid jog motion received from g-code parser, checks for soft-limits, and executes the jog.
@@ -27,11 +27,10 @@ uint8_t jog_execute(plan_line_data_t *pl_data, parser_block_t *gc_block)
   // Initialize planner data struct for jogging motions.
   // NOTE: Spindle and coolant are allowed to fully function with overrides during a jog.
   pl_data->feed_rate = gc_block->values.f;
-  pl_data->condition |= PL_COND_FLAG_NO_FEED_OVERRIDE;
+//  pl_data->condition |= PL_COND_FLAG_NO_FEED_OVERRIDE; // -cm
   #ifdef USE_LINE_NUMBERS
     pl_data->line_number = gc_block->values.n;
   #endif
-
   if (bit_istrue(settings.flags,BITFLAG_SOFT_LIMIT_ENABLE)) {
     if (system_check_travel_limits(gc_block->values.xyz)) { return(STATUS_TRAVEL_EXCEEDED); }
   }

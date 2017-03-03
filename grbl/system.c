@@ -18,7 +18,7 @@
   along with Grbl.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#include "grbl.h"
+#include "grbl_644.h"
 
 
 void system_init()
@@ -107,6 +107,7 @@ void system_execute_startup(char *line)
     }
   }
 }
+
 
 
 // Directs and executes one line of formatted input from protocol_process. While mostly
@@ -385,6 +386,16 @@ void system_set_exec_motion_override_flag(uint8_t mask) {
   SREG = sreg;
 }
 
+#ifdef CMD_FEED_OVR_DIRECT
+// Force feed override -cm
+void system_set_exec_motion_override_direct(uint8_t data) {
+  uint8_t sreg = SREG;
+  cli();
+  sys_rt_exec_motion_override_direct = (data);
+  SREG = sreg;
+}
+#endif
+
 void system_set_exec_accessory_override_flag(uint8_t mask) {
   uint8_t sreg = SREG;
   cli();
@@ -396,6 +407,9 @@ void system_clear_exec_motion_overrides() {
   uint8_t sreg = SREG;
   cli();
   sys_rt_exec_motion_override = 0;
+#ifdef CMD_FEED_OVR_DIRECT
+  sys_rt_exec_motion_override_direct = 0;	// -cm
+#endif
   SREG = sreg;
 }
 
