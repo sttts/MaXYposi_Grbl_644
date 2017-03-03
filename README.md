@@ -1,7 +1,12 @@
+![GitHub Logo](http://www.heise.de/make/icons/make_logo.png)
 
-###Version for ATmega644(p) 
+Maker Media GmbH und c't, Heise Zeitschriften Verlag
 
-with multiple additions, suited for MaXYposi board (german Make: magazine, issue 2/2017)
+***
+
+###Grbl 1.1f Version for ATmega644(p) 
+
+with multiple additions, suited for MaXYposi board (german Make: magazine, issue 2/2017). Additions by Carsten Meyer, Make: Magazin
 
 * 4th axis per #define in config.h
 * 16 Output ports via HC595 SRs on SPI
@@ -11,7 +16,7 @@ with multiple additions, suited for MaXYposi board (german Make: magazine, issue
 * Button panel with coordinate LCD 16x2, connected via SPI
 * M commands for additional relay switches M100/101..M106/M107 (even numbers turn on, odd turn off relays)
 
-Additions by Carsten Meyer, Make: Magazin
+
 
 WORK IN PROGRESS. STAY TUNED.
 
