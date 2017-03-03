@@ -6,7 +6,7 @@ Maker Media GmbH und c't, Heise Zeitschriften Verlag
 
 ###Grbl 1.1f Version for ATmega644(p) 
 
-with multiple additions, suited for MaXYposi board (german Make: magazine, issue 2/2017). Additions by Carsten Meyer, Make: Magazin
+with multiple additions, suited for MaXYposi board (german Make: magazine, issue 2/2017). Additions by Carsten Meyer, Make Magazin Deutschland.
 
 * 4th axis per #define in config.h
 * 16 Output ports via HC595 SRs on SPI
