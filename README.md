@@ -13,7 +13,8 @@ with multiple additions, suited for MaXYposi board (german Make: magazine, issue
 
 Additions by Carsten Meyer, Make: Magazin
 
-WORK IN PROGRESS.
+WORK IN PROGRESS. STAY TUNED.
+
 
 ![GitHub Logo](/doc/media/Grbl Logo 250px.png)
 
