@@ -1,4 +1,13 @@
 ![GitHub Logo](/doc/media/Grbl Logo 250px.png)
+
+###Version for ATmega644(p) with some additions, suited for MaXYposi board (german Make: 2/2017)
+* 16 Output ports via HC595 SRs on SPI
+* 32 Input ports via HC165 SRs on SPI
+* Support for dial/handwheel
+* Supoort for analog joystick with variable speed
+* Button panel with coordinate LCD 16x2, connected via SPI
+
+
 ***
 _Click the `Release` tab to download pre-compiled `.hex` files or just [click here](https://github.com/gnea/grbl/releases)_
 ***
