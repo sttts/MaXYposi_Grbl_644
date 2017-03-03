@@ -175,7 +175,8 @@
 #define X_STEP_BIT    0 // 
 #define Y_STEP_BIT    2 // 
 #define Z_STEP_BIT    4 // 
-#define STEP_MASK ((1<<X_STEP_BIT)|(1<<Y_STEP_BIT)|(1<<Z_STEP_BIT)) // All step bits
+#define C_STEP_BIT    6 // 
+#define STEP_MASK ((1<<X_STEP_BIT)|(1<<Y_STEP_BIT)|(1<<Z_STEP_BIT)|(1<<C_STEP_BIT)) // All step bits
 
 // Define step direction output pins. NOTE: All direction pins must be on the same port.
 #define DIRECTION_DDR     DDRC
@@ -184,12 +185,13 @@
 #define X_DIRECTION_BIT   1 // 
 #define Y_DIRECTION_BIT   3 // 
 #define Z_DIRECTION_BIT   5 // 
+#define C_DIRECTION_BIT   7 // 
 #define DIRECTION_MASK ((1<<X_DIRECTION_BIT)|(1<<Y_DIRECTION_BIT)|(1<<Z_DIRECTION_BIT)) // All direction bits
 
 // Define stepper driver enable/disable output pin.
-#define STEPPERS_DISABLE_DDR   DDRC
-#define STEPPERS_DISABLE_PORT  PORTC
-#define STEPPERS_DISABLE_BIT   6 // 
+#define STEPPERS_DISABLE_DDR   DDRD
+#define STEPPERS_DISABLE_PORT  PORTD
+#define STEPPERS_DISABLE_BIT   5 // 
 #define STEPPERS_DISABLE_MASK (1<<STEPPERS_DISABLE_BIT)
 
 // Define user-control controls (cycle start, reset, feed hold) input pins.
@@ -429,8 +431,9 @@
   #define DIAL_INP_SR   sr_inputs_3    // Shift register used as dial port
   //
   #define DIAL_ZERO_SW	7              // ZeroAll from dial, waits for btn release
-
-  #define DIAL_FAST_SW  3
+  #define DIAL_FAST_SW  6
+  
+  #define DIAL_DIR_C_SW 3
   #define DIAL_DIR_Z_SW 2
   #define DIAL_DIR_Y_SW 1
   #define DIAL_DIR_X_SW 0
@@ -514,7 +517,7 @@
 #define X_LIMIT_BIT     0 // 
 #define Y_LIMIT_BIT     1 // 
 #define Z_LIMIT_BIT     2 // 
-#define LIMIT_SPINDLE_TOGGLE_BIT  4 // PA4 on LIMIT_PIN, alterative btn
+#define C_LIMIT_BIT     4 // PA4 on LIMIT_PIN
 #ifdef DIAL 	// -cm
   #define DIAL_0_BIT       5 // PA5
   #define DIAL_1_BIT       6 // PA6
@@ -523,7 +526,7 @@
 #define LIMIT_INT         PCIE0  // Pin change interrupt enable pin Port A
 #define LIMIT_INT_vect    PCINT0_vect 
 #define LIMIT_PCMSK       PCMSK0 // Pin change interrupt register Port A
-#define LIMIT_MASK ((1<<X_LIMIT_BIT)|(1<<Y_LIMIT_BIT)|(1<<Z_LIMIT_BIT)) // All limit bits
+#define LIMIT_MASK ((1<<X_LIMIT_BIT)|(1<<Y_LIMIT_BIT)|(1<<Z_LIMIT_BIT)|(1<<C_LIMIT_BIT)) // All limit bits
 
 
 #endif

@@ -595,7 +595,7 @@
 #define DISABLE_LASER_DURING_HOLD // Default enabled. Comment to disable.
 
 
-#define PROC_NAME "644P" 	// issued with $I command -cm
+#define PROC_NAME "ATmega644" 	// issued with $I command -cm
 
 #define GRBL_VERSION "1.1f2"
 #define GRBL_VERSION_BUILD "02.03.2017"
@@ -642,12 +642,17 @@
 	select 0xD0 to 0xD3 (real time command) is received and address select (data 
 	AND 0x03) is equal to address jumper setting. GRBL is disabled when other 
 	addresses in range 0xD0 to 0xD3 are issued by host. 0xD0 enables device 
-	address 0, 0xD1 enables device address 1 etc. Jumpered divice address is shown 
+	address 0, 0xD1 enables device address 1 etc. Jumpered device address is shown 
 	on $I info string.
 	
 	See cpu_map.h for details   -cm
 */
-#define DEVICE_ADDR_ENABLE 	// uncomment to disable device addressing -cm
+// #define DEVICE_ADDR_ENABLE 	// uncomment to disable device addressing -cm
 
+/* 
+	Support for 4th rotational axis "C". Based on work from Bob Beattie, (c) 2014. 
+	BETA!
+*/
 
+#define AXIS_C_ENABLE
 #endif

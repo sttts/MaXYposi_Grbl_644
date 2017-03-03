@@ -83,8 +83,8 @@ void jogpad_init() {
 	dial_sema = false;
 	dial_axis = 0; // default X
 	
-	LIMIT_DDR &= ~((DIAL_MASK | (1 << LIMIT_SPINDLE_TOGGLE_BIT))); // Set as input pins
-  LIMIT_PORT |= DIAL_MASK | (1 << LIMIT_SPINDLE_TOGGLE_BIT); // Active low operation. Pull-up on.
+	LIMIT_DDR &= ~(DIAL_MASK); // Set as input pins
+  LIMIT_PORT |= DIAL_MASK; // Active low operation. Pull-up on.
   PCICR |= (1 << LIMIT_INT); // Enable Pin Change Interrupt
   LIMIT_PCMSK |= DIAL_MASK; // Enable specific pins of the Pin Change Interrupt
 #endif
