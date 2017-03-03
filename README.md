@@ -10,6 +10,7 @@ with multiple additions, suited for MaXYposi board (german Make: magazine, issue
 * Supoort for analog joystick with variable speed
 * Button panel with coordinate LCD 16x2, connected via SPI
 
+WORK IN PROGRESS.
 
 ***
 _Click the `Release` tab to download pre-compiled `.hex` files or just [click here](https://github.com/gnea/grbl/releases)_
