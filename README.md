@@ -1,4 +1,3 @@
-![GitHub Logo](/doc/media/Grbl Logo 250px.png)
 
 ###Version for ATmega644(p) 
 
@@ -7,11 +6,16 @@ with multiple additions, suited for MaXYposi board (german Make: magazine, issue
 * 4th axis per #define in config.h
 * 16 Output ports via HC595 SRs on SPI
 * 32 Input ports via HC165 SRs on SPI
-* Support for dial/handwheel
-* Support for analog joystick with variable speed
+* Support for dial/handwheel, direct connection to Grbl CPU. Updates machine/work position in realtime.
+* Support for analog joystick with variable speed, direct connection to Grbl CPU. Updates machine/work position in realtime.
 * Button panel with coordinate LCD 16x2, connected via SPI
+* M commands for additional relay switches M100/101..M106/M107 (even numbers turn on, odd turn off relays)
+
+Additions by Carsten Meyer, Make: Magazin
 
 WORK IN PROGRESS.
+
+![GitHub Logo](/doc/media/Grbl Logo 250px.png)
 
 * [Licensing](https://github.com/gnea/grbl/wiki/Licensing): Grbl is free software, released under the GPLv3 license.
 * For more information and help, check the Grbl **[Wiki pages!](https://github.com/gnea/grbl/wiki)**!
