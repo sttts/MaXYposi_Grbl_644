@@ -14,11 +14,8 @@ with multiple additions, suited for MaXYposi board (german Make: magazine, issue
 WORK IN PROGRESS.
 
 * [Licensing](https://github.com/gnea/grbl/wiki/Licensing): Grbl is free software, released under the GPLv3 license.
-
 * For more information and help, check the Grbl **[Wiki pages!](https://github.com/gnea/grbl/wiki)**!
-
 * Lead Developer: Sungeun "Sonny" Jeon, Ph.D. (USA) aka @chamnit
-
 * Built on the wonderful Grbl v0.6 (2011) firmware written by Simen Svale Skogsrud (Norway).
 
 -------------
