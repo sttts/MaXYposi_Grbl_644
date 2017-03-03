@@ -4,10 +4,11 @@
 
 with multiple additions, suited for MaXYposi board (german Make: magazine, issue 2/2017)
 
+* 4th axis per #define in config.h
 * 16 Output ports via HC595 SRs on SPI
 * 32 Input ports via HC165 SRs on SPI
 * Support for dial/handwheel
-* Supoort for analog joystick with variable speed
+* Support for analog joystick with variable speed
 * Button panel with coordinate LCD 16x2, connected via SPI
 
 WORK IN PROGRESS.
