@@ -109,6 +109,7 @@ void spindle_stop()
 
 // send to LED SR register HC595 -cm
   MACHINE_OUT_SR &= ~((1<<SPINDLE_ENABLE_SR)|(1<<SPINDLE_DIRECTION_SR)); // Set pin to low
+  spindle_on = false;	// track for panel buttons -cm
   spi_txrx_inout();
 }
 
@@ -130,15 +131,18 @@ void spindle_stop()
           SPINDLE_ENABLE_PORT |= (1<<SPINDLE_ENABLE_BIT);
         #endif
 			  MACHINE_OUT_SR |= (1<<SPINDLE_ENABLE_SR); // Set pin to low
+  			spindle_on = true;	// track for panel buttons -cm
 			  spi_txrx_inout();
       }
     #else
       if (pwm_value == SPINDLE_PWM_OFF_VALUE) {
         SPINDLE_TCCRA_REGISTER &= ~(1<<SPINDLE_COMB_BIT); // Disable PWM. Output voltage is zero.
 			  MACHINE_OUT_SR &= ~(1<<SPINDLE_ENABLE_SR); // Set pin to low
+  			spindle_on = false;	// track for panel buttons -cm
       } else {
         SPINDLE_TCCRA_REGISTER |= (1<<SPINDLE_COMB_BIT); // Ensure PWM output is enabled.
 			  MACHINE_OUT_SR |= (1<<SPINDLE_ENABLE_SR); // Set pin to low
+  			spindle_on = true;	// track for panel buttons -cm
       }
 		  spi_txrx_inout();
     #endif
@@ -221,7 +225,8 @@ void spindle_stop()
         SPINDLE_ENABLE_PORT |= (1<<SPINDLE_ENABLE_BIT);
       #endif    
   	  MACHINE_OUT_SR |= (1<<SPINDLE_ENABLE_SR); // Set pin to high
-    	spi_txrx_inout();
+			spindle_on = true;	// track for panel buttons -cm
+	    spi_txrx_inout();
     #endif
   
 	  

@@ -595,10 +595,10 @@
 #define DISABLE_LASER_DURING_HOLD // Default enabled. Comment to disable.
 
 
-#define PROC_NAME "ATmega644" 	// issued with $I command -cm
+#define PROC_NAME "ATMEGA644" 	// issued with $I command -cm
 
 #define GRBL_VERSION "1.1f2"
-#define GRBL_VERSION_BUILD "02.03.2017"
+#define GRBL_VERSION_BUILD "04.03.2017"
 
 #define SPI_SR    // SPI shift I/O registers 2..4x HC165 and 2x HC595
 #define SPI_DISP  // LC Display unit with own ATmega88/168/328

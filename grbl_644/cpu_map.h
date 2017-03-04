@@ -175,8 +175,12 @@
 #define X_STEP_BIT    0 // 
 #define Y_STEP_BIT    2 // 
 #define Z_STEP_BIT    4 // 
-#define C_STEP_BIT    6 // 
-#define STEP_MASK ((1<<X_STEP_BIT)|(1<<Y_STEP_BIT)|(1<<Z_STEP_BIT)|(1<<C_STEP_BIT)) // All step bits
+#ifdef AXIS_C_ENABLE
+	#define C_STEP_BIT    6 // 
+	#define STEP_MASK ((1<<X_STEP_BIT)|(1<<Y_STEP_BIT)|(1<<Z_STEP_BIT)|(1<<C_STEP_BIT)) // All step bits
+#else
+	#define STEP_MASK ((1<<X_STEP_BIT)|(1<<Y_STEP_BIT)|(1<<Z_STEP_BIT)) // All step bits
+#endif
 
 // Define step direction output pins. NOTE: All direction pins must be on the same port.
 #define DIRECTION_DDR     DDRC
@@ -185,9 +189,12 @@
 #define X_DIRECTION_BIT   1 // 
 #define Y_DIRECTION_BIT   3 // 
 #define Z_DIRECTION_BIT   5 // 
-#define C_DIRECTION_BIT   7 // 
-#define DIRECTION_MASK ((1<<X_DIRECTION_BIT)|(1<<Y_DIRECTION_BIT)|(1<<Z_DIRECTION_BIT)) // All direction bits
-
+#ifdef AXIS_C_ENABLE
+	#define C_DIRECTION_BIT   7 // 
+	#define DIRECTION_MASK ((1<<X_DIRECTION_BIT)|(1<<Y_DIRECTION_BIT)|(1<<Z_DIRECTION_BIT)|(1<<C_DIRECTION_BIT)) // All direction bits
+#else
+	#define DIRECTION_MASK ((1<<X_DIRECTION_BIT)|(1<<Y_DIRECTION_BIT)|(1<<Z_DIRECTION_BIT)) // All direction bits
+#endif
 // Define stepper driver enable/disable output pin.
 #define STEPPERS_DISABLE_DDR   DDRD
 #define STEPPERS_DISABLE_PORT  PORTD
@@ -248,9 +255,9 @@
 #define COOLANT_FLOOD_BIT   5
 
 #ifdef ENABLE_M7 // Mist coolant disabled by default. See config.h to enable/disable.
-  #define COOLANT_MIST_DDR   DDRC
-  #define COOLANT_MIST_PORT  PORTC
-  #define COOLANT_MIST_BIT   7
+  #define COOLANT_MIST_DDR   DDRD
+  #define COOLANT_MIST_PORT  PORTD
+  #define COOLANT_MIST_BIT   5
 #endif  
 
 // Start of PWM & Stepper Enabled Spindle
@@ -372,6 +379,7 @@
   #define LED_DIAL_SELECT_X      5
   #define LED_DIAL_SELECT_Y      6
   #define LED_DIAL_SELECT_Z      7
+  #define LED_DIAL_SELECT_C      8 // unsused, all off
   
  
   
@@ -400,12 +408,12 @@
   //
   #define ACCESSORY_INP_SR sr_inputs_1
   //
-  #define ATC_AUX_OFF_SW    7
+  #define SPINDLE_ON_SW 		7
   #define AUX3_ON_SW        6
   #define AUX2_ON_SW        5
   #define AUX1_ON_SW        4
   #define ATC_ON_SW         3
-  #define FLOOD_MIST_OFF_SW 2
+
   #define MIST_ON_SW        1
   #define FLOOD_ON_SW       0
   
@@ -415,13 +423,14 @@
 	// 
   #define JOY_INP_SR		sr_inputs_2  // Shift register used as joystick port
   //
-  #define JOY_ZERO_SW		7            // ZeroAll from joystick, waits for btn release
   
+  #define REV_C_SW			5						 // Joystick momentary switches. Speed controlled by ADC7 value
+  #define FWD_C_SW			2
   #define REV_Z_SW			5						 // Joystick momentary switches. Speed controlled by ADC7 value
-  #define REV_Y_SW			4
-	#define REV_X_SW			3
   #define FWD_Z_SW			2
+  #define REV_Y_SW			4
   #define FWD_Y_SW			1
+	#define REV_X_SW			3
 	#define FWD_X_SW			0
 
 	// DIAL_INP_SR: Schalter DIAL-Richtung

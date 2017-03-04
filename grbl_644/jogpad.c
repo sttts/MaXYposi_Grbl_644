@@ -99,6 +99,13 @@ void jogpad_init() {
 	last_pin = 0;
 	last_pin0 = 0;
 	last_pin1 = 0;
+	spindle_on = false;
+	flood_on = false;
+	mist_on = false;
+	atc_on = false;
+	aux1_on = false;
+	aux2_on = false;
+	aux3_on = false;
 }
 
 void btn_wait_execute() {
@@ -125,12 +132,6 @@ void accessory_btn_release() {
     btn_wait_execute(); 
   }
 }    
-
-void joy_btn_release() {
-  while (JOY_INP_SR & (1<<JOY_ZERO_SW)) { 			// until released
-    btn_wait_execute(); 
-  }
-} 
 
 void dial_btn_release() {
   while (DIAL_INP_SR & (1<<DIAL_ZERO_SW)) { 		// until released
@@ -229,6 +230,8 @@ void set_led_status() {
 			leds_temp |= (1 << LED_DIAL_SELECT_Y);
 		} else if (dial_axis == 2) {
 			leds_temp |= (1 << LED_DIAL_SELECT_Z);
+		} else if (dial_axis == 3) {
+			leds_temp |= (1 << LED_DIAL_SELECT_X) | (1 << LED_DIAL_SELECT_Y) | (1 << LED_DIAL_SELECT_Z);
 		}
 	#endif;
  	STATUS_LED_OUT_SR = leds_temp; 		// Status-LED-Port setzen
@@ -352,26 +355,41 @@ void jogpad_check() {
   	if (buttons_temp & (1<<MIST_ON_SW)) {
 	    coolant_set_state(COOLANT_MIST_ENABLE);
   	}	
-  	if (buttons_temp & (1<<FLOOD_MIST_OFF_SW)) {
-	    coolant_set_state(COOLANT_DISABLE);
-  	}
   	if (buttons_temp & (1<<ATC_ON_SW)) {
-	    coolant_set_state(ATC_ENABLE);
+  		if (atc_on) {
+ 	    	coolant_set_state(ATC_DISABLE);
+ 		} else {
+	    	coolant_set_state(ATC_ENABLE);
+	    }
   	}	 		
   	if (buttons_temp & (1<<AUX1_ON_SW)) {
-	    coolant_set_state(AUX1_ENABLE);
+  		if (aux1_on) {
+	    	coolant_set_state(AUX1_DISABLE);
+  		} else {
+	    	coolant_set_state(AUX1_ENABLE);
+	  	}
   	}	 		
   	if (buttons_temp & (1<<AUX2_ON_SW)) {
-	    coolant_set_state(AUX2_ENABLE);
+  		if (aux2_on) {
+	    	coolant_set_state(AUX2_DISABLE);
+  		} else {
+	    	coolant_set_state(AUX2_ENABLE);
+	  	}
   	}	 		
   	if (buttons_temp & (1<<AUX3_ON_SW)) {
-	    coolant_set_state(AUX3_ENABLE);
+  		if (aux1_on) {
+	    	coolant_set_state(AUX3_DISABLE);
+  		} else {
+	    	coolant_set_state(AUX3_ENABLE);
+	  	}
   	}	 		
-  	if (buttons_temp & (1<<ATC_AUX_OFF_SW)) {
-	    coolant_set_state(ATC_DISABLE);
-	    coolant_set_state(AUX1_DISABLE);
-	    coolant_set_state(AUX2_DISABLE);
-	    coolant_set_state(AUX3_DISABLE);
+  	if (buttons_temp & (1<<SPINDLE_ON_SW)) {
+  		if (spindle_on) {
+	    	spindle_stop;
+  		} else {
+	    	spindle_set_state(SPINDLE_ENABLE_CW,settings.rpm_max / 2 ); 
+	  	}
+
   	}	
 	  accessory_btn_release();
 	  return;
@@ -407,6 +425,10 @@ void jogpad_check() {
 				joy_axis = 1;
 			} else if (buttons_temp & (1<<FWD_Z_SW)) {	
 				joy_axis = 2;
+			#ifdef AXIS_C_ENABLE
+				} else if (buttons_temp & (1<<FWD_C_SW)) {	
+					joy_axis = 3;
+			#endif
 			}
 			if (buttons_temp & (1<<REV_X_SW)) {
 				joy_axis = 0;
@@ -420,16 +442,12 @@ void jogpad_check() {
 				joy_axis = 2;
 				joy_rev = 1;
 				joy_target_mpos[2] = 0;
-			}
-			if (buttons_temp & (1<<JOY_ZERO_SW)) {
-				jogpad_zero_all();
-	      #ifdef ZERO_MSG
-			    printPgmString(PSTR("[MSG:ZeroAll,JOYSTICK]\r\n"));
-			    joy_btn_release();
-			    return;
-		  	#else
-		  	  return;  // repeat until released
-		  	#endif
+			#ifdef AXIS_C_ENABLE
+				} else if (buttons_temp & (1<<FWD_C_SW)) {	
+					joy_axis = 3;
+					joy_rev = 1;
+					joy_target_mpos[2] = 0;
+			#endif
 			}
 			// Bewegungs-Vektor auf Maschinengröße begrenzen; kann negativ sein!
 			if (joy_rev) {
@@ -554,6 +572,10 @@ void jogpad_check() {
 		dial_axis = 1;
 	} else if (buttons_temp & (1<<DIAL_DIR_Z_SW)) {	
 		dial_axis = 2;
+#ifdef AXIS_C_ENABLE
+	} else if (buttons_temp & (1<<DIAL_DIR_C_SW)) {	
+		dial_axis = 3;
+#endif
 	}
 	dial_fast = bit_istrue(buttons_temp, bit(DIAL_FAST_SW));
 
@@ -571,7 +593,7 @@ void jogpad_check() {
 			return;
 		}		   
 	  
-	  // transfer dial deltafrom ISR to non-volatile dial_delta_32
+	  // transfer dial delta from ISR to non-volatile dial_delta_32
   	uint8_t sreg = SREG;
   	cli();              // prevent pin change ISR
   	dial_sema = false;  

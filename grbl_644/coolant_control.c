@@ -22,9 +22,10 @@
 
 void coolant_init()
 {
-  COOLANT_FLOOD_DDR |= (1 << COOLANT_FLOOD_BIT); // Configure as output pin
   #ifdef ENABLE_M7
-    COOLANT_MIST_DDR |= (1 << COOLANT_MIST_BIT);
+    COOLANT_MIST_DDR |= (1 << COOLANT_MIST_BIT) | (1 << COOLANT_FLOOD_BIT);
+  #else
+  	COOLANT_FLOOD_DDR |= (1 << COOLANT_FLOOD_BIT); // Configure as output pin
   #endif
   coolant_stop();
 }
@@ -34,22 +35,8 @@ void coolant_init()
 uint8_t coolant_get_state()
 {
   uint8_t cl_state = COOLANT_STATE_DISABLE;
-  #ifdef INVERT_COOLANT_FLOOD_PIN
-    if (bit_isfalse(COOLANT_FLOOD_PORT,(1 << COOLANT_FLOOD_BIT))) {
-  #else
-    if (bit_istrue(COOLANT_FLOOD_PORT,(1 << COOLANT_FLOOD_BIT))) {
-  #endif
-    cl_state |= COOLANT_STATE_FLOOD;
-  }
-  #ifdef ENABLE_M7
-    #ifdef INVERT_COOLANT_MIST_PIN
-      if (bit_isfalse(COOLANT_MIST_PORT,(1 << COOLANT_MIST_BIT))) {
-    #else
-      if (bit_istrue(COOLANT_MIST_PORT,(1 << COOLANT_MIST_BIT))) {
-    #endif
-      cl_state |= COOLANT_STATE_MIST;
-    }
-  #endif
+  if (flood_on) cl_state |= COOLANT_STATE_FLOOD;	// used tracked info
+  if (mist_on) cl_state |= COOLANT_STATE_MIST;
   return(cl_state);
 }
 
@@ -71,9 +58,10 @@ void coolant_stop()
     #endif
   #endif
   MACHINE_OUT_SR &= ~((1 << COOLANT_FLOOD_SR) | (1 << COOLANT_MIST_SR));
+  mist_on = false;	// track for panel buttons -cm
+  flood_on = false;
   spi_txrx_inout();
 }
-
 
 // Main program only. Immediately sets flood coolant running state and also mist coolant, 
 // if enabled. Also sets a flag to report an update to a coolant state.
@@ -95,6 +83,7 @@ void coolant_set_state(uint8_t mode)
         COOLANT_FLOOD_PORT |= (1 << COOLANT_FLOOD_BIT);
       #endif
       MACHINE_OUT_SR |= (1 << COOLANT_FLOOD_SR);
+      flood_on = true;	// track for panel buttons -cm
     }
   
 	  
@@ -106,6 +95,7 @@ void coolant_set_state(uint8_t mode)
           COOLANT_MIST_PORT |= (1 << COOLANT_MIST_BIT);
         #endif
         MACHINE_OUT_SR |= (1 << COOLANT_MIST_SR);
+        mist_on = true;	// track for panel buttons -cm
       }
     #endif
   
@@ -113,20 +103,28 @@ void coolant_set_state(uint8_t mode)
   
   if (mode == ATC_ENABLE) {
     MACHINE_OUT_SR |= (1 << ATC_SR);	// -cm
+    atc_on = true;	// track for panel buttons
   } else if (mode == ATC_DISABLE) {
     MACHINE_OUT_SR &= ~(1 << ATC_SR);	// -cm
+    atc_on = false;	// track for panel buttons
   } else if (mode == AUX1_ENABLE) {
     MACHINE_OUT_SR |= (1 << AUX1_SR);	// -cm
+    aux1_on = true;	// track for panel buttons
   } else if (mode == AUX1_DISABLE) {
     MACHINE_OUT_SR &= ~(1 << AUX1_SR);	// -cm    
+    aux1_on = false;	// track for panel buttons
   } else if (mode == AUX2_ENABLE) {
     MACHINE_OUT_SR |= (1 << AUX2_SR);	// -cm
-  } else if (mode == AUX2_DISABLE) {
+    aux2_on = true;	// track for panel buttons
+ } else if (mode == AUX2_DISABLE) {
     MACHINE_OUT_SR &= ~(1 << AUX2_SR);	// -cm    
+    aux2_on = false;	// track for panel buttons
   } else if (mode == AUX3_ENABLE) {
     MACHINE_OUT_SR |= (1 << AUX3_SR);	// -cm
+    aux3_on = true;	// track for panel buttons
   } else if (mode == AUX3_DISABLE) {
     MACHINE_OUT_SR &= ~(1 << AUX3_SR);	// -cm
+    aux3_on = false;	// track for panel buttons
 	}
   spi_txrx_inout();
   sys.report_ovr_counter = 0; // Set to report change immediately

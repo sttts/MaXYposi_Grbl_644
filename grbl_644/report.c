@@ -442,9 +442,11 @@ void report_build_info(char *line)
   
   // Weitere Optionen von -cm 
   #ifdef DEVICE_ADDR_ENABLE
-    printPgmString(PSTR("," PROC_NAME)); // Device Address set by jumper
     printPgmString(PSTR(",ADDR:")); // Device Address set by jumper
     print_uint8_base10(device_id_jumpered); // -cm
+  #endif
+  #ifdef PROC_NAME
+    printPgmString(PSTR("," PROC_NAME)); // Device Address set by jumper
   #endif
   #ifdef SPI_SR
     printPgmString(PSTR(",SPI_SR")); 
@@ -454,6 +456,9 @@ void report_build_info(char *line)
   #endif
   #ifdef JOGPAD
     printPgmString(PSTR(",JOGPAD")); 
+  #endif
+  #ifdef AXIS_C_ENABLE
+    printPgmString(PSTR(",C_AXIS")); 
   #endif
     
   report_util_feedback_line_feed();

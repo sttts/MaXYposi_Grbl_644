@@ -27,6 +27,13 @@
 uint16_t blink_count, activity_count;
 uint8_t blink_toggle;
 uint8_t dial_axis;
+bool spindle_on;
+bool flood_on;
+bool mist_on;
+bool atc_on;
+bool aux1_on;
+bool aux2_on;
+bool aux3_on;
 
 
 uint8_t jog_zero_request_flag;  // Report ZERO request
