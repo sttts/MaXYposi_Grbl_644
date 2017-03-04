@@ -20,13 +20,13 @@ with multiple additions, suited for MaXYposi board (german Make: magazine, issue
 * M commands for additional relay switches M100/101..M106/M107 (even numbers turn on, odd turn off relays)
 * Additional $I fields and build info
 
-Please note ATmenga644 output pin onfiguration in cpu_map.h, which heavily differs from arduino pinout.
+Please note ATmega644 output pin onfiguration in cpu_map.h, which heavily differs from Arduino pinout.
 
 
 WORK IN PROGRESS. STAY TUNED.
 
 
-![GitHub Logo](https://github.com/gnea/grbl/doc/media/Grbl Logo 250px.png)
+![GitHub Logo](https://github.com/gnea/grbl/blob/master/doc/media/Grbl%20Logo%20250px.png)
 
 * [Licensing](https://github.com/gnea/grbl/wiki/Licensing): Grbl is free software, released under the GPLv3 license.
 * For more information and help, check the Grbl **[Wiki pages!](https://github.com/gnea/grbl/wiki)**!
