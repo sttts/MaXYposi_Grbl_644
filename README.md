@@ -8,22 +8,27 @@ Maker Media GmbH und c't, Heise Zeitschriften Verlag
 
 with multiple additions, suited for MaXYposi board (german Make: magazine, issue 2/2017). Additions by Carsten Meyer, Make Magazin Deutschland.
 
-* 4th C axis per #define in config.h, settings configured to C360 = 1 complete turn for PNP ot robot head @ 1/16 steps driver
-* 16 Output ports via HC595 SRs on SPI (may left unconnected)
-* 32 Input ports via HC165 SRs on SPI (may left unconnected)
+* 4th C axis per #define in config.h, settings configured to C360 = 1 complete turn for PNP machine or robot head @ 1/16 steps driver
+* 16 Output ports for LEDs and relays, via HC595 SRs on SPI (may left unconnected)
+* 32 Input ports for buttons/swiches, via HC165 SRs on SPI (may left unconnected)
+* SPI transfer of realtime position data (floats), for external LCD (needs extra ATmega168/328)
 * Support for dial/handwheel, direct connection to Grbl CPU. Updates machine/work position in realtime.
 * Support for analog joystick with variable speed, direct connection to Grbl CPU. Updates machine/work position in realtime.
 * Handwheel A/B phase on 2 port pins, must be same as LIMIT port
 * Joystick on SR inputs, speed on ADC7
-* Button panel with coordinate LCD 16x2 and up to 32 buttons, connected via SPI
-* Button functions defined in cpu_map.h
+* Optional button panel with coordinate LCD 16x2 and up to 32 buttons, connected via SPI
+* Button functions and enables defined in cpu_map.h
 * M commands for additional relay switches M100/101..M106/M107 (even numbers turn on, odd turn off relays)
 * Additional $I fields and build info
+* New files: spi_sr.c and jogpad.c to handle SPI Rx/Tx and joystick/buttons/dial
+* some additions to other filed to handle 4th axis and display/LED update
 
 Please note ATmega644 output pin onfiguration in cpu_map.h, which heavily differs from Arduino pinout.
 
+Put in your Arduino Sketchbook folder and select board "MaXYposi" and CPU ATmega644 or 644p.
 
 WORK IN PROGRESS. STAY TUNED.
+
 
 
 ![GitHub Logo](https://github.com/gnea/grbl/blob/master/doc/media/Grbl%20Logo%20250px.png)
