@@ -26,7 +26,7 @@ Please note ATmenga644 output pin onfiguration in cpu_map.h, which heavily diffe
 WORK IN PROGRESS. STAY TUNED.
 
 
-![GitHub Logo](/doc/media/Grbl Logo 250px.png)
+![GitHub Logo](https://github.com/gnea/grbl/doc/media/Grbl Logo 250px.png)
 
 * [Licensing](https://github.com/gnea/grbl/wiki/Licensing): Grbl is free software, released under the GPLv3 license.
 * For more information and help, check the Grbl **[Wiki pages!](https://github.com/gnea/grbl/wiki)**!
