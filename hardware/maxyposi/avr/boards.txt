@@ -1,0 +1,48 @@
+menu.cpu=Processor
+
+##############################################################
+
+maxyposi.name=MaXYposi
+
+maxyposi.upload.tool=arduino:avrdude
+maxyposi.upload.protocol=arduino
+
+maxyposi.bootloader.tool=arduino:avrdude
+maxyposi.bootloader.low_fuses=0xFF
+maxyposi.bootloader.high_fuses=0xDE
+maxyposi.bootloader.extended_fuses=0xFC
+maxyposi.bootloader.unlock_bits=0xEF
+maxyposi.bootloader.lock_bits=0xEF
+
+maxyposi.build.board=AVR_maxyposi
+maxyposi.build.core=arduino:arduino
+maxyposi.build.variant=maxyposi
+
+###### ATmega644x
+
+## maxyposi W/ ATmega644 or ATmega644A (16MHz)
+maxyposi.menu.cpu.atmega644=ATmega644 or ATmega644A (16 MHz)
+
+maxyposi.menu.cpu.atmega644.upload.maximum_size=64512
+maxyposi.menu.cpu.atmega644.upload.maximum_data_size=4096
+maxyposi.menu.cpu.atmega644.upload.speed=115200
+
+maxyposi.menu.cpu.atmega644.bootloader.file=optiboot_atmega644.hex
+
+maxyposi.menu.cpu.atmega644.build.mcu=atmega644
+maxyposi.menu.cpu.atmega644.build.f_cpu=16000000L
+
+## maxyposi W/ ATmega644P or ATmega644PA (16MHz)
+maxyposi.menu.cpu.atmega644p=ATmega644P or ATmega644PA (16 MHz)
+
+maxyposi.menu.cpu.atmega644p.upload.maximum_size=64512
+maxyposi.menu.cpu.atmega644p.upload.maximum_data_size=4096
+maxyposi.menu.cpu.atmega644p.upload.speed=115200
+
+maxyposi.menu.cpu.atmega644p.bootloader.file=optiboot_atmega644p.hex
+
+maxyposi.menu.cpu.atmega644p.build.mcu=atmega644p
+maxyposi.menu.cpu.atmega644p.build.f_cpu=16000000L
+
+
+############################################################
