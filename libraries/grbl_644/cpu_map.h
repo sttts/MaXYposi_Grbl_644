@@ -208,7 +208,6 @@
 //#define debug_dial_isr	// für Testzwecke, zeigt Aktivitäten auf DIAL-Phasen-Pins
 
 #ifdef SPI_SR                  // in config.h definiert
-
   #define STROBE_PORT   PORTB	 // SPI slave selects PORT
   #define STROBE_DDR    DDRB	 // SPI slave selects DDR
   #define STROBE_INP    SPI_SS // SPI slave selects, 74HC165 pin 1, INPUTS, also SPI_SS for display.
@@ -243,9 +242,6 @@
 // Comment unused LEDs.
 // LED_ALARM, LED_HOLD, LED_HOMING will blink if engaged
 //
-// ---7---	---6--- 	---5--- 	---4--- 	---3---	 ---2---	---1---	 ---0---	
-// SPINDLE   DOOR       JOG      HOLD     CYCLE     HOMING  CHECK_M  ALARM
-//
 #define STATUS_LED_OUT_SR      sr_outputs_1
 //
 #define LED_ALARM              0
@@ -253,9 +249,9 @@
 #define LED_JOG                1
 #define LED_HOMING             0
 #define LED_HOLD               2
-//  #define LED_SPINDLE            1	// 
-//  #define LED_FLOOD              1
-//  #define LED_MIST               1
+//  #define LED_SPINDLE            7 
+//  #define LED_FLOOD              7
+//  #define LED_MIST               7
 #define LED_DIAL_FAST          3
 #define LED_DIAL_SELECT_X      4
 #define LED_DIAL_SELECT_Y      5
@@ -269,7 +265,9 @@
 // All button/joystick inputs are momentary contact to low (ground).
 // Pull-Up resistors on HC165 SRs ensure high level when not active.
 
+// ----------------------------------------------------------------------------
 // MACHINE_INP_SR: Buttons, wartet auf Loslassen
+// ----------------------------------------------------------------------------
 //
 #define MACHINE_INP_SR sr_inputs_0
 //
@@ -283,7 +281,9 @@
 #define ZERO_X_SW        0		// sets X work position to zero
 // #define ZERO_ALL_SW      0	// unused
 
+// ----------------------------------------------------------------------------
 // ACCESSORY_INP_SR: Buttons, wartet auf Loslassen
+// ----------------------------------------------------------------------------
 //
 #define ACCESSORY_INP_SR sr_inputs_1
 //
@@ -296,7 +296,9 @@
 #define MIST_ON_SW        1		// M7/8/9 overrides toggles
 #define FLOOD_ON_SW       0
 
+// ----------------------------------------------------------------------------
 // JOY_INP_SR, Momentan-Schalter vom Joystick
+// ----------------------------------------------------------------------------
 // 
 // NOTE: Jog speed controlled by ADC7 value. Only one may be actice at a time.
 //
@@ -311,7 +313,9 @@
 #define REV_X_SW			1
 #define FWD_X_SW			0
 
+// ----------------------------------------------------------------------------
 // DIAL_INP_SR: Schalter DIAL-Richtung
+// ----------------------------------------------------------------------------
 // 
 #define DIAL_INP_SR   sr_inputs_3    // Shift register used as dial port
 //

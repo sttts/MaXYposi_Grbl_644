@@ -42,7 +42,7 @@
 // #define DEFAULTS_GENERIC
 #define DEFAULTS_MAXYPOSI
 #define CPU_MAP_644P_SR // Neue GRBL-Jog-Platine
-#define CPU_MAP_644P_OLD // Neue GRBL-Jog-Platine
+// #define CPU_MAP_644P_OLD // Alte GRBL-Jog-Platine - noch nicht implementiert
 
 // Serial baud rate
 // #define BAUD_RATE 230400
