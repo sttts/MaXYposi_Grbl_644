@@ -40,16 +40,16 @@ void spi_init(){
 	STROBE_PORT &= ~(1<<STROBE_OUT);	// HC595 active high, deshalb 0
 	// DDRs und PullUps für SPI-Port setzen
 	SPI_PORT |= (1<<SPI_SS)|(1<<SPI_MISO);	
-	SPI_DDR |= (1<<SPI_SS)|(1<<SPI_MOSI)|(1<<SPI_SCK); // SPI Port
+	SPI_DDR |= (1<<SPI_SS)|(1<<SPI_MOSI)|(1<<SPI_SCK);
 	sr_inputs_0 = 0;
 	sr_inputs_1 = 0;
 	sr_inputs_2 = 0;
 	sr_inputs_3 = 0;
 	sr_inputs_unused = 0;
-	SR_ENA_PORT &= ~(1 << SR_ENA_BIT);		// Zuerst Bit auf low!
+	SR_ENA_PORT |= (1 << SR_ENA_BIT);		// HC595 /OE, active low, zuerst auf high!
   SR_ENA_DDR |= (1 << SR_ENA_BIT);    // Set as output pins
   spi_txrx_inout();
-	SR_ENA_PORT &= ~(1 << SR_ENA_BIT);		// Zuerst Bit auf low!
+	SR_ENA_PORT &= ~(1 << SR_ENA_BIT);	// Bit auf low, enabled, LED an
 }
 	
 	

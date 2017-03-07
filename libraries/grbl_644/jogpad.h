@@ -31,7 +31,7 @@ bool atc_on;
 bool aux1_on;
 bool aux2_on;
 bool aux3_on;
-
+bool jp_homing_done; // is true when homing performed once
 
 uint8_t jog_zero_request_flag;  // Report ZERO request
 // bool enable_spi_flag;  // Enable SPI transmission for SR and display

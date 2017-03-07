@@ -499,6 +499,10 @@ void report_build_info(char *line)
   #ifdef AXIS_C_ENABLE
     printPgmString(PSTR(",C_AXIS")); 
   #endif
+  #ifdef HOMING_FORCE_SET_ORIGIN
+  // may be important if using jog fuctions.
+    printPgmString(PSTR(",HOMING_FORCE_ZERO")); 
+  #endif
     
   report_util_feedback_line_feed();
 }
@@ -533,15 +537,15 @@ void report_realtime_status()
    		if (jog_zero_request_flag) { 							// report zero request all -cm
      			if (jog_zero_request_flag & 1) {
     				printPgmString(PSTR("ZeroX"));
-    				if (jog_zero_request_flag > 1) {serial_write('.');} 
+    				if (jog_zero_request_flag > 1) {serial_write(',');} 
     			}
     			if (jog_zero_request_flag & 2) {
     				printPgmString(PSTR("ZeroY"));
-    				if (jog_zero_request_flag > 4) {serial_write('.');} 
+    				if (jog_zero_request_flag > 4) {serial_write(',');} 
     			} 
     			if (jog_zero_request_flag & 4) {
     				printPgmString(PSTR("ZeroZ"));
-    				if (jog_zero_request_flag > 8) {serial_write('.');} 
+    				if (jog_zero_request_flag > 8) {serial_write(',');} 
  			  	}
     			if (jog_zero_request_flag & 8) {
     				printPgmString(PSTR("ZeroC"));

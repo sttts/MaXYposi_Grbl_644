@@ -41,7 +41,8 @@
 // If doing so, simply comment out these two defines and see instructions below.
 // #define DEFAULTS_GENERIC
 #define DEFAULTS_MAXYPOSI
-#define CPU_MAP_644P // Neue GRBL-Jog-Platine
+#define CPU_MAP_644P_SR // Neue GRBL-Jog-Platine
+#define CPU_MAP_644P_OLD // Neue GRBL-Jog-Platine
 
 // Serial baud rate
 // #define BAUD_RATE 230400
@@ -96,7 +97,7 @@
 // the user to perform the homing cycle (or override the locks) before doing anything else. This is
 // mainly a safety feature to remind the user to home, since position is unknown to Grbl.
 // ##############################################################################################################
-// #define HOMING_INIT_LOCK // Comment to disable
+#define HOMING_INIT_LOCK // Comment to disable
 // ##############################################################################################################
 
 // Define the homing cycle patterns with bitmasks. The homing cycle first performs a search mode
@@ -614,6 +615,7 @@
 
 #define GRBL_VERSION "1.1f2"
 #define GRBL_VERSION_BUILD "05.03.2017"
+#define OLD_644_BOARD			// für altes GRBL-JOG-Board kompilieren. Keine SRs, Jog über Portpins. 
 
 #define SPI_SR    // SPI shift I/O registers 2..4x HC165 and 2x HC595
 #define SPI_DISP  // LC Display unit with own ATmega88/168/328 connected to SPI
@@ -681,7 +683,8 @@
 	BETA!
 */
 
-#define AXIS_C_ENABLE
-
+#ifdef CPU_MAP_644P_SR
+  #define AXIS_C_ENABLE
+#endif
 
 #endif

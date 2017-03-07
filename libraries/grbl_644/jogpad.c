@@ -4,7 +4,6 @@
 
 	Needs some changes/hooks in 
 	protocol.c, --> protocol_main_loop() 
-	stepper.c 	--> ISRs, st_wake_up(), st_go_idle()
 	
 	Alles noch ziemlich Kraut und Rüben
 	by cm@heise.de
@@ -22,8 +21,8 @@ volatile bool dial_sema = false;
 volatile int8_t dial_delta_8;      // Schritte von Handrad aus ISR(DIAL_INT_vect), Signed Byte!
 
 uint8_t dial_fast = 0;
-float dial_delta_f = 0.0;       // Akkumulator für Handrad-Werte
-int32_t dial_delta_32 = 0;	           // Akkumulator für Handrad-Werte
+float dial_delta_f = 0.0;         // Akkumulator für Handrad-Werte
+int32_t dial_delta_32 = 0;	      // Akkumulator für Handrad-Werte
 uint8_t dial_axis = 0;
 
 uint16_t blink_count = 0; 
@@ -68,7 +67,7 @@ void check_encoder_hook(uint8_t dial_pin) {
 uint8_t adc_raw, adc_dest_feed, adc_current_feed; // ADC value
 
 uint8_t get_feed_from_adc() {
-	
+// read free-running ADC7 and square result for slow moves	
 	uint8_t adc_raw; // ADC value
 	float adc_squared;
 
@@ -119,15 +118,9 @@ void jogpad_init() {
 }
 
 void set_led_status() {
+// LEDs des Bedienpanels setzen
 	uint8_t status_temp = 0;
 	uint8_t leds_temp;
-/*
-	if (activity_count > 0) { 
-		activity_count--; 
-	} else {
-	  ACTIVITY_PORT |= (1 << ACTIVITY_LED);
-	}
-*/	
 	blink_count++;
 	// diese Status-LEDs blinken, wenn aktiv
 	// LED_ALARM, LED_HOLD, LED_HOMING (muss in limits_go_home()-
@@ -268,8 +261,6 @@ void jogpad_zero_all() {
   system_flag_wco_change(); // Set to refresh immediately, something altered.
 }
 
-
-
 //#############################################################################################
 //#################################### MAIN LOOP ##############################################
 //#############################################################################################
@@ -323,6 +314,9 @@ void jogpad_check() {
 	    system_clear_exec_alarm(); // Clear alarm
 	    sys.state = STATE_IDLE;
   	}
+		if (!jp_homing_done) {
+			return;
+		}
   	if (sys.state == STATE_IDLE) {
 	  	// jog_zero_request_flag wird in report_realtime_status() zurückgesetzt
 	    // WPos = MPos - WCS - G92 - TLO  ->  G92 = MPos - WCS - TLO - WPos
@@ -403,6 +397,11 @@ void jogpad_check() {
 	  return;
 	}
  	
+ 	// No further action if homing is not done.
+	if (!jp_homing_done) {
+		return;
+	}
+	
 // #######################################################################
 // ############### A C C E S S O R Y   B U T T O N S #####################
 // #######################################################################
@@ -561,7 +560,7 @@ void jogpad_check() {
 	  return;
 	}
 
-	float max_travel = 0.0;
+	float jog_destination, jog_upper_limit, jog_lower_limit;
 
 // #######################################################################
 // ######################### J O Y S T I C K #############################
@@ -576,7 +575,6 @@ void jogpad_check() {
 		uint8_t joy_axis;	// kein Dial-Schalter EIN
 		uint8_t joy_rev = 0;
 		old_f_override = sys.f_override;
-		
 		
 		if (buttons_temp) {
       memset(pl_data,0,sizeof(plan_line_data_t)); // Zero pl_data struct
@@ -612,36 +610,25 @@ void jogpad_check() {
 			}
 			// Bewegungs-Vektor auf Maschinengröße begrenzen; kann negativ sein!
 			#ifdef HOMING_FORCE_SET_ORIGIN
-				if (joy_axis == 2) {		// Negative Z-Richtung!
-					if (joy_rev) {
-						max_travel = min(max_travel,(settings.max_travel[joy_axis]));
-					} else {
-						max_travel = max(max_travel,(settings.max_travel[joy_axis]));
-					}
+				// assume positive machine space
+				// settings.max_travel is always negative!
+				if (joy_rev) {
+					jog_destination = settings.homing_pulloff;
 				} else {
-					if (joy_rev) {
-						max_travel = min(max_travel,(-settings.max_travel[joy_axis]));
-					} else {
-						max_travel = max(max_travel,(-settings.max_travel[joy_axis]));
-					}
+					jog_destination = -settings.max_travel[joy_axis] - settings.homing_pulloff ; // Ergebnis positiv!
 				}
-			#else
-				if (joy_axis == 2) {		// Negative Z-Richtung!
-					if (joy_rev) {
-						max_travel = min(max_travel,(settings.max_travel[joy_axis]));
-					} else {
-						max_travel = max(max_travel,(settings.max_travel[joy_axis]));
-					}
+ 			#else
+ 				// assume negative machine space
+				// settings.max_travel is always negative!
+				if (joy_rev) {
+					jog_destination = settings.max_travel[joy_axis] + settings.homing_pulloff;
 				} else {
-					if (joy_rev) {
-						max_travel = min(max_travel,(-settings.max_travel[joy_axis]));
-					} else {
-						max_travel = max(max_travel,(-settings.max_travel[joy_axis]));
-					}
+					jog_destination = -settings.homing_pulloff;
 				}
-			#endif
+ 			#endif
+ 
       memcpy(joy_target_mpos,gc_state.position,sizeof(gc_state.position));
-			joy_target_mpos[joy_axis] = max_travel;
+			joy_target_mpos[joy_axis] = jog_destination;
 			
 			adc_dest_feed = get_feed_from_adc();
 			adc_current_feed = 1;
@@ -655,7 +642,7 @@ void jogpad_check() {
 		    	serial_write(88 + joy_axis);
 		    }
 		    serial_write(':');
-		    printFloat_CoordValue(max_travel);
+		    printFloat_CoordValue(jog_destination);
 		  	printPgmString(PSTR("]\r\n"));
 		    printPgmString(PSTR("[MSG:JOY F OVR:"));
 		    printInteger(adc_current_feed);
@@ -738,6 +725,15 @@ void jogpad_check() {
   if (dial_sema || (dial_delta_32 != 0)) { 
 	// Impuls(e) vom Handrad empfangen. Zielposition aus Delta-Wert dial_delta_32 errechnen 
 	// und Ziel über mc_line(target) anfahren.
+		#ifdef HOMING_FORCE_SET_ORIGIN
+		// assume positive machine space
+			jog_upper_limit = -settings.max_travel[dial_axis] - settings.homing_pulloff ;
+			jog_lower_limit = settings.homing_pulloff;
+		#else
+			jog_lower_limit = settings.max_travel[dial_axis] + settings.homing_pulloff;
+			jog_upper_limit = -settings.homing_pulloff;
+		#endif
+
 		#ifdef debug_jog
 		  if (dial_fast) {
 	    	printPgmString(PSTR("[MSG:DIAL FAST]\r\n"));
@@ -747,7 +743,7 @@ void jogpad_check() {
 		#endif
 
      // nur im Ruhezustand oder bei Jog annehmen, sonst dial_delta_32 verwerfen
-    if (sys.state != STATE_IDLE && sys.state != STATE_JOG) { 
+    if ((sys.state != STATE_IDLE) && (sys.state != STATE_JOG)) { 
 			#ifdef debug_jog
 		    printPgmString(PSTR("[MSG:DIAL NOT IDLE"));
 		  	printPgmString(PSTR("]\r\n"));
@@ -773,7 +769,7 @@ void jogpad_check() {
 			return;		   
 	  }
  		
-    if (sys.state == STATE_JOG) return; // perevent new pos. issued before previous done. Keep dial_delta_32.
+    if (sys.state == STATE_JOG) return; // prevent new pos. issued before previous done. Keep dial_delta_32.
 
     memset(pl_data,0,sizeof(plan_line_data_t)); // Zero pl_data struct
     if (dial_axis == 3)  {
@@ -798,11 +794,9 @@ void jogpad_check() {
 		// new target accepted, issue move. We use gc_state.position so no sync is necessary (I hope!)
 		my_pos = gc_state.position[dial_axis] + dial_delta_f; // update selected axis pos.   
 		if (dial_delta_f < 0) {
-			max_travel = min(max_travel,(-settings.max_travel[dial_axis]));
-			my_pos = max(max_travel, my_pos);
+			my_pos = max(jog_lower_limit, my_pos);
 		} else {
-			max_travel = max(max_travel,(-settings.max_travel[dial_axis]));
-			my_pos = min(max_travel, my_pos);
+			my_pos = min(jog_upper_limit, my_pos);
 		}
     gc_state.position[dial_axis] = my_pos;
     spi_txrx_inout();               // update status LEDs, JOG ON

@@ -26,132 +26,7 @@
 #ifndef cpu_map_h
 #define cpu_map_h
 
-/*
-#ifdef CPU_MAP_ARDUINO // (Arduino Uno) Officially supported by Grbl.
-
-  // Define serial port pins and interrupt vectors.
-  #define SERIAL_RX     USART_RX_vect
-  #define SERIAL_UDRE   USART_UDRE_vect
-
-  // Define step pulse output pins. NOTE: All step bit pins must be on the same port.
-  #define STEP_DDR        DDRD
-  #define STEP_PORT       PORTD
-  #define X_STEP_BIT      2  // Uno Digital Pin 2
-  #define Y_STEP_BIT      3  // Uno Digital Pin 3
-  #define Z_STEP_BIT      4  // Uno Digital Pin 4
-  #define STEP_MASK       ((1<<X_STEP_BIT)|(1<<Y_STEP_BIT)|(1<<Z_STEP_BIT)) // All step bits
-
-  // Define step direction output pins. NOTE: All direction pins must be on the same port.
-  #define DIRECTION_DDR     DDRD
-  #define DIRECTION_PORT    PORTD
-  #define X_DIRECTION_BIT   5  // Uno Digital Pin 5
-  #define Y_DIRECTION_BIT   6  // Uno Digital Pin 6
-  #define Z_DIRECTION_BIT   7  // Uno Digital Pin 7
-  #define DIRECTION_MASK    ((1<<X_DIRECTION_BIT)|(1<<Y_DIRECTION_BIT)|(1<<Z_DIRECTION_BIT)) // All direction bits
-
-  // Define stepper driver enable/disable output pin.
-  #define STEPPERS_DISABLE_DDR    DDRB
-  #define STEPPERS_DISABLE_PORT   PORTB
-  #define STEPPERS_DISABLE_BIT    0  // Uno Digital Pin 8
-  #define STEPPERS_DISABLE_MASK   (1<<STEPPERS_DISABLE_BIT)
-
-  // Define homing/hard limit switch input pins and limit interrupt vectors.
-  // NOTE: All limit bit pins must be on the same port, but not on a port with other input pins (CONTROL).
-  #define LIMIT_DDR        DDRB
-  #define LIMIT_PIN        PINB
-  #define LIMIT_PORT       PORTB
-  #define X_LIMIT_BIT      1  // Uno Digital Pin 9
-  #define Y_LIMIT_BIT      2  // Uno Digital Pin 10
-  #ifdef VARIABLE_SPINDLE // Z Limit pin and spindle enabled swapped to access hardware PWM on Pin 11.
-    #define Z_LIMIT_BIT	   4 // Uno Digital Pin 12
-  #else
-    #define Z_LIMIT_BIT    3  // Uno Digital Pin 11
-  #endif
-  #define LIMIT_MASK       ((1<<X_LIMIT_BIT)|(1<<Y_LIMIT_BIT)|(1<<Z_LIMIT_BIT)) // All limit bits
-  #define LIMIT_INT        PCIE0  // Pin change interrupt enable pin
-  #define LIMIT_INT_vect   PCINT0_vect
-  #define LIMIT_PCMSK      PCMSK0 // Pin change interrupt register
-
-  // Define spindle enable and spindle direction output pins.
-  #define SPINDLE_ENABLE_DDR    DDRB
-  #define SPINDLE_ENABLE_PORT   PORTB
-  // Z Limit pin and spindle PWM/enable pin swapped to access hardware PWM on Pin 11.
-  #ifdef VARIABLE_SPINDLE
-    #ifdef USE_SPINDLE_DIR_AS_ENABLE_PIN
-      // If enabled, spindle direction pin now used as spindle enable, while PWM remains on D11.
-      #define SPINDLE_ENABLE_BIT    5  // Uno Digital Pin 13 (NOTE: D13 can't be pulled-high input due to LED.)
-    #else
-      #define SPINDLE_ENABLE_BIT    3  // Uno Digital Pin 11
-    #endif
-  #else
-    #define SPINDLE_ENABLE_BIT    4  // Uno Digital Pin 12
-  #endif
-  #ifndef USE_SPINDLE_DIR_AS_ENABLE_PIN
-    #define SPINDLE_DIRECTION_DDR   DDRB
-    #define SPINDLE_DIRECTION_PORT  PORTB
-    #define SPINDLE_DIRECTION_BIT   5  // Uno Digital Pin 13 (NOTE: D13 can't be pulled-high input due to LED.)
-  #endif
-
-  // Define flood and mist coolant enable output pins.
-  #define COOLANT_FLOOD_DDR   DDRC
-  #define COOLANT_FLOOD_PORT  PORTC
-  #define COOLANT_FLOOD_BIT   3  // Uno Analog Pin 3
-  #define COOLANT_MIST_DDR   DDRC
-  #define COOLANT_MIST_PORT  PORTC
-  #define COOLANT_MIST_BIT   4  // Uno Analog Pin 4
-
-  // Define user-control controls (cycle start, reset, feed hold) input pins.
-  // NOTE: All CONTROLs pins must be on the same port and not on a port with other input pins (limits).
-  #define CONTROL_DDR       DDRC
-  #define CONTROL_PIN       PINC
-  #define CONTROL_PORT      PORTC
-  #define CONTROL_RESET_BIT         0  // Uno Analog Pin 0
-  #define CONTROL_FEED_HOLD_BIT     1  // Uno Analog Pin 1
-  #define CONTROL_CYCLE_START_BIT   2  // Uno Analog Pin 2
-  #define CONTROL_SAFETY_DOOR_BIT   1  // Uno Analog Pin 1 NOTE: Safety door is shared with feed hold. Enabled by config define.
-  #define CONTROL_INT       PCIE1  // Pin change interrupt enable pin
-  #define CONTROL_INT_vect  PCINT1_vect
-  #define CONTROL_PCMSK     PCMSK1 // Pin change interrupt register
-  #define CONTROL_MASK      ((1<<CONTROL_RESET_BIT)|(1<<CONTROL_FEED_HOLD_BIT)|(1<<CONTROL_CYCLE_START_BIT)|(1<<CONTROL_SAFETY_DOOR_BIT))
-  #define CONTROL_INVERT_MASK   CONTROL_MASK // May be re-defined to only invert certain control pins.
-
-  // Define probe switch input pin.
-  #define PROBE_DDR       DDRC
-  #define PROBE_PIN       PINC
-  #define PROBE_PORT      PORTC
-  #define PROBE_BIT       5  // Uno Analog Pin 5
-  #define PROBE_MASK      (1<<PROBE_BIT)
-
-  // Variable spindle configuration below. Do not change unless you know what you are doing.
-  // NOTE: Only used when variable spindle is enabled.
-  #define SPINDLE_PWM_MAX_VALUE     255 // Don't change. 328p fast PWM mode fixes top value as 255.
-  #ifndef SPINDLE_PWM_MIN_VALUE
-    #define SPINDLE_PWM_MIN_VALUE   1   // Must be greater than zero.
-  #endif
-  #define SPINDLE_PWM_OFF_VALUE     0
-  #define SPINDLE_PWM_RANGE         (SPINDLE_PWM_MAX_VALUE-SPINDLE_PWM_MIN_VALUE)
-  #define SPINDLE_TCCRA_REGISTER	  TCCR2A
-  #define SPINDLE_TCCRB_REGISTER	  TCCR2B
-  #define SPINDLE_OCR_REGISTER      OCR2A
-  #define SPINDLE_COMB_BIT	        COM2A1
-
-  // Prescaled, 8-bit Fast PWM mode.
-  #define SPINDLE_TCCRA_INIT_MASK   ((1<<WGM20) | (1<<WGM21))  // Configures fast PWM mode.
-  // #define SPINDLE_TCCRB_INIT_MASK   (1<<CS20)               // Disable prescaler -> 62.5kHz
-  // #define SPINDLE_TCCRB_INIT_MASK   (1<<CS21)               // 1/8 prescaler -> 7.8kHz (Used in v0.9)
-  // #define SPINDLE_TCCRB_INIT_MASK   ((1<<CS21) | (1<<CS20)) // 1/32 prescaler -> 1.96kHz
-  #define SPINDLE_TCCRB_INIT_MASK      (1<<CS22)               // 1/64 prescaler -> 0.98kHz (J-tech laser)
-
-  // NOTE: On the 328p, these must be the same as the SPINDLE_ENABLE settings.
-  #define SPINDLE_PWM_DDR	  DDRB
-  #define SPINDLE_PWM_PORT  PORTB
-  #define SPINDLE_PWM_BIT	  3    // Uno Digital Pin 11
-
-#endif
-*/
-
-
-#ifdef CPU_MAP_644P
+#ifdef CPU_MAP_644P_SR
 
 //#################################################################################################
 //################################## AVR IN/OUT MAPPING ###########################################
@@ -163,10 +38,10 @@
 #define SERIAL_UDRE USART0_UDRE_vect
 
 // Increase Buffers to make use of extra SRAM
-//#define RX_BUFFER_SIZE		256
-//#define TX_BUFFER_SIZE		128
-//#define BLOCK_BUFFER_SIZE	36
-//#define LINE_BUFFER_SIZE	100
+#define RX_BUFFER_SIZE		256
+#define TX_BUFFER_SIZE		128
+#define BLOCK_BUFFER_SIZE	36
+#define LINE_BUFFER_SIZE	80
 
 // Define step pulse output pins. NOTE: All step bit pins must be on the same port.
 #define STEP_DDR      DDRC
@@ -217,7 +92,6 @@
 #define CONTROL_PCMSK     PCMSK1 // Pin change interrupt register
 #define CONTROL_MASK      ((1<<CONTROL_RESET_BIT)|(1<<CONTROL_FEED_HOLD_BIT)|(1<<CONTROL_CYCLE_START_BIT)|(1<<CONTROL_SAFETY_DOOR_BIT))
 #define CONTROL_INVERT_MASK   CONTROL_MASK // May be re-defined to only invert certain control pins.
-
   
 // Define probe switch input pin.
 #define PROBE_DDR       DDRA
@@ -310,6 +184,8 @@
 
 #define JOG_POT   7		// PA7 ADC7
 
+#endif
+
 //#################################################################################################
 //################################## SPI IN/OUT MAPPING ###########################################
 //#################################################################################################
@@ -337,114 +213,117 @@
   #define STROBE_DDR    DDRB	 // SPI slave selects DDR
   #define STROBE_INP    SPI_SS // SPI slave selects, 74HC165 pin 1, INPUTS, also SPI_SS for display.
   #define STROBE_OUT    3	     // SPI slave selects, 74HC595 pin 12, OUTPUTS 
+	// Output Enable of relay port
+	#define SR_ENA_DDR      DDRD
+	#define SR_ENA_PORT     PORTD
+	#define SR_ENA_BIT      2
+#endif
 
+// ---------------------------- OUTPUT SRs ------------------------------------
+// Assign unused/nonexisting SRs to "sr_outputs_unused"
+// ----------------------------------------------------------------------------
 
-  // ---------------------------- OUTPUT SRs ------------------------------------
-	// Assign unused/nonexisting SRs to "sr_outputs_unused"
-	// ----------------------------------------------------------------------------
- 
-  // Bits im MACHINE_OUT_SR-Byte (Relais)
-	// Relais-Schaltausgänge. Zusätzliche LEDs können parallel den 
-	// Schaltzustand anzeigen.
-	//
-  #define MACHINE_OUT_SR         sr_outputs_0
-  //
-  #define SPINDLE_ENABLE_SR      0    // SR MSB
-  #define SPINDLE_DIRECTION_SR   1    // SR MSB
-  #define COOLANT_FLOOD_SR       2		// M8, switched off by M9
-  #define COOLANT_MIST_SR        3		// M7, switched off by M9
-  #define ATC_SR                 4		// M100, switched off by M101					
-  #define AUX1_SR                5					
-  #define AUX2_SR                6						
-  #define AUX3_SR                7    // M106, switched off by M107	
+// Bits im MACHINE_OUT_SR-Byte (Relais)
+// Relais-Schaltausgänge. Zusätzliche LEDs können parallel den 
+// Schaltzustand anzeigen.
+//
+#define MACHINE_OUT_SR         sr_outputs_0
+//
+#define SPINDLE_ENABLE_SR      0    // SR MSB
+#define SPINDLE_DIRECTION_SR   1    // SR MSB
+#define COOLANT_FLOOD_SR       2		// M8, switched off by M9
+#define COOLANT_MIST_SR        3		// M7, switched off by M9
+#define ATC_SR                 4		// M100, switched off by M101					
+#define AUX1_SR                5					
+#define AUX2_SR                6						
+#define AUX3_SR                7    // M106, switched off by M107	
 
-  // STATUS_LED_SR Bits
-  // NOTE: Multiple statii may be mapped to one LED.
-  // Comment unused LEDs.
-	// LED_ALARM, LED_HOLD, LED_HOMING will blink if engaged
-	//
-	// ---7---	---6--- 	---5--- 	---4--- 	---3---	 ---2---	---1---	 ---0---	
-	// SPINDLE   DOOR       JOG      HOLD     CYCLE     HOMING  CHECK_M  ALARM
-	//
-  #define STATUS_LED_OUT_SR      sr_outputs_1
-  //
-  #define LED_ALARM              0
-  #define LED_RUN                1
-  #define LED_JOG                1
-  #define LED_HOMING             0
-  #define LED_HOLD               2
+// STATUS_LED_SR Bits
+// NOTE: Multiple statii may be mapped to one LED.
+// Comment unused LEDs.
+// LED_ALARM, LED_HOLD, LED_HOMING will blink if engaged
+//
+// ---7---	---6--- 	---5--- 	---4--- 	---3---	 ---2---	---1---	 ---0---	
+// SPINDLE   DOOR       JOG      HOLD     CYCLE     HOMING  CHECK_M  ALARM
+//
+#define STATUS_LED_OUT_SR      sr_outputs_1
+//
+#define LED_ALARM              0
+#define LED_RUN                1
+#define LED_JOG                1
+#define LED_HOMING             0
+#define LED_HOLD               2
 //  #define LED_SPINDLE            1	// 
 //  #define LED_FLOOD              1
 //  #define LED_MIST               1
-  #define LED_DIAL_FAST          3
-  #define LED_DIAL_SELECT_X      4
-  #define LED_DIAL_SELECT_Y      5
-  #define LED_DIAL_SELECT_Z      6
-  #define LED_DIAL_SELECT_C      7
-  
-  
-  // ---------------------------- INPUT SRs -------------------------------------
-	// Assign unused/nonexisting SRs to "sr_inputs_unused"!
-	// ----------------------------------------------------------------------------
-	// All button/joystick inputs are momentary contact to low (ground).
-	// Pull-Up resistors on HC165 SRs ensure high level when not active.
+#define LED_DIAL_FAST          3
+#define LED_DIAL_SELECT_X      4
+#define LED_DIAL_SELECT_Y      5
+#define LED_DIAL_SELECT_Z      6
+#define LED_DIAL_SELECT_C      7
 
-	// MACHINE_INP_SR: Buttons, wartet auf Loslassen
-  //
-  #define MACHINE_INP_SR sr_inputs_0
-  //
-  #define HOME_SW          7		// performs homing cycle
-  #define CLEAR_ALARM_SW   6		// clear alarm state manually
-  #define FEED_FASTER_SW   5		// Manual feed override
-  #define FEED_SLOWER_SW   4		// Manual feed override
-  #define ZERO_C_SW        3		// sets C work position to zero
-  #define ZERO_Z_SW        2		// sets Z work position to zero
-  #define ZERO_Y_SW        1		// sets Y work position to zero
-  #define ZERO_X_SW        0		// sets X work position to zero
-  // #define ZERO_ALL_SW      0	// unused
-  
-	// ACCESSORY_INP_SR: Buttons, wartet auf Loslassen
-  //
-  #define ACCESSORY_INP_SR sr_inputs_1
-  //
-  #define SPINDLE_FASTER_SW 7		// Manual spindle override 
-  #define SPINDLE_SLOWER_SW 6		// Manual spindle override
-  #define AUX3_ON_SW        5		// M100/104 override toggles
-  #define AUX2_ON_SW        4
-  #define AUX1_ON_SW        3
-  #define ATC_ON_SW         2
-  #define MIST_ON_SW        1		// M7/8/9 overrides toggles
-  #define FLOOD_ON_SW       0
-  
-	// JOY_INP_SR, Momentan-Schalter vom Joystick
-	// 
-  // NOTE: Jog speed controlled by ADC7 value. Only one may be actice at a time.
-  //
-  #define JOY_INP_SR		sr_inputs_2  // Shift register used as joystick port
-  
-  #define REV_C_SW			7						 // Joystick momentary reverse switches
-  #define FWD_C_SW			6						 // Joystick momentary forward switches
-  #define REV_Z_SW			5
-  #define FWD_Z_SW			4
-  #define REV_Y_SW			3
-  #define FWD_Y_SW			2
-	#define REV_X_SW			1
-	#define FWD_X_SW			0
 
-	// DIAL_INP_SR: Schalter DIAL-Richtung
-	// 
-  #define DIAL_INP_SR   sr_inputs_3    // Shift register used as dial port
-  //
-  #define DIAL_SPINDLE_TOGGLE 7
-  // #define NC1_SW        6	// not connected
-  #define DIAL_ZERO_SW	5 	// ZeroAll from dial SR, waits for btn release
-  #define DIAL_FAST_SW  4		// Toggles dial FAST mode
-  #define DIAL_DIR_C_SW 3		// momentary contact button.
-  #define DIAL_DIR_Z_SW 2
-  #define DIAL_DIR_Y_SW 1
-  #define DIAL_DIR_X_SW 0
-  
-#endif
+// ---------------------------- INPUT SRs -------------------------------------
+// Assign unused/nonexisting SRs to "sr_inputs_unused"!
+// ----------------------------------------------------------------------------
+// All button/joystick inputs are momentary contact to low (ground).
+// Pull-Up resistors on HC165 SRs ensure high level when not active.
+
+// MACHINE_INP_SR: Buttons, wartet auf Loslassen
+//
+#define MACHINE_INP_SR sr_inputs_0
+//
+#define HOME_SW          7		// performs homing cycle
+#define CLEAR_ALARM_SW   6		// clear alarm state manually
+#define FEED_FASTER_SW   5		// Manual feed override
+#define FEED_SLOWER_SW   4		// Manual feed override
+#define ZERO_C_SW        3		// sets C work position to zero
+#define ZERO_Z_SW        2		// sets Z work position to zero
+#define ZERO_Y_SW        1		// sets Y work position to zero
+#define ZERO_X_SW        0		// sets X work position to zero
+// #define ZERO_ALL_SW      0	// unused
+
+// ACCESSORY_INP_SR: Buttons, wartet auf Loslassen
+//
+#define ACCESSORY_INP_SR sr_inputs_1
+//
+#define SPINDLE_FASTER_SW 7		// Manual spindle override 
+#define SPINDLE_SLOWER_SW 6		// Manual spindle override
+#define AUX3_ON_SW        5		// M100/104 override toggles
+#define AUX2_ON_SW        4
+#define AUX1_ON_SW        3
+#define ATC_ON_SW         2
+#define MIST_ON_SW        1		// M7/8/9 overrides toggles
+#define FLOOD_ON_SW       0
+
+// JOY_INP_SR, Momentan-Schalter vom Joystick
+// 
+// NOTE: Jog speed controlled by ADC7 value. Only one may be actice at a time.
+//
+#define JOY_INP_SR		sr_inputs_2  // Shift register used as joystick port
+
+#define REV_C_SW			7						 // Joystick momentary reverse switches
+#define FWD_C_SW			6						 // Joystick momentary forward switches
+#define REV_Z_SW			5
+#define FWD_Z_SW			4
+#define REV_Y_SW			3
+#define FWD_Y_SW			2
+#define REV_X_SW			1
+#define FWD_X_SW			0
+
+// DIAL_INP_SR: Schalter DIAL-Richtung
+// 
+#define DIAL_INP_SR   sr_inputs_3    // Shift register used as dial port
+//
+#define DIAL_SPINDLE_TOGGLE 7
+// #define NC1_SW        6	// not connected
+#define DIAL_ZERO_SW	5 	// ZeroAll from dial SR, waits for btn release
+#define DIAL_FAST_SW  4		// Toggles dial FAST mode
+#define DIAL_DIR_C_SW 3		// momentary contact button.
+#define DIAL_DIR_Z_SW 2
+#define DIAL_DIR_Y_SW 1
+#define DIAL_DIR_X_SW 0
+ 
 
 //#################################################################################################
 //################################### DEVICE ADDRESSING ###########################################
@@ -487,10 +366,6 @@
   #define DEVICE_ADDR_JP2  4
 #endif
 
-// Output Enable of relay port
-#define SR_ENA_DDR      DDRD
-#define SR_ENA_PORT     PORTD
-#define SR_ENA_BIT      2
 
 //#################################################################################################
 //##################################### LIMITS/ENCODER ############################################
@@ -534,7 +409,5 @@
 #define LIMIT_PCMSK       PCMSK0 // Pin change interrupt register Port A
 #define LIMIT_MASK ((1<<X_LIMIT_BIT)|(1<<Y_LIMIT_BIT)|(1<<Z_LIMIT_BIT)|(1<<C_LIMIT_BIT)) // All limit bits
 
-
-#endif
 
 #endif

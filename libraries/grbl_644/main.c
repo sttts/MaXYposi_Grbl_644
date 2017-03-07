@@ -125,9 +125,8 @@ int main(void)
 #ifdef SPI_SR
     spi_init();
 #endif
-#ifdef JOGPAD
-    jogpad_init();
-#endif
+    jogpad_init();	// clears flood/mist tracking flags -cm
+
     // Sync cleared gcode and planner positions to current system position.
     plan_sync_position();
     gc_sync_position();
