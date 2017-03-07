@@ -40,7 +40,7 @@
 // one configuration file by placing their specific defaults and pin map at the bottom of this file.
 // If doing so, simply comment out these two defines and see instructions below.
 // #define DEFAULTS_GENERIC
-#define DEFAULTS_IGUS
+#define DEFAULTS_MAXYPOSI
 #define CPU_MAP_644P // Neue GRBL-Jog-Platine
 
 // Serial baud rate
@@ -95,7 +95,9 @@
 // If homing is enabled, homing init lock sets Grbl into an alarm state upon power up. This forces
 // the user to perform the homing cycle (or override the locks) before doing anything else. This is
 // mainly a safety feature to remind the user to home, since position is unknown to Grbl.
-#define HOMING_INIT_LOCK // Comment to disable
+// ##############################################################################################################
+// #define HOMING_INIT_LOCK // Comment to disable
+// ##############################################################################################################
 
 // Define the homing cycle patterns with bitmasks. The homing cycle first performs a search mode
 // to quickly engage the limit switches, followed by a slower locate mode, and finished by a short
@@ -136,7 +138,9 @@
 // After homing, Grbl will set by default the entire machine space into negative space, as is typical
 // for professional CNC machines, regardless of where the limit switches are located. Uncomment this
 // define to force Grbl to always set the machine origin at the homed location despite switch orientation.
-#define HOMING_FORCE_SET_ORIGIN // Uncomment to enable.
+// ##############################################################################################################
+// #define HOMING_FORCE_SET_ORIGIN // Uncomment to enable.
+// ##############################################################################################################
 
 // Number of blocks Grbl executes upon startup. These blocks are stored in EEPROM, where the size
 // and addresses are defined in settings.h. With the current settings, up to 2 startup blocks may
@@ -594,35 +598,51 @@
 // to ensure the laser doesn't inadvertently remain powered while at a stop and cause a fire.
 #define DISABLE_LASER_DURING_HOLD // Default enabled. Comment to disable.
 
+//#################################################################################################
+//################################## ATMEGA644 ADDITIONS ##########################################
+//#################################################################################################
+/*
+	Some nice features added for ATmega644(p) which has additional pins and more memory. 
+	Up to 32 buttons on 74HC165 shift registers connected to SPI pins and STROBE_PORT (see cpu_map.h)
+	Up to 16 relay/LED outputs on 74HC595 shift registers connected to SPI pins and STROBE_PORT.
+	Support for external display (LCD) with own ATmega168/328 CPU.
+	Realtime position data being transmitted in floating point format to SPI with SS pin low. 
+	See spi_sr.c for details.
+*/
 
 #define PROC_NAME "ATMEGA644" 	// issued with $I command -cm
 
 #define GRBL_VERSION "1.1f2"
-#define GRBL_VERSION_BUILD "04.03.2017"
+#define GRBL_VERSION_BUILD "05.03.2017"
 
 #define SPI_SR    // SPI shift I/O registers 2..4x HC165 and 2x HC595
-#define SPI_DISP  // LC Display unit with own ATmega88/168/328
-#define REPORT_FIELD_SR_INP_STATE       // "SRin:0,1,2,3" field in realtime report
-// #define REPORT_FIELD_SR_OUT_STATE    // "SRout:0,1" field in realtime report
+#define SPI_DISP  // LC Display unit with own ATmega88/168/328 connected to SPI
+// #define REPORT_FIELD_SR_INP_STATE    // enable "SRin:0,1,2,3" field in realtime report
+// #define REPORT_FIELD_SR_OUT_STATE    // enable "SRout:0,1" field in realtime report
+#define REPORT_G_M10X										// report M100..M107 states on $G command
 
 
-#define JOGPAD    // SR inputs used for manual jog (joystick, btns etc). SPI_SR needed.
+#define JOGPAD    // SR inputs and ADC 7 used for manual jog (joystick, btns etc). SPI_SR needed.
 
-#define DIAL      // uncomment to disable hand wheel / dial  -cm
+#define DIAL      // needs JOGPAD enabled. uncomment to disable hand wheel / dial  -cm
 #define DIAL_MM_FINE 0.01		  // detent step in mm
-#define DIAL_MM_COARSE 0.1		// detent step in mm when COARSE btn pressed
-#define DIAL_SLOW_FAC 0.2     // fac of max. axis seek rate (as set in EEPROM)
+#define DIAL_MM_COARSE 0.1		// detent step in mm when FAST btn active (see cpu_map.h)
+#define DIAL_DEG_FINE 0.36		// detent step in deg
+#define DIAL_DEG_COARSE 3.6		// detent step in deg when FAST btn active
+#define DIAL_SLOW_FAC 0.2     // fac of max. axis seek rate (as set in EEPROM) for dial moves
 #define DIAL_FAST_FAC 0.5
 
 #define ANALOG_JOYSTICK   // uncomment to disable analog joystick  -cm
 #define JOY_ADC_OFFS  20  // low speed behaviour
-#define ZERO_MSG          // issue message if ZERO buttons pressed, like [MSG: ZERO X] or [MSG: ZERO ALL]
+
+// ZERO messages: If defined, issue message if one of ZERO buttons pressed, like [MSG: ZERO X] or [MSG: ZERO ALL]
+// if not defined, will report Zero request continuously in realtime status 
+#define ZERO_MSG         
 
 //#################################################################################################
 //################################### DEVICE ADDRESSING ###########################################
 //#################################################################################################
 /*
-	
 	Mit zwei Jumpern an DEVICE_ADDR_PORT kann eine Adresse zwischen 0 (kein 
 	Jumper) und 3 (beide Jumper) eingestellt werden. Wenn ein Adress-Befehl (real 
 	time command, 0xD0 to 0xD3) empfangen wurde, der nicht der eingestellten 
@@ -649,10 +669,19 @@
 */
 // #define DEVICE_ADDR_ENABLE 	// uncomment to disable device addressing -cm
 
+//#################################################################################################
+//################################### 4th AXIS C ENABLE ###########################################
+//#################################################################################################
 /* 
-	Support for 4th rotational axis "C". Based on work from Bob Beattie, (c) 2014. 
+  Erweiterung auf 4. Achse "C". Positionsdaten werden auch in Realtime-Report mit "?" ausgegeben.
+  Homing noch nicht implementiert.
+  
+	Support for 4th rotational axis "C". Based on work from Bob Beattie, (c) 2014. Will report
+	axis value also in realtime "?" requests.
 	BETA!
 */
 
 #define AXIS_C_ENABLE
+
+
 #endif

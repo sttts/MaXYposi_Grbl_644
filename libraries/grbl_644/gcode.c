@@ -274,12 +274,12 @@ uint8_t gc_execute_line(char *line)
             word_bit = MODAL_GROUP_M100; 
             switch(int_value) {      
               case 100: gc_block.modal.coolant = ATC_ENABLE; break;	// added M100 group -cm
-              case 101: gc_block.modal.coolant = ATC_DISABLE; break;
-              case 102: gc_block.modal.coolant = AUX1_ENABLE; break;
-              case 103: gc_block.modal.coolant = AUX1_DISABLE; break;
-              case 104: gc_block.modal.coolant = AUX2_ENABLE; break;
-              case 105: gc_block.modal.coolant = AUX2_DISABLE; break;
-              case 106: gc_block.modal.coolant = AUX3_ENABLE; break;
+              case 101: gc_block.modal.coolant = AUX1_ENABLE; break;
+              case 102: gc_block.modal.coolant = AUX2_ENABLE; break;
+              case 103: gc_block.modal.coolant = AUX3_ENABLE; break;
+ 	            case 104: gc_block.modal.coolant = ATC_DISABLE; break;
+              case 105: gc_block.modal.coolant = AUX1_DISABLE; break;
+              case 106: gc_block.modal.coolant = AUX2_DISABLE; break;
               case 107: gc_block.modal.coolant = AUX3_DISABLE; break;
             }
             break;

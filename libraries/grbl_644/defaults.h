@@ -66,7 +66,7 @@
 #endif
 
 
-#ifdef DEFAULTS_IGUS
+#ifdef DEFAULTS_MAXYPOSI
   // Grbl generic default settings. Should work across different machines.
   #define DEFAULT_X_STEPS_PER_MM 80.0
   #define DEFAULT_Y_STEPS_PER_MM 80.0

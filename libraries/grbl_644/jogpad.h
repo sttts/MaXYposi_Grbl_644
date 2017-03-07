@@ -24,9 +24,6 @@
 #ifndef jogpad_h
 #define jogpad_h 
 
-uint16_t blink_count, activity_count;
-uint8_t blink_toggle;
-uint8_t dial_axis;
 bool spindle_on;
 bool flood_on;
 bool mist_on;

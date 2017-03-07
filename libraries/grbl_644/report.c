@@ -319,13 +319,52 @@ void report_gcode_modes()
     case SPINDLE_DISABLE : serial_write('5'); break;
   }
 
-  report_util_gcode_modes_M();
   #ifdef ENABLE_M7
     if (gc_state.modal.coolant) { // Note: Multiple coolant states may be active at the same time.
-      if (gc_state.modal.coolant & PL_COND_FLAG_COOLANT_MIST) { serial_write('7'); }
-      if (gc_state.modal.coolant & PL_COND_FLAG_COOLANT_FLOOD) { serial_write('8'); }
-    } else { serial_write('9'); }
+      if (flood_on) { 
+  	  	report_util_gcode_modes_M();
+      	serial_write('7'); 
+      	}
+      if (mist_on) { 
+  	    report_util_gcode_modes_M();
+      	serial_write('8'); 
+      	}
+    } else { 
+ 	    report_util_gcode_modes_M();
+    	serial_write('9'); 
+    }
+    #ifdef REPORT_G_M10X
+      if (atc_on) { 
+	  	  	report_util_gcode_modes_M();
+	      	print_uint8_base10(100); 
+      	} else {
+	  	  	report_util_gcode_modes_M();
+	      	print_uint8_base10(104); 
+      	}
+      if (aux1_on) { 
+	  	  	report_util_gcode_modes_M();
+	      	print_uint8_base10(101); 
+      	} else {
+	  	  	report_util_gcode_modes_M();
+	      	print_uint8_base10(105); 
+      	}
+      if (aux2_on) { 
+	  	  	report_util_gcode_modes_M();
+	      	print_uint8_base10(102); 
+      	} else {
+	  	  	report_util_gcode_modes_M();
+	      	print_uint8_base10(106); 
+      	}
+      if (aux3_on) { 
+	  	  	report_util_gcode_modes_M();
+	      	print_uint8_base10(106); 
+      	} else {
+	  	  	report_util_gcode_modes_M();
+	      	print_uint8_base10(107); 
+      	}
+    #endif
   #else
+  	report_util_gcode_modes_M();
     if (gc_state.modal.coolant) { serial_write('8'); }
     else { serial_write('9'); }
   #endif
@@ -492,21 +531,21 @@ void report_realtime_status()
   switch (sys.state) {
     case STATE_IDLE: {
    		if (jog_zero_request_flag) { 							// report zero request all -cm
-   			  if (jog_zero_request_flag == 7) {
-	    				printPgmString(PSTR("ZeroAll"));
-   			  } else {
-	     			if (jog_zero_request_flag & 1) {
-	    				printPgmString(PSTR("ZeroX"));
-	    				if (jog_zero_request_flag > 1) {serial_write('.');} 
-	    			}
-	    			if (jog_zero_request_flag & 2) {
-	    				printPgmString(PSTR("ZeroY"));
-	    				if (jog_zero_request_flag > 4) {serial_write('.');} 
-	    			} 
-	    			if (jog_zero_request_flag & 4) {
-	    				printPgmString(PSTR("ZeroZ"));
-   			  	}
+     			if (jog_zero_request_flag & 1) {
+    				printPgmString(PSTR("ZeroX"));
+    				if (jog_zero_request_flag > 1) {serial_write('.');} 
+    			}
+    			if (jog_zero_request_flag & 2) {
+    				printPgmString(PSTR("ZeroY"));
+    				if (jog_zero_request_flag > 4) {serial_write('.');} 
     			} 
+    			if (jog_zero_request_flag & 4) {
+    				printPgmString(PSTR("ZeroZ"));
+    				if (jog_zero_request_flag > 8) {serial_write('.');} 
+ 			  	}
+    			if (jog_zero_request_flag & 8) {
+    				printPgmString(PSTR("ZeroC"));
+ 			  	}
     			jog_zero_request_flag = 0;
     		} else {
    				printPgmString(PSTR("Idle")); 
@@ -707,6 +746,12 @@ void report_realtime_status()
         if (cl_state & COOLANT_STATE_FLOOD) { serial_write('F'); }
         #ifdef ENABLE_M7
           if (cl_state & COOLANT_STATE_MIST) { serial_write('M'); }
+        #endif
+        #ifdef SPI_SR
+          if (cl_state & COOLANT_STATE_ATC) { serial_write('0'); }
+          if (cl_state & COOLANT_STATE_AUX1) { serial_write('1'); }
+          if (cl_state & COOLANT_STATE_AUX2) { serial_write('2'); }
+          if (cl_state & COOLANT_STATE_AUX3) { serial_write('3'); }
         #endif
       }  
     }

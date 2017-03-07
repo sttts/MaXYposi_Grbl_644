@@ -327,9 +327,9 @@
   sr_outputs_0 ist das zuletzt geschriebene SR, also direkt an MOSI vom AVR
 */
 
-//#define debug_jog	  // für Testzwecke
-//#define debug_spi	  // für Testzwecke
-//#define debug_dial	// für Testzwecke
+//#define debug_jog	  // für Testzwecke, wirft zusätzliche Statusmeldungen aus
+//#define debug_spi	  // für Testzwecke, wirft Timeout-Meldungen aus
+//#define debug_dial_isr	// für Testzwecke, zeigt Aktivitäten auf DIAL-Phasen-Pins
 
 #ifdef SPI_SR                  // in config.h definiert
 
@@ -344,8 +344,8 @@
 	// ----------------------------------------------------------------------------
  
   // Bits im MACHINE_OUT_SR-Byte (Relais)
-	// ---7---	---6--- 	---5--- 	---4--- 	---3---	 ---2---	---1---	 ---0---	
-	//  AUX3     AUX2       AUX1      ATC     C_MIST   C_FLOOD  SP_DIR   SPINDLE
+	// Relais-Schaltausgänge. Zusätzliche LEDs können parallel den 
+	// Schaltzustand anzeigen.
 	//
   #define MACHINE_OUT_SR         sr_outputs_0
   //
@@ -360,7 +360,7 @@
 
   // STATUS_LED_SR Bits
   // NOTE: Multiple statii may be mapped to one LED.
-  // Comment unused LEDs. Comment DIAL in config.h to delete DIAL_SELECT LEDs.
+  // Comment unused LEDs.
 	// LED_ALARM, LED_HOLD, LED_HOMING will blink if engaged
 	//
 	// ---7---	---6--- 	---5--- 	---4--- 	---3---	 ---2---	---1---	 ---0---	
@@ -373,76 +373,73 @@
   #define LED_JOG                1
   #define LED_HOMING             0
   #define LED_HOLD               2
-  #define LED_SPINDLE            3
-  #define LED_FLOOD              4
-  #define LED_MIST               4
-  #define LED_DIAL_SELECT_X      5
-  #define LED_DIAL_SELECT_Y      6
-  #define LED_DIAL_SELECT_Z      7
-  #define LED_DIAL_SELECT_C      8 // unsused, all off
+//  #define LED_SPINDLE            1	// 
+//  #define LED_FLOOD              1
+//  #define LED_MIST               1
+  #define LED_DIAL_FAST          3
+  #define LED_DIAL_SELECT_X      4
+  #define LED_DIAL_SELECT_Y      5
+  #define LED_DIAL_SELECT_Z      6
+  #define LED_DIAL_SELECT_C      7
   
- 
   
   // ---------------------------- INPUT SRs -------------------------------------
 	// Assign unused/nonexisting SRs to "sr_inputs_unused"!
 	// ----------------------------------------------------------------------------
+	// All button/joystick inputs are momentary contact to low (ground).
+	// Pull-Up resistors on HC165 SRs ensure high level when not active.
 
 	// MACHINE_INP_SR: Buttons, wartet auf Loslassen
-	// ---7---	---6---	 ---5---	---4---  ---3---  ---2---  ---1---  ---0---	
-  //  HOME    CLR_ALRM                   ZERO_ALL  ZERO_Z   ZERO_Y  ZERO_X
   //
   #define MACHINE_INP_SR sr_inputs_0
   //
-  #define ZERO_X_SW        0
-  #define ZERO_Y_SW        1
-  #define ZERO_Z_SW        2
-  #define ZERO_ALL_SW      3
-  #define FEED_SLOWER_SW   4
-  #define FEED_FASTER_SW   5
-  #define CLEAR_ALARM_SW   6
-  #define HOME_SW          7
+  #define HOME_SW          7		// performs homing cycle
+  #define CLEAR_ALARM_SW   6		// clear alarm state manually
+  #define FEED_FASTER_SW   5		// Manual feed override
+  #define FEED_SLOWER_SW   4		// Manual feed override
+  #define ZERO_C_SW        3		// sets C work position to zero
+  #define ZERO_Z_SW        2		// sets Z work position to zero
+  #define ZERO_Y_SW        1		// sets Y work position to zero
+  #define ZERO_X_SW        0		// sets X work position to zero
+  // #define ZERO_ALL_SW      0	// unused
   
 	// ACCESSORY_INP_SR: Buttons, wartet auf Loslassen
-	// ---7---	---6---	 ---5---	---4---  ---3---  ---2---  ---1---  ---0---	
-  //  HOME    CLR_ALRM                   ZERO_ALL  ZERO_Z   ZERO_Y  ZERO_X
   //
   #define ACCESSORY_INP_SR sr_inputs_1
   //
-  #define SPINDLE_ON_SW 		7
-  #define AUX3_ON_SW        6
-  #define AUX2_ON_SW        5
-  #define AUX1_ON_SW        4
-  #define ATC_ON_SW         3
-
-  #define MIST_ON_SW        1
+  #define SPINDLE_FASTER_SW 7		// Manual spindle override 
+  #define SPINDLE_SLOWER_SW 6		// Manual spindle override
+  #define AUX3_ON_SW        5		// M100/104 override toggles
+  #define AUX2_ON_SW        4
+  #define AUX1_ON_SW        3
+  #define ATC_ON_SW         2
+  #define MIST_ON_SW        1		// M7/8/9 overrides toggles
   #define FLOOD_ON_SW       0
   
 	// JOY_INP_SR, Momentan-Schalter vom Joystick
-	// ---7---	---6--- 	---5--- 	---4--- 	---3---	 ---2---	---1---	 ---0---	
-	//          ZERO_JOY   REV_Z     REV_Y     REV_X    FWD_Z    FWD_Y    FWD_X 
 	// 
-  #define JOY_INP_SR		sr_inputs_2  // Shift register used as joystick port
+  // NOTE: Jog speed controlled by ADC7 value. Only one may be actice at a time.
   //
+  #define JOY_INP_SR		sr_inputs_2  // Shift register used as joystick port
   
-  #define REV_C_SW			5						 // Joystick momentary switches. Speed controlled by ADC7 value
-  #define FWD_C_SW			2
-  #define REV_Z_SW			5						 // Joystick momentary switches. Speed controlled by ADC7 value
-  #define FWD_Z_SW			2
-  #define REV_Y_SW			4
-  #define FWD_Y_SW			1
-	#define REV_X_SW			3
+  #define REV_C_SW			7						 // Joystick momentary reverse switches
+  #define FWD_C_SW			6						 // Joystick momentary forward switches
+  #define REV_Z_SW			5
+  #define FWD_Z_SW			4
+  #define REV_Y_SW			3
+  #define FWD_Y_SW			2
+	#define REV_X_SW			1
 	#define FWD_X_SW			0
 
 	// DIAL_INP_SR: Schalter DIAL-Richtung
-	// ---7---	---6--- 	---5--- 	---4--- 	---3---	 ---2---	---1---	 ---0---	
-	//                                          FAST    DIR_Z    DIR_Y    DIR_X 
 	// 
   #define DIAL_INP_SR   sr_inputs_3    // Shift register used as dial port
   //
-  #define DIAL_ZERO_SW	7              // ZeroAll from dial, waits for btn release
-  #define DIAL_FAST_SW  6
-  
-  #define DIAL_DIR_C_SW 3
+  #define DIAL_SPINDLE_TOGGLE 7
+  // #define NC1_SW        6	// not connected
+  #define DIAL_ZERO_SW	5 	// ZeroAll from dial SR, waits for btn release
+  #define DIAL_FAST_SW  4		// Toggles dial FAST mode
+  #define DIAL_DIR_C_SW 3		// momentary contact button.
   #define DIAL_DIR_Z_SW 2
   #define DIAL_DIR_Y_SW 1
   #define DIAL_DIR_X_SW 0

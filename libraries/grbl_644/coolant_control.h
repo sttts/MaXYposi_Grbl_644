@@ -27,6 +27,10 @@
 #define COOLANT_STATE_DISABLE   0  // Must be zero
 #define COOLANT_STATE_FLOOD     bit(0)
 #define COOLANT_STATE_MIST      bit(1)
+#define COOLANT_STATE_ATC       bit(2)	// SR additions -cm
+#define COOLANT_STATE_AUX1      bit(3)
+#define COOLANT_STATE_AUX2      bit(4)
+#define COOLANT_STATE_AUX3      bit(5)
 
 
 // Initializes coolant control pins.

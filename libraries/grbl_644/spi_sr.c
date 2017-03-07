@@ -291,7 +291,7 @@ void spi_txrx_inout() {
   	if (idx_count == 0) {
   		spi_tx_axis(idx);		  
   	  idx++; 
-  	  if (idx > N_AXIS) { idx = 0; }
+  	  if (idx > N_AXIS) idx = 0;
   	}    	   
   }
   

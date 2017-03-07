@@ -37,6 +37,12 @@ uint8_t coolant_get_state()
   uint8_t cl_state = COOLANT_STATE_DISABLE;
   if (flood_on) cl_state |= COOLANT_STATE_FLOOD;	// used tracked info
   if (mist_on) cl_state |= COOLANT_STATE_MIST;
+  #ifdef SPI_SR
+    if (atc_on) cl_state |= COOLANT_STATE_ATC;
+    if (aux1_on) cl_state |= COOLANT_STATE_AUX1;
+    if (aux2_on) cl_state |= COOLANT_STATE_AUX2;
+    if (aux3_on) cl_state |= COOLANT_STATE_AUX3;
+  #endif
   return(cl_state);
 }
 
@@ -98,6 +104,7 @@ void coolant_set_state(uint8_t mode)
         mist_on = true;	// track for panel buttons -cm
       }
     #endif
+    spi_txrx_inout();
   
 	}
   
