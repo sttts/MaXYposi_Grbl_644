@@ -403,7 +403,7 @@
 #define Y_LIMIT_BIT     1 // 
 #define Z_LIMIT_BIT     2 // 
 #define C_LIMIT_BIT     4 // PA4 on LIMIT_PIN
-#ifdef DIAL 	// -cm
+#ifdef DIAL_ENABLED 	// -cm
   #define DIAL_0_BIT       5 // PA5
   #define DIAL_1_BIT       6 // PA6
   #define DIAL_MASK ((1<<DIAL_0_BIT)|(1<<DIAL_1_BIT))

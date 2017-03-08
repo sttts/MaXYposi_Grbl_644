@@ -31,17 +31,15 @@ bool atc_on;
 bool aux1_on;
 bool aux2_on;
 bool aux3_on;
-bool jp_homing_done; // is true when homing performed once
 
 uint8_t jog_zero_request_flag;  // Report ZERO request
-// bool enable_spi_flag;  // Enable SPI transmission for SR and display
 
-// initialize the jogging module
-#ifdef DIAL
-    // first check Encoder Wheel on same pins.
+#ifdef DIAL_ENABLED
+  // Limi pin change ISR hook. First check Encoder Wheel on same pins.
   void check_encoder_hook(uint8_t dial_pin);
 #endif
 
+// initialize the jogging module
 void jogpad_init();
 // void set_activity_led();
 void set_led_status();

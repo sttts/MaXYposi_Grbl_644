@@ -86,7 +86,7 @@ void protocol_main_loop()
 			spi_tx_axis_roundrobin();	
 		#endif
 					
-		#ifdef JOGPAD
+    #if defined (USER_PANEL_LARGE) || defined (USER_PANEL_SMALL) 
 			jogpad_check();
 		#else	
 			#ifdef SPI_SR

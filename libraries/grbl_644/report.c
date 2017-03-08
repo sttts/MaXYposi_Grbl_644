@@ -493,15 +493,15 @@ void report_build_info(char *line)
   #ifdef SPI_DISP
     printPgmString(PSTR(",SPI_DISP"));
   #endif
-  #ifdef JOGPAD
-    printPgmString(PSTR(",JOGPAD")); 
+  #if defined (USER_PANEL_LARGE) || defined (USER_PANEL_SMALL) 
+    printPgmString(PSTR(",PANEL")); 
   #endif
   #ifdef AXIS_C_ENABLE
     printPgmString(PSTR(",C_AXIS")); 
   #endif
   #ifdef HOMING_FORCE_SET_ORIGIN
   // may be important if using jog fuctions.
-    printPgmString(PSTR(",HOMING_FORCE_ZERO")); 
+    printPgmString(PSTR(",FRONT_LEFT_ZERO")); 
   #endif
     
   report_util_feedback_line_feed();

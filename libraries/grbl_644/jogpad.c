@@ -29,54 +29,57 @@ uint16_t blink_count = 0;
 uint16_t activity_count = 0;
 uint8_t blink_toggle;
 
-void check_encoder_hook(uint8_t dial_pin) {
-// Pin change interrupt hook for manual dial, bits DIAL_PHA, DIAL_PHB
-// für "atomare" Operation im Limit-Pinchange-Interrupt ist dial_delta_8 ein Signed Byte! 
-	if (sys.state & (STATE_ALARM | STATE_HOLD)) return;
-		
-  uint8_t pin = (dial_pin & DIAL_MASK) >> DIAL_0_BIT;
-
-  if (last_pin == pin) return; // no change, sporadic interrupt
-  last_pin = pin;
+#ifdef DIAL_ENABLED
+  void check_encoder_hook(uint8_t dial_pin) {
+  // Pin change interrupt hook for manual dial, bits DIAL_PHA, DIAL_PHB
+  // für "atomare" Operation im Limit-Pinchange-Interrupt ist dial_delta_8 ein Signed Byte! 
+  	if (sys.state & (STATE_ALARM | STATE_HOLD)) return;
+  		
+    uint8_t pin = (dial_pin & DIAL_MASK) >> DIAL_0_BIT;
   
-	// Forward: Folge 013201320...
-  if ((last_pin1 == 3) & (last_pin0 == 2) & (pin == 0)) { 
-    dial_delta_8++; 
-  	dial_sema = true;
-    }
-	// Reverse: Folge 023102310...
-  if ((last_pin1 == 3) & (last_pin0 == 1) & (pin == 0)) { 
-    dial_delta_8--; 
-  	dial_sema = true;
-    }
-  last_pin1 = last_pin0;
-  last_pin0 = pin;
-  if (dial_sema) {
-		#ifdef debug_dial_isr
-			// Show state sequence of wheel:
-	    // serial_write(pin + 48);
-		  serial_write('*');
-		  print_uint8_base10(dial_delta_8);
-		  printPgmString(PSTR("\r\n"));
-		  serial_write('*');
-		#endif
-	}
-}
+    if (last_pin == pin) return; // no change, sporadic interrupt
+    last_pin = pin;
+    
+  	// Forward: Folge 013201320...
+    if ((last_pin1 == 3) & (last_pin0 == 2) & (pin == 0)) { 
+      dial_delta_8++; 
+    	dial_sema = true;
+      }
+  	// Reverse: Folge 023102310...
+    if ((last_pin1 == 3) & (last_pin0 == 1) & (pin == 0)) { 
+      dial_delta_8--; 
+    	dial_sema = true;
+      }
+    last_pin1 = last_pin0;
+    last_pin0 = pin;
+    if (dial_sema) {
+  		#ifdef debug_dial_isr
+  			// Show state sequence of wheel:
+  	    // serial_write(pin + 48);
+  		  serial_write('*');
+  		  print_uint8_base10(dial_delta_8);
+  		  printPgmString(PSTR("\r\n"));
+  		  serial_write('*');
+  		#endif
+  	}
+  }
+#endif  // DIAL_ENABLED
 
-
-uint8_t adc_raw, adc_dest_feed, adc_current_feed; // ADC value
-
-uint8_t get_feed_from_adc() {
-// read free-running ADC7 and square result for slow moves	
-	uint8_t adc_raw; // ADC value
-	float adc_squared;
-
-	adc_raw = ADCH;
-  adc_squared = (float)adc_raw;
-  adc_squared += JOY_ADC_OFFS;
-	adc_squared = adc_squared * adc_squared / 325; // soll maximal 200 Prozent erreichen
-	return(max(1, round(adc_squared)));
-}
+#ifdef JOY_ENABLED
+  uint8_t adc_raw, adc_dest_feed, adc_current_feed; // ADC value
+  
+  uint8_t get_feed_from_adc() {
+  // read free-running ADC7 and square result for slow moves	
+  	uint8_t adc_raw; // ADC value
+  	float adc_squared;
+  
+  	adc_raw = ADCH;
+    adc_squared = (float)adc_raw;
+    adc_squared += JOY_ADC_OFFS;
+  	adc_squared = adc_squared * adc_squared / 325; // soll maximal 200 Prozent erreichen
+  	return(max(1, round(adc_squared)));
+  }
+#endif  // JOY_ENABLED
 
 //#############################################################################################
 //#############################################################################################
@@ -90,18 +93,19 @@ void set_activity_led() {
 */
 
 void jogpad_init() {
-
-#ifdef DIAL
-	LIMIT_DDR &= ~(DIAL_MASK); // Set as input pins
-  LIMIT_PORT |= DIAL_MASK; // Active low operation. Pull-up on.
-  PCICR |= (1 << LIMIT_INT); // Enable Pin Change Interrupt
-  LIMIT_PCMSK |= DIAL_MASK; // Enable specific pins of the Pin Change Interrupt
-#endif
-#ifdef ANALOG_JOYSTICK
-  ADMUX = ((1<<ADLAR) | (1<<REFS0) | JOG_POT);     // Kanal, ADLAR =1 (left adjustet, 8-Bit-Result on ADCH)
-  ADCSRA = ((1<<ADEN) | (1<<ADSC) | (1<<ADATE) | (1<< ADPS2) | (1<< ADPS0)) ; // Free running, auto trigger, prescaler 32
-  ADCSRB = 0; 
-#endif
+  #ifdef DIAL_ENABLED
+  	LIMIT_DDR &= ~(DIAL_MASK); // Set as input pins
+    LIMIT_PORT |= DIAL_MASK; // Active low operation. Pull-up on.
+    PCICR |= (1 << LIMIT_INT); // Enable Pin Change Interrupt
+    LIMIT_PCMSK |= DIAL_MASK; // Enable specific pins of the Pin Change Interrupt
+  #endif
+  #ifdef JOY_ENABLED
+    // ADC channel, ADLAR =1 (left adjustet, 8-Bit-Result on ADCH)
+    ADMUX = ((1<<ADLAR) | (1<<REFS0) | JOG_POT);     
+    // ADC free running, auto trigger, prescaler 32
+    ADCSRA = ((1<<ADEN) | (1<<ADSC) | (1<<ADATE) | (1<< ADPS2) | (1<< ADPS0)) ; 
+    ADCSRB = 0; 
+  #endif
 	activity_count = 0;
   blink_count = 0;
 	blink_toggle = 0;
@@ -185,7 +189,7 @@ void set_led_status() {
 			leds_temp |= (1 << LED_MIST);
 		}
 	#endif;
-	#ifdef DIAL	
+	#ifdef DIAL_ENABLED	
 		if (dial_axis == 0) {
 			#ifdef LED_DIAL_SELECT_X
 				leds_temp |= (1 << LED_DIAL_SELECT_X);
@@ -216,22 +220,15 @@ void set_led_status() {
 }
 
 void btn_wait_execute() {
+  uint8_t idx;
+  
 	set_led_status();
   spi_txrx_inout();
-  delay_ms(3);
-	spi_tx_axis(0);
-  protocol_execute_realtime(); 
-  delay_ms(3);
-	spi_tx_axis(1);
-  protocol_execute_realtime(); 
-  delay_ms(3);
-	spi_tx_axis(2);
-  #ifdef AXIS_C_ENABLE
-	  protocol_execute_realtime(); 
-	  delay_ms(3);
-		spi_tx_axis(3);
-	#endif
-  delay_ms(3);
+  for (idx=0; idx<N_AXIS; idx++) {
+  	spi_tx_axis(idx);
+    protocol_execute_realtime();
+    delay_ms(3);
+  } 
 }
 
 void machine_btn_release() {
@@ -267,12 +264,14 @@ void jogpad_zero_all() {
 
 
 void jogpad_check() {
+	
+#if defined(USER_PANEL_LARGE) || defined(USER_PANEL_SMALL)
 	set_led_status();
   spi_txrx_inout();	// Alle SPI-IOs holen/setzen
-	
-#ifndef JOGPAD
+#else
 	return;
 #endif
+
 
 	uint8_t buttons_temp = 0;
   uint8_t idx;
@@ -314,9 +313,6 @@ void jogpad_check() {
 	    system_clear_exec_alarm(); // Clear alarm
 	    sys.state = STATE_IDLE;
   	}
-		if (!jp_homing_done) {
-			return;
-		}
   	if (sys.state == STATE_IDLE) {
 	  	// jog_zero_request_flag wird in report_realtime_status() zurückgesetzt
 	    // WPos = MPos - WCS - G92 - TLO  ->  G92 = MPos - WCS - TLO - WPos
@@ -386,11 +382,13 @@ void jogpad_check() {
 	  #ifdef FEED_FASTER_SW
 	  	if (buttons_temp & (1<<FEED_FASTER_SW)) {
 				system_set_exec_motion_override_flag(EXEC_FEED_OVR_COARSE_PLUS);
+        protocol_execute_realtime();
 	  	}	
   	#endif
 	  #ifdef FEED_SLOWER_SW
 	  	if (buttons_temp & (1<<FEED_SLOWER_SW)) {
 				system_set_exec_motion_override_flag(EXEC_FEED_OVR_COARSE_MINUS);
+        protocol_execute_realtime();
 	  	}	
   	#endif
 	  machine_btn_release();
@@ -398,9 +396,8 @@ void jogpad_check() {
 	}
  	
  	// No further action if homing is not done.
-	if (!jp_homing_done) {
-		return;
-	}
+	if (sys.state == STATE_ALARM) return;
+
 	
 // #######################################################################
 // ############### A C C E S S O R Y   B U T T O N S #####################
@@ -414,42 +411,62 @@ void jogpad_check() {
 		if (buttons_temp == 0) return;
 		
   	if (buttons_temp & (1<<FLOOD_ON_SW)) {
-  		system_set_exec_accessory_override_flag(EXEC_COOLANT_FLOOD_OVR_TOGGLE);
-      protocol_execute_realtime();
-   	}	
+  		if (flood_on) {
+  		  temp_state = mist_on;
+	    	coolant_stop();
+ 	    	gc_state.modal.coolant &= ~(1<<COOLANT_STATE_FLOOD);
+ 	    	if (temp_state) coolant_set_state(COOLANT_MIST_ENABLE);
+ 		} else {
+ 	    	coolant_set_state(COOLANT_FLOOD_ENABLE);
+ 	    	gc_state.modal.coolant |= (1<<COOLANT_STATE_FLOOD);
+	    }
+  	}	 		
   	if (buttons_temp & (1<<MIST_ON_SW)) {
-  		system_set_exec_accessory_override_flag(EXEC_COOLANT_MIST_OVR_TOGGLE);
-      protocol_execute_realtime();
-   	}	
+  		if (mist_on) {
+  		  temp_state = flood_on;
+	    	coolant_stop();
+ 	    	gc_state.modal.coolant |= (1<<COOLANT_STATE_MIST);
+ 	    	if (temp_state) coolant_set_state(COOLANT_FLOOD_ENABLE);
+ 		} else {
+	    	coolant_set_state(COOLANT_MIST_ENABLE);
+ 	    	gc_state.modal.coolant &= ~(1<<COOLANT_STATE_MIST);
+	    }
+  	}	 		
   	  	
   	if (buttons_temp & (1<<ATC_ON_SW)) {
   		if (atc_on) {
  	    	coolant_set_state(ATC_DISABLE);
- 	    	gc_state.modal.coolant |= (1<<COOLANT_STATE_ATC);
+ 	    	gc_state.modal.coolant &= ~(1<<COOLANT_STATE_ATC);
  		} else {
 	    	coolant_set_state(ATC_ENABLE);
- 	    	gc_state.modal.coolant &= ~(1<<COOLANT_STATE_ATC);
+ 	    	gc_state.modal.coolant |= (1<<COOLANT_STATE_ATC);
 	    }
   	}	 		
   	if (buttons_temp & (1<<AUX1_ON_SW)) {
   		if (aux1_on) {
 	    	coolant_set_state(AUX1_DISABLE);
+ 	    	gc_state.modal.coolant &= ~(1<<COOLANT_STATE_AUX1);
   		} else {
 	    	coolant_set_state(AUX1_ENABLE);
+ 	    	gc_state.modal.coolant |= (1<<COOLANT_STATE_AUX1);
 	  	}
   	}	 		
   	if (buttons_temp & (1<<AUX2_ON_SW)) {
   		if (aux2_on) {
 	    	coolant_set_state(AUX2_DISABLE);
+ 	    	gc_state.modal.coolant &= ~(1<<COOLANT_STATE_AUX2);
   		} else {
 	    	coolant_set_state(AUX2_ENABLE);
+ 	    	gc_state.modal.coolant |= (1<<COOLANT_STATE_AUX2);
 	  	}
   	}	 		
   	if (buttons_temp & (1<<AUX3_ON_SW)) {
   		if (aux3_on) {
 	    	coolant_set_state(AUX3_DISABLE);
+ 	    	gc_state.modal.coolant &= ~(1<<COOLANT_STATE_AUX3);
   		} else {
 	    	coolant_set_state(AUX3_ENABLE);
+ 	    	gc_state.modal.coolant |= (1<<COOLANT_STATE_AUX3);
 	  	}
   	}	 		
   	if (buttons_temp & spindle_on & (1<<SPINDLE_FASTER_SW)) {
@@ -458,9 +475,9 @@ void jogpad_check() {
       	protocol_execute_realtime();
 			  spindle_sync(gc_state.modal.spindle,settings.rpm_max);
 //			  spindle_set_speed(spindle_compute_pwm_value(gc_state.spindle_speed));
-			#endif
-			#ifdef debug_jog
-		    printPgmString(PSTR("[MSG:BTN SPINDLE OVR PLUS]\r\n"));
+  			#ifdef debug_jog
+  		    printPgmString(PSTR("[MSG:BTN SPINDLE OVR PLUS]\r\n"));
+  			#endif
 			#endif
   	}	
   	if (buttons_temp  & spindle_on & (1<<SPINDLE_SLOWER_SW)) {
@@ -468,25 +485,27 @@ void jogpad_check() {
         system_set_exec_accessory_override_flag(EXEC_SPINDLE_OVR_COARSE_MINUS);
       	protocol_execute_realtime();
 			  spindle_sync(gc_state.modal.spindle,settings.rpm_max);
-			#endif
-			#ifdef debug_jog
-		    printPgmString(PSTR("[MSG:BTN SPINDLE OVR MINUS]\r\n"));
+  			#ifdef debug_jog
+  		    printPgmString(PSTR("[MSG:BTN SPINDLE OVR MINUS]\r\n"));
+  			#endif
 			#endif
 	  }	
 		accessory_btn_release();
 		return;
 	}
 	
+	// Alles weitere nur wenn IDLE!
+  if ((sys.state != STATE_IDLE) && (sys.state != STATE_JOG)) return;
+	
 // #######################################################################
 // ###################### D I A L   B U T T O N S ########################
 // #######################################################################
 
-	if (sys.state != STATE_IDLE) return;   // Alles weitere nur wenn IDLE!
-
   buttons_temp = DIAL_INP_SR;
-
-//	dial_fast = buttons_temp & (1<<DIAL_FAST_SW);
-//	buttons_temp &= ~(1<<DIAL_FAST_SW);	// falls Dauer-Button oder Schalter!
+//  #ifdef DIAL_ENABLED		
+//	  dial_fast = buttons_temp & (1<<DIAL_FAST_SW);
+//	  buttons_temp &= ~(1<<DIAL_FAST_SW);	// falls Dauer-Button oder Schalter!
+//  #endif
 	if (buttons_temp) {
 		delay_ms(10);
     spi_txrx_inout();	// Entprellung: Alle SPI-IOs nochmals holen/setzen
@@ -503,37 +522,38 @@ void jogpad_check() {
 	 	  	return;  // repeat until released
 	  	#endif
 		}
-		
-		if (buttons_temp & (1<<DIAL_DIR_X_SW)) {	
-			#ifdef debug_jog
-		    printPgmString(PSTR("[MSG:BTN DIAL AXIS X]\r\n"));
-			#endif
-			dial_axis = 0;
-		} else if (buttons_temp & (1<<DIAL_DIR_Y_SW)) {	
-			dial_axis = 1;
-			#ifdef debug_jog
-		    printPgmString(PSTR("[MSG:BTN DIAL AXIS Y]\r\n"));
-			#endif
-		} else if (buttons_temp & (1<<DIAL_DIR_Z_SW)) {	
-			dial_axis = 2;
-			#ifdef debug_jog
-		    printPgmString(PSTR("[MSG:BTN DIAL AXIS Z]\r\n"));
-			#endif
-		#ifdef AXIS_C_ENABLE
-			} else if (buttons_temp & (1<<DIAL_DIR_C_SW)) {	
-				dial_axis = 3;
-				#ifdef debug_jog
-			    printPgmString(PSTR("[MSG:BTN DIAL AXIS C]\r\n"));
-				#endif
+    #ifdef DIAL_ENABLED		
+  		if (buttons_temp & (1<<DIAL_DIR_X_SW)) {	
+  			#ifdef debug_jog
+  		    printPgmString(PSTR("[MSG:BTN DIAL AXIS X]\r\n"));
+  			#endif
+  			dial_axis = 0;
+  		} else if (buttons_temp & (1<<DIAL_DIR_Y_SW)) {	
+  			dial_axis = 1;
+  			#ifdef debug_jog
+  		    printPgmString(PSTR("[MSG:BTN DIAL AXIS Y]\r\n"));
+  			#endif
+  		} else if (buttons_temp & (1<<DIAL_DIR_Z_SW)) {	
+  			dial_axis = 2;
+  			#ifdef debug_jog
+  		    printPgmString(PSTR("[MSG:BTN DIAL AXIS Z]\r\n"));
+  			#endif
+  		#ifdef AXIS_C_ENABLE
+  			} else if (buttons_temp & (1<<DIAL_DIR_C_SW)) {	
+  				dial_axis = 3;
+  				#ifdef debug_jog
+  			    printPgmString(PSTR("[MSG:BTN DIAL AXIS C]\r\n"));
+  				#endif
+  		#endif
+  		}
+  		
+    	if (buttons_temp & (1<<DIAL_FAST_SW)) {
+  		  dial_fast = ~dial_fast;
+  			#ifdef debug_jog
+  		    printPgmString(PSTR("[MSG:BTN DIAL FAST]\r\n"));
+  			#endif
+  		}
 		#endif
-		}
-		
-  	if (buttons_temp & (1<<DIAL_FAST_SW)) {
-		  dial_fast = ~dial_fast;
-			#ifdef debug_jog
-		    printPgmString(PSTR("[MSG:BTN DIAL FAST]\r\n"));
-			#endif
-		}
 
   	if (buttons_temp & (1<<DIAL_SPINDLE_TOGGLE)) {
       if (spindle_on) {
@@ -568,14 +588,14 @@ void jogpad_check() {
 
 // JOY_INP_SR: Momentan-Schalter vom Joystick, SR auf Erweiterung
 
-  #ifdef ANALOG_JOYSTICK
-	  buttons_temp = JOY_INP_SR; 	// unbenutzte Buttons könnten hier ausmaskiert werden
+  #ifdef JOY_ENABLED
 		float joy_target_mpos[N_AXIS];    	// Maschinenposition in mm
 			
 		uint8_t joy_axis;	// kein Dial-Schalter EIN
 		uint8_t joy_rev = 0;
 		old_f_override = sys.f_override;
 		
+	  buttons_temp = JOY_INP_SR;
 		if (buttons_temp) {
       memset(pl_data,0,sizeof(plan_line_data_t)); // Zero pl_data struct
 			// irgendein Joystick-Button?
@@ -631,7 +651,7 @@ void jogpad_check() {
 			joy_target_mpos[joy_axis] = jog_destination;
 			
 			adc_dest_feed = get_feed_from_adc();
-			adc_current_feed = 1;
+			adc_current_feed = 1; // will be increased or decreased per loop
 		  sys.f_override = 1;
 			
 			#ifdef debug_jog
@@ -668,12 +688,10 @@ void jogpad_check() {
 			do {
 				spi_txrx_inout();
 	    	buttons_temp = JOY_INP_SR;
-	    		
 				spi_tx_axis(joy_axis);  	    // neuen Status an Display
     		protocol_execute_realtime();  // hält die Maschine am Laufen
     		
 			  adc_dest_feed = get_feed_from_adc();
-
 				bool update_ovr = false;
 				if (adc_current_feed > adc_dest_feed) { 
 					adc_current_feed--;
@@ -692,9 +710,8 @@ void jogpad_check() {
 				    printInteger(adc_current_feed);
 				  	printPgmString(PSTR("]\r\n"));
 					#endif
-				  
 				} 
-				delay_ms(3);
+				delay_ms(JOY_ACCELL);
 		} while (buttons_temp_old == buttons_temp);
 		
     if (sys.state & STATE_JOG) { 
@@ -714,12 +731,16 @@ void jogpad_check() {
 		gc_state.position[joy_axis] = joy_target_mpos[joy_axis];
 		//protocol_buffer_synchronize();
  	} // sr_inputs active
-	#endif
+	#endif // JOY_ENABLED
 	
 // #######################################################################
 // ############################## D I A L ################################
 // #######################################################################
 	
+  #ifndef DIAL_ENABLED	
+    return;
+  #endif
+   	
 	float my_pos;
 
   if (dial_sema || (dial_delta_32 != 0)) { 

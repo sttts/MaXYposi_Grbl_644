@@ -52,11 +52,6 @@ void limits_init()
     WDTCSR |= (1<<WDCE) | (1<<WDE);
     WDTCSR = (1<<WDP0); // Set time-out at ~32msec.
   #endif
-	#ifdef HOMING_INIT_LOCK
-	  jp_homing_done = false;	// disable jogpad moves -cm
-	#else
-	  jp_homing_done = true;	// enable jogpad moves -cm
-	#endif
 }
 
 
@@ -363,7 +358,6 @@ void limits_go_home(uint8_t cycle_mask)
 
     }
   }
-  jp_homing_done = true;									// Enable jogpad moves -cm
   sys.step_control = STEP_CONTROL_NORMAL_OP;	// Return step control to normal operation.
 }
 

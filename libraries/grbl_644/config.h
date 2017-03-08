@@ -611,11 +611,10 @@
 	See spi_sr.c for details.
 */
 
-#define PROC_NAME "ATMEGA644" 	// issued with $I command -cm
+#define PROC_NAME "AVR_644" 	// issued with $I command -cm
 
-#define GRBL_VERSION "1.1f2"
-#define GRBL_VERSION_BUILD "05.03.2017"
-#define OLD_644_BOARD			// für altes GRBL-JOG-Board kompilieren. Keine SRs, Jog über Portpins. 
+#define GRBL_VERSION "1.1f2"	// issued with $I command -cm
+#define GRBL_VERSION_BUILD "08.03.2017"
 
 #define SPI_SR    // SPI shift I/O registers 2..4x HC165 and 2x HC595
 #define SPI_DISP  // LC Display unit with own ATmega88/168/328 connected to SPI
@@ -624,9 +623,12 @@
 #define REPORT_G_M10X										// report M100..M107 states on $G command
 
 
-#define JOGPAD    // SR inputs and ADC 7 used for manual jog (joystick, btns etc). SPI_SR needed.
+// #define USER_PANEL_SMALL  // 16 SR inputs and ADC7 used for manual jog (joystick, btns etc). SPI_SR needed.
+#define USER_PANEL_LARGE  // 32 SR inputs and ADC7 used for manual jog (joystick, btns etc). SPI_SR needed.
 
-#define DIAL      // needs JOGPAD enabled. uncomment to disable hand wheel / dial  -cm
+// Handwheel/Dial connection.
+// Dial needs USER_PANEL_xxx enabled.
+#define DIAL_ENABLED          // Comment to disable  -cm
 #define DIAL_MM_FINE 0.01		  // detent step in mm
 #define DIAL_MM_COARSE 0.1		// detent step in mm when FAST btn active (see cpu_map.h)
 #define DIAL_DEG_FINE 0.36		// detent step in deg
@@ -634,9 +636,9 @@
 #define DIAL_SLOW_FAC 0.2     // fac of max. axis seek rate (as set in EEPROM) for dial moves
 #define DIAL_FAST_FAC 0.5
 
-#define ANALOG_JOYSTICK   // uncomment to disable analog joystick  -cm
-#define JOY_ADC_OFFS  20  // low speed behaviour
-
+#define JOY_ENABLED       // uncomment to disable analog joystick  -cm
+#define JOY_ADC_OFFS  20  // Joystick low speed offset
+#define JOY_ACCELL    10  // Joystick accelleration. Lower values = faster.
 // ZERO messages: If defined, issue message if one of ZERO buttons pressed, like [MSG: ZERO X] or [MSG: ZERO ALL]
 // if not defined, will report Zero request continuously in realtime status 
 #define ZERO_MSG         
