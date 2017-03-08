@@ -4,9 +4,12 @@ Maker Media GmbH und c't, Heise Zeitschriften Verlag
 
 ***
 
+Unser Steuerungs-Projekt für 4 Achsen und vielen I/Os befindet sich zur Zeit in Entwicklung, ist aber schon in einem brauchbaren Statium. Sie finden die Firmware für unsere neue GRBL-Steuerung in unserem [Github-Repository MaXYposi_Grbl_644](https://github.com/heise/MaXYposi_Grbl_644).
+
+Natürlich ist als Bahnsteuerung auch ein normaler Arduino-328 mit dem Standard-GRBL geeignet. Wir haben unser 644-GRBL allerdings auf 4 Achsen erweitert und 32 I/Os hinzugefügt, außerdem ein Handrad- und Joystick-Jog-Anschluss sowie eine Echtzeit-Positionsanzeige mit LDC 16x2 auf einem (optionalen) Bedienfeld. Dazu wird es eine Platine und einen Bausatz geben.
 ###Grbl 1.1f2 Version for ATmega644(p) 
 
-with multiple additions, suited for MaXYposi board (german Make: magazine, issue 2/2017). Additions by Carsten Meyer, Make Magazin Deutschland.
+GRBL firmware with multiple additions, suited for MaXYposi board (german Make: magazine, issue 2/2017). Additions by Carsten Meyer, Make Magazin Deutschland.
 
 * 4th C axis per #define in config.h, settings configured to C360 = 1 complete turn for PNP machine or robot head @ 1/16 steps driver
 * 16 Output ports for LEDs and relays, via HC595 SRs on SPI (may left unconnected)
