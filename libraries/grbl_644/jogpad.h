@@ -31,6 +31,7 @@ bool atc_on;
 bool aux1_on;
 bool aux2_on;
 bool aux3_on;
+uint8_t button_number_to_display;
 
 uint8_t jog_zero_request_flag;  // Report ZERO request
 

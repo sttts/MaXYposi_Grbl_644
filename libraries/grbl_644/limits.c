@@ -255,13 +255,14 @@ void limits_go_home(uint8_t cycle_mask)
     st_wake_up(); // Initiate motion
     do {
 			#ifdef SPI_SR  	
-		  	set_led_status();   // Status-LED-Port setzen -cm
+		  	set_led_disp_status();   // Status-LED-Port setzen -cm
 				spi_txrx_inout();
 			#endif 	
       if (approach) {
         // Check limit state. Lock out cycle axes when they change.
         limit_state = limits_get_state();
         for (idx=0; idx<N_AXIS; idx++) {
+				  spi_tx_axis();
           if (axislock & step_pin[idx]) {
             if (limit_state & (1 << idx)) {
               #ifdef COREXY

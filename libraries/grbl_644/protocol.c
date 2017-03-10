@@ -585,8 +585,9 @@ static void protocol_exec_rt_suspend()
   while (sys.suspend) {
 		#ifdef SPI_SR
 			// laufend Ports abfragen und gleichzeitig Ausgangsports senden -cm
-			set_led_status();
+			set_led_disp_status();
 			spi_txrx_inout();		// sonst in jogpad_check()
+			spi_tx_axis_roundrobin();
 		#endif
 
     if (sys.abort) { return; }

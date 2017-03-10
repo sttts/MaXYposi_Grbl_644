@@ -499,10 +499,6 @@ void report_build_info(char *line)
   #ifdef AXIS_C_ENABLE
     printPgmString(PSTR(",C_AXIS")); 
   #endif
-  #ifdef HOMING_FORCE_SET_ORIGIN
-  // may be important if using jog fuctions.
-    printPgmString(PSTR(",FRONT_LEFT_ZERO")); 
-  #endif
     
   report_util_feedback_line_feed();
 }

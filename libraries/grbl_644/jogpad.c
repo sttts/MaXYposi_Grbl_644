@@ -101,7 +101,7 @@ void jogpad_init() {
   #endif
   #ifdef JOY_ENABLED
     // ADC channel, ADLAR =1 (left adjustet, 8-Bit-Result on ADCH)
-    ADMUX = ((1<<ADLAR) | (1<<REFS0) | JOG_POT);     
+    ADMUX = ((1<<ADLAR) | (1<<REFS0) | JOG_POT_ADC);     
     // ADC free running, auto trigger, prescaler 32
     ADCSRA = ((1<<ADEN) | (1<<ADSC) | (1<<ADATE) | (1<< ADPS2) | (1<< ADPS0)) ; 
     ADCSRB = 0; 
@@ -119,9 +119,10 @@ void jogpad_init() {
 	aux1_on = false;
 	aux2_on = false;
 	aux3_on = false;
+  button_number_to_display = 0;
 }
 
-void set_led_status() {
+void set_led_disp_status() {
 // LEDs des Bedienpanels setzen
 	uint8_t status_temp = 0;
 	uint8_t leds_temp;
@@ -170,14 +171,14 @@ void set_led_status() {
 		}
 	#endif;
 	
-  #ifdef LED_SPINDLE
-		if (spindle_get_state()) { 
+	if (spindle_get_state()) { 
+		#ifdef LED_SPINDLE
 			leds_temp |= (1<<LED_SPINDLE); 
-			sr_dispstate_1 = sys.state | 0x80;
-		} else {
-			sr_dispstate_1 = sys.state;
-		}
-	#endif;
+		#endif;
+		sr_dispstate_1 = sys.state | 0x80;
+	} else {
+		sr_dispstate_1 = sys.state;
+	}
   
   #ifdef LED_FLOOD
 		if (flood_on) {
@@ -215,14 +216,16 @@ void set_led_status() {
 	#endif;
  	STATUS_LED_OUT_SR = leds_temp; 		// Status-LED-Port setzen
  	#ifdef SPI_DISP	
- 		sr_dispstate_0 = MACHINE_OUT_SR; 	// wurde in spindle/coolant_control gesetzt
+ 		sr_dispstate_0 = button_number_to_display;
 	#endif;
 }
 
 void btn_wait_execute() {
+// while waitung for button release, update LEDs and display
+// and do protocol_execute_realtime();
   uint8_t idx;
   
-	set_led_status();
+	set_led_disp_status();
   spi_txrx_inout();
   for (idx=0; idx<N_AXIS; idx++) {
   	spi_tx_axis(idx);
@@ -266,7 +269,8 @@ void jogpad_zero_all() {
 void jogpad_check() {
 	
 #if defined(USER_PANEL_LARGE) || defined(USER_PANEL_SMALL)
-	set_led_status();
+  button_number_to_display = 0;
+	set_led_disp_status();
   spi_txrx_inout();	// Alle SPI-IOs holen/setzen
 #else
 	return;
@@ -291,10 +295,12 @@ void jogpad_check() {
 		if (buttons_temp == 0) return;
 	  // Einer der Buttons an MACHINE_INP_SR gedrückt	
   	if ((buttons_temp & (1<<HOME_SW)) && ((sys.state == STATE_ALARM) || (sys.state == STATE_IDLE))) {	
+      button_number_to_display = 1;
+   	  machine_btn_release();
 		  if (bit_istrue(settings.flags,BITFLAG_HOMING_ENABLE)) {
 	  	  spindle_stop(); 
 		    sys.state = STATE_HOMING;
-	    	set_led_status();
+	    	set_led_disp_status();
    			spi_txrx_inout();
  				sr_dispstate_1 = sys.state; // Homing-Status auch an Display
 				spi_tx_axis(0); 						// irgendeine Achse, hier X 
@@ -309,6 +315,7 @@ void jogpad_check() {
 	  	}
   	}
   	if ((buttons_temp & (1<<CLEAR_ALARM_SW)) && (sys.state == STATE_ALARM)) {	
+      button_number_to_display = 2;
   		report_feedback_message(MESSAGE_ALARM_UNLOCK);
 	    system_clear_exec_alarm(); // Clear alarm
 	    sys.state = STATE_IDLE;
@@ -317,9 +324,49 @@ void jogpad_check() {
 	  	// jog_zero_request_flag wird in report_realtime_status() zurückgesetzt
 	    // WPos = MPos - WCS - G92 - TLO  ->  G92 = MPos - WCS - TLO - WPos
 	    // Berechnung: wco[idx] = gc_state.coord_system[idx] + gc_state.coord_offset[idx];
+	  	#ifdef ZERO_X_SW
+		  	if (buttons_temp & (1<<ZERO_X_SW)) {	
+          button_number_to_display = 3;
+					jog_zero_request_flag = 1;
+		      gc_state.coord_offset[0] = gc_state.position[0];
+		      system_flag_wco_change(); // Set to refresh immediately, something altered.
+		      #ifdef ZERO_MSG
+				    printPgmString(PSTR("[MSG:BTN ZeroX]\r\n"));
+			  	#else
+			  	  return;  // repeat until released
+			  	#endif
+		  	}
+	  	#endif
+	  	#ifdef ZERO_Y_SW
+		  	if (buttons_temp & (1<<ZERO_Y_SW)) {	
+          button_number_to_display = 4;
+					jog_zero_request_flag = 2;
+		      gc_state.coord_offset[1] = gc_state.position[1];
+		      system_flag_wco_change(); // Set to refresh immediately, something altered.
+		      #ifdef ZERO_MSG
+				    printPgmString(PSTR("[MSG:BTN ZeroY]\r\n"));
+			  	#else
+			  	  return;  // repeat until released
+			  	#endif
+		  	}
+	  	#endif
+	  	#ifdef ZERO_Z_SW
+		  	if (buttons_temp & (1<<ZERO_Z_SW)) {	
+          button_number_to_display = 5;
+					jog_zero_request_flag = 4;
+		      gc_state.coord_offset[2] = gc_state.position[2];
+		      system_flag_wco_change(); // Set to refresh immediately, something altered.
+		      #ifdef ZERO_MSG
+				    printPgmString(PSTR("[MSG:BTN ZeroZ]\r\n"));
+			  	#else
+			  	  return;  // repeat until released
+			  	#endif
+		  	}
+	  	#endif
 			#ifdef AXIS_C_ENABLE
 		  	#ifdef ZERO_C_SW
 			  	if (buttons_temp & (1<<ZERO_C_SW)) {	
+            button_number_to_display = 6;
 						jog_zero_request_flag = 8;
 			      gc_state.coord_offset[3] = gc_state.position[3];
 			      system_flag_wco_change(); // Set to refresh immediately, something altered.
@@ -333,6 +380,7 @@ void jogpad_check() {
 	  	#endif
 	  	#ifdef ZERO_ALL_SW
 		  	if (buttons_temp & (1<<ZERO_ALL_SW)) {	
+          button_number_to_display = 7;
 					jogpad_zero_all();
 		      #ifdef ZERO_MSG
 				    printPgmString(PSTR("[MSG:BTN ZeroAll]\r\n"));
@@ -341,51 +389,17 @@ void jogpad_check() {
 			  	#endif
 		  	}
 	  	#endif
-	  	#ifdef ZERO_Z_SW
-		  	if (buttons_temp & (1<<ZERO_Z_SW)) {	
-					jog_zero_request_flag = 4;
-		      gc_state.coord_offset[2] = gc_state.position[2];
-		      system_flag_wco_change(); // Set to refresh immediately, something altered.
-		      #ifdef ZERO_MSG
-				    printPgmString(PSTR("[MSG:BTN ZeroZ]\r\n"));
-			  	#else
-			  	  return;  // repeat until released
-			  	#endif
-		  	}
-	  	#endif
-	  	#ifdef ZERO_Y_SW
-		  	if (buttons_temp & (1<<ZERO_Y_SW)) {	
-					jog_zero_request_flag = 2;
-		      gc_state.coord_offset[1] = gc_state.position[1];
-		      system_flag_wco_change(); // Set to refresh immediately, something altered.
-		      #ifdef ZERO_MSG
-				    printPgmString(PSTR("[MSG:BTN ZeroY]\r\n"));
-			  	#else
-			  	  return;  // repeat until released
-			  	#endif
-		  	}
-	  	#endif
-	  	#ifdef ZERO_X_SW
-		  	if (buttons_temp & (1<<ZERO_X_SW)) {	
-					jog_zero_request_flag = 1;
-		      gc_state.coord_offset[0] = gc_state.position[0];
-		      system_flag_wco_change(); // Set to refresh immediately, something altered.
-		      #ifdef ZERO_MSG
-				    printPgmString(PSTR("[MSG:BTN ZeroX]\r\n"));
-			  	#else
-			  	  return;  // repeat until released
-			  	#endif
-		  	}
-	  	#endif
-	  }
+  	}
 
 	  #ifdef FEED_FASTER_SW
 	  	if (buttons_temp & (1<<FEED_FASTER_SW)) {
+        button_number_to_display = 8;
 				system_set_exec_motion_override_flag(EXEC_FEED_OVR_COARSE_PLUS);
         protocol_execute_realtime();
 	  	}	
   	#endif
 	  #ifdef FEED_SLOWER_SW
+      button_number_to_display = 9;
 	  	if (buttons_temp & (1<<FEED_SLOWER_SW)) {
 				system_set_exec_motion_override_flag(EXEC_FEED_OVR_COARSE_MINUS);
         protocol_execute_realtime();
@@ -411,6 +425,7 @@ void jogpad_check() {
 		if (buttons_temp == 0) return;
 		
   	if (buttons_temp & (1<<FLOOD_ON_SW)) {
+      button_number_to_display = 10;
   		if (flood_on) {
   		  temp_state = mist_on;
 	    	coolant_stop();
@@ -422,6 +437,7 @@ void jogpad_check() {
 	    }
   	}	 		
   	if (buttons_temp & (1<<MIST_ON_SW)) {
+      button_number_to_display = 11;
   		if (mist_on) {
   		  temp_state = flood_on;
 	    	coolant_stop();
@@ -434,6 +450,7 @@ void jogpad_check() {
   	}	 		
   	  	
   	if (buttons_temp & (1<<ATC_ON_SW)) {
+      button_number_to_display = 12;
   		if (atc_on) {
  	    	coolant_set_state(ATC_DISABLE);
  	    	gc_state.modal.coolant &= ~(1<<COOLANT_STATE_ATC);
@@ -443,6 +460,7 @@ void jogpad_check() {
 	    }
   	}	 		
   	if (buttons_temp & (1<<AUX1_ON_SW)) {
+      button_number_to_display = 13;
   		if (aux1_on) {
 	    	coolant_set_state(AUX1_DISABLE);
  	    	gc_state.modal.coolant &= ~(1<<COOLANT_STATE_AUX1);
@@ -452,6 +470,7 @@ void jogpad_check() {
 	  	}
   	}	 		
   	if (buttons_temp & (1<<AUX2_ON_SW)) {
+      button_number_to_display = 14;
   		if (aux2_on) {
 	    	coolant_set_state(AUX2_DISABLE);
  	    	gc_state.modal.coolant &= ~(1<<COOLANT_STATE_AUX2);
@@ -461,6 +480,7 @@ void jogpad_check() {
 	  	}
   	}	 		
   	if (buttons_temp & (1<<AUX3_ON_SW)) {
+      button_number_to_display = 15;
   		if (aux3_on) {
 	    	coolant_set_state(AUX3_DISABLE);
  	    	gc_state.modal.coolant &= ~(1<<COOLANT_STATE_AUX3);
@@ -470,6 +490,7 @@ void jogpad_check() {
 	  	}
   	}	 		
   	if (buttons_temp & spindle_on & (1<<SPINDLE_FASTER_SW)) {
+      button_number_to_display = 16;
 			#ifdef VARIABLE_SPINDLE
       	system_set_exec_accessory_override_flag(EXEC_SPINDLE_OVR_COARSE_PLUS);
       	protocol_execute_realtime();
@@ -481,6 +502,7 @@ void jogpad_check() {
 			#endif
   	}	
   	if (buttons_temp  & spindle_on & (1<<SPINDLE_SLOWER_SW)) {
+      button_number_to_display = 17;
 			#ifdef VARIABLE_SPINDLE
         system_set_exec_accessory_override_flag(EXEC_SPINDLE_OVR_COARSE_MINUS);
       	protocol_execute_realtime();
@@ -514,6 +536,7 @@ void jogpad_check() {
 		if (buttons_temp == 0) return;
 	
 		if (buttons_temp & (1<<DIAL_ZERO_SW)) {
+      button_number_to_display = 20;
 			jogpad_zero_all();
 	    #ifdef ZERO_MSG
 		    printPgmString(PSTR("[MSG:BTN ZeroAll]\r\n"));
@@ -524,22 +547,26 @@ void jogpad_check() {
 		}
     #ifdef DIAL_ENABLED		
   		if (buttons_temp & (1<<DIAL_DIR_X_SW)) {	
+        button_number_to_display = 21;
   			#ifdef debug_jog
   		    printPgmString(PSTR("[MSG:BTN DIAL AXIS X]\r\n"));
   			#endif
   			dial_axis = 0;
   		} else if (buttons_temp & (1<<DIAL_DIR_Y_SW)) {	
+        button_number_to_display = 22;
   			dial_axis = 1;
   			#ifdef debug_jog
   		    printPgmString(PSTR("[MSG:BTN DIAL AXIS Y]\r\n"));
   			#endif
   		} else if (buttons_temp & (1<<DIAL_DIR_Z_SW)) {	
+        button_number_to_display = 23;
   			dial_axis = 2;
   			#ifdef debug_jog
   		    printPgmString(PSTR("[MSG:BTN DIAL AXIS Z]\r\n"));
   			#endif
   		#ifdef AXIS_C_ENABLE
   			} else if (buttons_temp & (1<<DIAL_DIR_C_SW)) {	
+          button_number_to_display = 24;
   				dial_axis = 3;
   				#ifdef debug_jog
   			    printPgmString(PSTR("[MSG:BTN DIAL AXIS C]\r\n"));
@@ -548,6 +575,7 @@ void jogpad_check() {
   		}
   		
     	if (buttons_temp & (1<<DIAL_FAST_SW)) {
+        button_number_to_display = 25;
   		  dial_fast = ~dial_fast;
   			#ifdef debug_jog
   		    printPgmString(PSTR("[MSG:BTN DIAL FAST]\r\n"));
@@ -556,6 +584,7 @@ void jogpad_check() {
 		#endif
 
   	if (buttons_temp & (1<<DIAL_SPINDLE_TOGGLE)) {
+      button_number_to_display = 29;
       if (spindle_on) {
 	    	spindle_sync(SPINDLE_DISABLE,0.0);
       	gc_state.modal.spindle = SPINDLE_DISABLE;
@@ -603,27 +632,35 @@ void jogpad_check() {
 	    	joy_target_mpos[idx] = gc_state.position[idx]; // default-Target
 			}
 			if (buttons_temp & (1<<FWD_X_SW)) {
+        button_number_to_display = 30;
 				joy_axis = 0;
 			} else if (buttons_temp & (1<<FWD_Y_SW)) {	
+        button_number_to_display = 31;
 				joy_axis = 1;
 			} else if (buttons_temp & (1<<FWD_Z_SW)) {	
+        button_number_to_display = 32;
 				joy_axis = 2;
 			#ifdef AXIS_C_ENABLE
 				} else if (buttons_temp & (1<<FWD_C_SW)) {	
+          button_number_to_display = 33;
 					joy_axis = 3;
 			#endif
 			}
 			if (buttons_temp & (1<<REV_X_SW)) {
+        button_number_to_display = 34;
 				joy_axis = 0;
 				joy_rev = 1;
 			} else if (buttons_temp & (1<<REV_Y_SW)) {	
+        button_number_to_display = 35;
 				joy_axis = 1;
 				joy_rev = 1;
 			} else if (buttons_temp & (1<<REV_Z_SW)) {	
+        button_number_to_display = 36;
 				joy_axis = 2;
 				joy_rev = 1;
 			#ifdef AXIS_C_ENABLE
 				} else if (buttons_temp & (1<<REV_C_SW)) {	
+          button_number_to_display = 37;
 					joy_axis = 3;
 					joy_rev = 1;
 			#endif
@@ -674,7 +711,7 @@ void jogpad_check() {
 		  if (sys.state == STATE_IDLE) {
 		    if (plan_get_current_block() != NULL) { // Check if there is a block to execute.
 		      sys.state = STATE_JOG;
-	      	set_led_status();
+	      	set_led_disp_status();
 		      st_prep_buffer();
 		      sys.f_override = adc_current_feed;
 		      plan_update_velocity_profile_parameters();

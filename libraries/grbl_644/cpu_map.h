@@ -38,9 +38,9 @@
 #define SERIAL_UDRE USART0_UDRE_vect
 
 // Increase Buffers to make use of extra SRAM
-#define RX_BUFFER_SIZE		256
+#define RX_BUFFER_SIZE		128
 #define TX_BUFFER_SIZE		128
-#define BLOCK_BUFFER_SIZE	36
+#define BLOCK_BUFFER_SIZE	40
 #define LINE_BUFFER_SIZE	80
 
 // Define step pulse output pins. NOTE: All step bit pins must be on the same port.
@@ -182,7 +182,7 @@
 #define SPI_SCK   7
 #define SPI_SS    4   // Display-Einheit, immer Ausgang!
 
-#define JOG_POT   7		// PA7 ADC7
+#define JOG_POT_ADC 7		// PA7 ADC7
 
 #endif
 
