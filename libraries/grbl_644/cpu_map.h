@@ -40,8 +40,8 @@
 // Increase Buffers to make use of extra SRAM
 #define RX_BUFFER_SIZE		128
 #define TX_BUFFER_SIZE		128
-#define BLOCK_BUFFER_SIZE	40
-#define LINE_BUFFER_SIZE	80
+#define BLOCK_BUFFER_SIZE	32	// normal 16
+#define LINE_BUFFER_SIZE	80	// normal 80
 
 // Define step pulse output pins. NOTE: All step bit pins must be on the same port.
 #define STEP_DDR      DDRC
@@ -247,7 +247,7 @@
 #define LED_ALARM              0
 #define LED_RUN                1
 #define LED_JOG                1
-#define LED_HOMING             0
+#define LED_HOMING             1
 #define LED_HOLD               2
 //  #define LED_SPINDLE            7 
 //  #define LED_FLOOD              7
@@ -280,6 +280,7 @@
 #define ZERO_Y_SW        1		// sets Y work position to zero
 #define ZERO_X_SW        0		// sets X work position to zero
 // #define ZERO_ALL_SW      0	// unused
+// #define ZERO_XY_SW      0	// unused
 
 // ----------------------------------------------------------------------------
 // ACCESSORY_INP_SR: Buttons, wartet auf Loslassen
@@ -321,7 +322,8 @@
 //
 #define DIAL_SPINDLE_TOGGLE 7
 // #define NC1_SW        6	// not connected
-#define DIAL_ZERO_SW	5 	// ZeroAll from dial SR, waits for btn release
+#define DIAL_ZERO_ALL_SW	5 	// Zero XYZC from dial SR, waits for btn release
+//#define DIAL_ZERO_XY_SW	5 	// Zero XY from dial SR, waits for btn release
 #define DIAL_FAST_SW  4		// Toggles dial FAST mode
 #define DIAL_DIR_C_SW 3		// momentary contact button.
 #define DIAL_DIR_Z_SW 2

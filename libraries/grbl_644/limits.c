@@ -101,7 +101,7 @@ uint8_t limits_get_state()
   ISR(LIMIT_INT_vect) // DEFAULT: Limit pin change interrupt process.
   {
 
-#ifdef DIAL
+#ifdef DIAL_ENABLED
     // first check Encoder Wheel on same pins
     check_encoder_hook(LIMIT_PIN);
     if ((LIMIT_PIN & LIMIT_MASK) == LIMIT_MASK) return;
@@ -130,11 +130,11 @@ uint8_t limits_get_state()
 #else // OPTIONAL: Software debounce limit pin routine.
   // Upon limit pin change, enable watchdog timer to create a short delay. 
   ISR(LIMIT_INT_vect) {
-#ifdef DIAL
+	#ifdef DIAL_ENABLED
     // first check Encoder Wheel on same pins
     check_encoder_hook(LIMIT_PIN);
-    if ((LIMIT_PIN & LIMIT_MASK) == LIMIT_MASK) return;  // Enable internal pull-up resistors. Normal high operation.
-#endif
+    if ((LIMIT_PIN & LIMIT_MASK) == LIMIT_MASK) return; // no limit pins envolved
+	#endif
     if (!(WDTCSR & (1<<WDIE))) { WDTCSR |= (1<<WDIE); } 
   }
   
@@ -181,11 +181,6 @@ void limits_go_home(uint8_t cycle_mask)
   uint8_t idx;
   for (idx=0; idx<N_AXIS; idx++) {
   	
-#ifdef SPI_DISP  	
-		sr_dispstate_1 = sys.state; 		// Homing-Status auch an Display -cm
-		spi_tx_axis(idx); 							// jede Achse
-#endif		
-
     // Initialize step pin masks
     step_pin[idx] = get_step_pin_mask(idx);
     #ifdef COREXY
@@ -254,15 +249,10 @@ void limits_go_home(uint8_t cycle_mask)
     st_prep_buffer(); // Prep and fill segment buffer from newly planned block.
     st_wake_up(); // Initiate motion
     do {
-			#ifdef SPI_SR  	
-		  	set_led_disp_status();   // Status-LED-Port setzen -cm
-				spi_txrx_inout();
-			#endif 	
       if (approach) {
         // Check limit state. Lock out cycle axes when they change.
         limit_state = limits_get_state();
         for (idx=0; idx<N_AXIS; idx++) {
-				  spi_tx_axis();
           if (axislock & step_pin[idx]) {
             if (limit_state & (1 << idx)) {
               #ifdef COREXY

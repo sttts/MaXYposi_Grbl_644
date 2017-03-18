@@ -171,8 +171,11 @@ ISR(SERIAL_RX)
       if (data > 0x7F) { // Real-time control characters are extended ACSII only.
 
 #ifdef CMD_FEED_OVR_DIRECT	// Direct feed override realtime command?
-        if (data > 0xF0) { 
-        	system_set_exec_motion_override_direct(data-0xF0);	// 1 to 15 -cm
+        if (data >= CMD_FEED_OVR_DIRECT) { 
+        	if (sys.state & STATE_JOG) { // Block all other states from invoking motion cancel.
+        		system_set_exec_motion_override_direct(data);	// 1 to 15 -cm
+        		return;
+        	}
         }
 #endif
 
@@ -180,7 +183,8 @@ ISR(SERIAL_RX)
           case CMD_SAFETY_DOOR:   system_set_exec_state_flag(EXEC_SAFETY_DOOR); break; // Set as true
           case CMD_JOG_CANCEL:   
             if (sys.state & STATE_JOG) { // Block all other states from invoking motion cancel.
-              system_set_exec_state_flag(EXEC_MOTION_CANCEL); 
+              system_set_exec_state_flag(EXEC_MOTION_CANCEL);
+               
             }
             break; 
           #ifdef DEBUG

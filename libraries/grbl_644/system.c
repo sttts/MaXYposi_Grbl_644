@@ -384,17 +384,21 @@ void system_set_exec_motion_override_flag(uint8_t mask) {
   uint8_t sreg = SREG;
   cli();
   sys_rt_exec_motion_override |= (mask);
+	#ifdef CMD_FEED_OVR_DIRECT
+	  sys_rt_exec_motion_override_direct = 0;	// -cm
+	#endif
   SREG = sreg;
 }
 
 #ifdef CMD_FEED_OVR_DIRECT
-// Force feed override -cm
-void system_set_exec_motion_override_direct(uint8_t data) {
-  uint8_t sreg = SREG;
-  cli();
-  sys_rt_exec_motion_override_direct = (data);
-  SREG = sreg;
-}
+	// Force feed override -cm
+	void system_set_exec_motion_override_direct(uint8_t data) {
+	  uint8_t sreg = SREG;
+	  cli();
+	  sys_rt_exec_motion_override = 0;
+	  sys_rt_exec_motion_override_direct = data;
+	  SREG = sreg;
+	}
 #endif
 
 void system_set_exec_accessory_override_flag(uint8_t mask) {
@@ -408,9 +412,9 @@ void system_clear_exec_motion_overrides() {
   uint8_t sreg = SREG;
   cli();
   sys_rt_exec_motion_override = 0;
-#ifdef CMD_FEED_OVR_DIRECT
-  sys_rt_exec_motion_override_direct = 0;	// -cm
-#endif
+	#ifdef CMD_FEED_OVR_DIRECT
+	  sys_rt_exec_motion_override_direct = 0;	// -cm
+	#endif
   SREG = sreg;
 }
 

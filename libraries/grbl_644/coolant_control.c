@@ -28,6 +28,10 @@ void coolant_init()
   	COOLANT_FLOOD_DDR |= (1 << COOLANT_FLOOD_BIT); // Configure as output pin
   #endif
   coolant_stop();
+  coolant_set_state(ATC_DISABLE);
+  coolant_set_state(AUX1_DISABLE);
+  coolant_set_state(AUX2_DISABLE);
+  coolant_set_state(AUX3_DISABLE);
 }
 
 

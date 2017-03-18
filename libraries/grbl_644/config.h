@@ -1,9 +1,3 @@
-
-
-
-
-
-
 /*
   config.h - compile time configuration
   Part of Grbl
@@ -80,7 +74,7 @@
 #define CMD_RAPID_OVR_MEDIUM 0x96
 #define CMD_RAPID_OVR_LOW 0x97
 
-#define CMD_FEED_OVR_DIRECT       // Sets feed override value, 0xF1 = slowest, 0xFF = fastest -cm
+#define CMD_FEED_OVR_DIRECT 0xF0       // Sets feed override value, 0xF0 = slowest, 0xFF = fastest -cm
 
 
 // #define CMD_RAPID_OVR_EXTRA_LOW 0x98 // *NOT SUPPORTED*
@@ -116,7 +110,8 @@
 // will not be affected by pin sharing.
 // NOTE: Defaults are set for a traditional 3-axis CNC machine. Z-axis first to clear, followed by X & Y.
 #define HOMING_CYCLE_0 (1<<Z_AXIS)                // REQUIRED: First move Z to clear workspace.
-#define HOMING_CYCLE_1 ((1<<X_AXIS)|(1<<Y_AXIS)|(1<<C_AXIS))  // OPTIONAL: Then move X,Y at the same time.
+#define HOMING_CYCLE_1 ((1<<X_AXIS)|(1<<Y_AXIS))  // OPTIONAL: Then move X,Y at the same time.
+//#define HOMING_CYCLE_1 ((1<<X_AXIS)|(1<<Y_AXIS)|(1<<C_AXIS))  // OPTIONAL: Then move X,Y,C at the same time.
 // #define HOMING_CYCLE_2                         // OPTIONAL: Uncomment and add axes mask to enable
 
 // NOTE: The following are two examples to setup homing for 2-axis machines.
@@ -617,7 +612,7 @@
 #define PROC_NAME "AVR_644" 	// issued with $I command -cm
 
 #define GRBL_VERSION "1.1f2"	// issued with $I command -cm
-#define GRBL_VERSION_BUILD "08.03.2017"
+#define GRBL_VERSION_BUILD "18.03.2017"
 
 #define SPI_SR    // SPI shift I/O registers 2..4x HC165 and 2x HC595
 #define SPI_DISP  // LC Display unit with own ATmega88/168/328 connected to SPI
@@ -639,9 +634,13 @@
 #define DIAL_SLOW_FAC 0.2     // fac of max. axis seek rate (as set in EEPROM) for dial moves
 #define DIAL_FAST_FAC 0.5
 
-#define JOY_ENABLED       // uncomment to disable analog joystick  -cm
-#define JOY_ADC_OFFS  20  // Joystick low speed offset
-#define JOY_ACCELL    10  // Joystick accelleration. Lower values = faster.
+#define JOY_ENABLED         // uncomment to disable analog joystick  -cm
+#define JOY_ADC_OFFS  20    // Joystick low speed offset
+#define JOY_ACCELL    5     // Joystick accelleration. Lower values = faster.
+// NOTE: both JOY_SPEEDFAC should not be greater than 0.5 due to feed override of 200%.
+#define JOY_SPEEDFAC_XY  0.25  // max. feed rate * JOY_SPEEDFAC_XY = Joystick max. speed on X and Y axis.
+#define JOY_SPEEDFAC_CZ  0.1   // max. feed rate * JOY_SPEEDFAC_CZ = Joystick max. speed on C and Z axis.
+
 // ZERO messages: If defined, issue message if one of ZERO buttons pressed, like [MSG: ZERO X] or [MSG: ZERO ALL]
 // if not defined, will report Zero request continuously in realtime status 
 #define ZERO_MSG         

@@ -459,7 +459,7 @@ void protocol_exec_rt_system()
   if (rt_exec) {
     system_clear_exec_motion_overrides(); // Clear all motion override flags.
     uint8_t new_f_override =  sys.f_override;
-    new_f_override = feed_ovr_lookup[rt_exec];
+    new_f_override = feed_ovr_lookup[rt_exec - CMD_FEED_OVR_DIRECT];
     new_f_override = min(new_f_override,MAX_FEED_RATE_OVERRIDE);
     new_f_override = max(new_f_override,MIN_FEED_RATE_OVERRIDE);
 
@@ -583,6 +583,20 @@ static void protocol_exec_rt_suspend()
   #endif
 
   while (sys.suspend) {
+
+/*
+			#if defined(USER_PANEL_LARGE) || defined(USER_PANEL_SMALL)
+			jogpad_check();	// Alle SPI-IOs holen/setzen
+			spi_tx_axis_roundrobin();
+		#else
+			#ifdef SPI_SR
+				// laufend Ports abfragen und gleichzeitig Ausgangsports senden -cm
+				set_led_disp_status();
+				spi_txrx_inout();		// sonst in jogpad_check()
+				spi_tx_axis_roundrobin();
+			#endif
+		#endif
+*/		
 		#ifdef SPI_SR
 			// laufend Ports abfragen und gleichzeitig Ausgangsports senden -cm
 			set_led_disp_status();
@@ -594,7 +608,6 @@ static void protocol_exec_rt_suspend()
 
     // Block until initial hold is complete and the machine has stopped motion.
     if (sys.suspend & SUSPEND_HOLD_COMPLETE) {
-
       // Parking manager. Handles de/re-energizing, switch state checks, and parking motions for 
       // the safety door and sleep states.
       if (sys.state & (STATE_SAFETY_DOOR | STATE_SLEEP)) {
