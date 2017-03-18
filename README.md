@@ -15,7 +15,7 @@ I/Os hinzugefügt, außerdem einen Handrad- und Joystick-Jog-Anschluss sowie ein
 Echtzeit-Positionsanzeige mit LDC 16x2 auf einem (optionalen) Bedienfeld. Dazu 
 wird es eine Platine und einen Bausatz geben.
 
-###Grbl 1.1f2 Version for ATmega644(p) build 18.03.2017 
+### Grbl 1.1f2 Version for ATmega644(p) build 18.03.2017 
 
 GRBL firmware with multiple additions, suited for MaXYposi board (german Make: magazine, issue 2/2017). Additions by Carsten Meyer, Make Magazin Deutschland.
 
