@@ -4,10 +4,10 @@ Maker Media GmbH und c't, Heise Zeitschriften Verlag
 
 ***
 
-Unser Steuerungs-Projekt für 4 Achsen und vielen I/Os befindet sich zur Zeit in 
-Entwicklung, ist aber schon in einem brauchbaren Stadium. Sie finden die PLäne 
-für unseren XY-Portalroboter/Positionierer in unserem [Github-Repository 
-MaXYposi](https://github.com/heise/MaXYposi).
+Platinenlayout und Stückliste zu unserer [MaXYposi](https://github.com/heise/MaXYposi)-Schrittmotorsteuerung für 4 Achsen und mit vielen I/Os finden Sie im Verzeichnis **maxyposi_pcb**.
+
+Die Firmware für unser Steuerungs-Projekt befindet sich zur Zeit in 
+Entwicklung, ist aber schon in einem brauchbaren Stadium. 
 
 Natürlich ist als Bahnsteuerung auch ein normaler Arduino-328 mit dem Standard-
 GRBL geeignet. Wir haben unser 644-GRBL allerdings auf 4 Achsen erweitert und 32 
