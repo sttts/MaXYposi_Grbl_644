@@ -59,7 +59,7 @@ void limits_init()
 void limits_disable()
 {
   LIMIT_PCMSK &= ~LIMIT_MASK;  // Disable specific pins of the Pin Change Interrupt
-#ifndef DIAL
+#ifndef DIAL_ENABLED
   PCICR &= ~(1 << LIMIT_INT);  // Disable Pin Change Interrupt -cm
 #endif
 }

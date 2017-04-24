@@ -585,7 +585,7 @@ static void protocol_exec_rt_suspend()
   while (sys.suspend) {
 
 /*
-			#if defined(USER_PANEL_LARGE) || defined(USER_PANEL_SMALL)
+		#if defined(USER_PANEL_LARGE) || defined(USER_PANEL_SMALL)
 			jogpad_check();	// Alle SPI-IOs holen/setzen
 			spi_tx_axis_roundrobin();
 		#else

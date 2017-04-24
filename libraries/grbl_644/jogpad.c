@@ -80,6 +80,23 @@ uint8_t blink_toggle;
   }
 #endif  // JOY_ENABLED
 
+
+#ifdef DIAL_ENABLED
+	void jog_step_disable(){
+	  // Set stepper driver idle state, disabled or enabled, depending on settings and circumstances.
+	  bool pin_state = false; // Keep enabled.
+	  if (((settings.stepper_idle_lock_time != 0xff) || sys_rt_exec_alarm || sys.state == STATE_SLEEP) && sys.state != STATE_HOMING) {
+	    // Force stepper dwell to lock axes for a defined amount of time to ensure the axes come to a complete
+	    // stop and not drift from residual inertial forces at the end of the last movement.
+	    delay_ms(settings.stepper_idle_lock_time);
+	    pin_state = true; // Override. Disable steppers.
+	  }
+	  if (bit_istrue(settings.flags,BITFLAG_INVERT_ST_ENABLE)) { pin_state = !pin_state; } // Apply pin invert.
+	  if (pin_state) { STEPPERS_DISABLE_PORT |= (1<<STEPPERS_DISABLE_BIT); }
+	  else { STEPPERS_DISABLE_PORT &= ~(1<<STEPPERS_DISABLE_BIT); }
+	}
+#endif
+
 //#############################################################################################
 //#############################################################################################
 
@@ -119,6 +136,8 @@ void jogpad_init() {
 	aux2_on = false;
 	aux3_on = false;
   msg_to_display = 0;
+  // needed for smooth dial operation.
+  step_idle_timeout = 0;
 }
 
 void set_led_disp_status() {
@@ -126,9 +145,17 @@ void set_led_disp_status() {
 	uint8_t status_temp = 0;
 	uint8_t leds_temp;
 	blink_count++;
+
+
 	// diese Status-LEDs blinken, wenn aktiv
 	// LED_ALARM, LED_HOLD (muss in limits_go_home()-
 	// und protocol_exec_rt_suspend()-Schleife aufgerufen werden)
+	#ifdef DIAL_ENABLED
+		if ((step_idle_timeout > 0) && (sys.state == STATE_IDLE)){
+			if (step_idle_timeout == 1) jog_step_disable();
+			step_idle_timeout--;
+		}
+	#endif
 	if (sys.state & STATE_ALARM) {
 		#ifdef LED_ALARM
 			leds_temp = (1 << LED_ALARM);
@@ -880,7 +907,8 @@ void jogpad_check() {
 			return;		   
 	  }
  		
-    if (sys.state == STATE_JOG) return; // prevent new pos. issued before previous done. Keep dial_delta_32.
+// Prevent new pos. issued before previous done - may improve accuracy. Keep dial_delta_32.
+//    if (sys.state == STATE_JOG) return; 
 
     memset(pl_data, 0, sizeof(plan_line_data_t)); // Zero pl_data struct
     if (spindle_on){

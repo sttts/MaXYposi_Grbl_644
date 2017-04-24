@@ -32,6 +32,7 @@ bool aux1_on;
 bool aux2_on;
 bool aux3_on;
 uint8_t msg_to_display;
+uint16_t step_idle_timeout;
 
 uint8_t jog_zero_request_flag;  // Report ZERO request
 

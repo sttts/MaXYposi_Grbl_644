@@ -243,6 +243,10 @@ void st_wake_up()
 	#ifdef debug_spi
   	printPgmString(PSTR("[MSG:STEPPER WAKEUP]\r\n"));
   #endif
+  #ifdef DIAL_ENABLED
+  // Needed for smooth dial operation.
+  	step_idle_timeout = 0;
+  #endif
 }
 
 
@@ -256,18 +260,22 @@ void st_go_idle()
   TIMSK1 &= ~(1<<OCIE1A); // Disable Timer1 interrupt
   TCCR1B = (TCCR1B & ~((1<<CS12) | (1<<CS11))) | (1<<CS10); // Reset clock to no prescaling.
   busy = false;
-
-  // Set stepper driver idle state, disabled or enabled, depending on settings and circumstances.
-  bool pin_state = false; // Keep enabled.
-  if (((settings.stepper_idle_lock_time != 0xff) || sys_rt_exec_alarm || sys.state == STATE_SLEEP) && sys.state != STATE_HOMING) {
-    // Force stepper dwell to lock axes for a defined amount of time to ensure the axes come to a complete
-    // stop and not drift from residual inertial forces at the end of the last movement.
-    delay_ms(settings.stepper_idle_lock_time);
-    pin_state = true; // Override. Disable steppers.
-  }
-  if (bit_istrue(settings.flags,BITFLAG_INVERT_ST_ENABLE)) { pin_state = !pin_state; } // Apply pin invert.
-  if (pin_state) { STEPPERS_DISABLE_PORT |= (1<<STEPPERS_DISABLE_BIT); }
-  else { STEPPERS_DISABLE_PORT &= ~(1<<STEPPERS_DISABLE_BIT); }
+  #ifdef DIAL_ENABLED
+  // Long timeout needed for smooth dial operation.
+  	step_idle_timeout = 20000;
+  #else
+	  // Set stepper driver idle state, disabled or enabled, depending on settings and circumstances.
+	  bool pin_state = false; // Keep enabled.
+	  if (((settings.stepper_idle_lock_time != 0xff) || sys_rt_exec_alarm || sys.state == STATE_SLEEP) && sys.state != STATE_HOMING) {
+	    // Force stepper dwell to lock axes for a defined amount of time to ensure the axes come to a complete
+	    // stop and not drift from residual inertial forces at the end of the last movement.
+	    delay_ms(settings.stepper_idle_lock_time);
+	    pin_state = true; // Override. Disable steppers.
+	  }
+	  if (bit_istrue(settings.flags,BITFLAG_INVERT_ST_ENABLE)) { pin_state = !pin_state; } // Apply pin invert.
+	  if (pin_state) { STEPPERS_DISABLE_PORT |= (1<<STEPPERS_DISABLE_BIT); }
+	  else { STEPPERS_DISABLE_PORT &= ~(1<<STEPPERS_DISABLE_BIT); }
+  #endif
 }
 
 

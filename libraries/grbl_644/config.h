@@ -642,8 +642,9 @@
 #define JOY_SPEEDFAC_CZ  0.1   // max. feed rate * JOY_SPEEDFAC_CZ = Joystick max. speed on C and Z axis.
 
 // ZERO messages: If defined, issue message if one of ZERO buttons pressed, like [MSG: ZERO X] or [MSG: ZERO ALL]
-// if not defined, will report Zero request continuously in realtime status 
-#define ZERO_MSG         
+// if not defined, will report Zero request continuously in realtime status. Do not use wit GRBLize since
+// single message may be lost. 
+// #define ZERO_MSG         
 
 //#################################################################################################
 //################################### DEVICE ADDRESSING ###########################################
