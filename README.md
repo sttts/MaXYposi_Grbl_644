@@ -12,8 +12,12 @@ Entwicklung, ist aber schon in einem brauchbaren Stadium.
 Natürlich ist als Bahnsteuerung auch ein normaler Arduino-328 mit dem Standard-
 GRBL geeignet. Wir haben unser 644-GRBL allerdings auf 4 Achsen erweitert und 32 
 I/Os hinzugefügt, außerdem einen Handrad- und Joystick-Jog-Anschluss sowie eine 
-Echtzeit-Positionsanzeige mit LDC 16x2 auf einem (optionalen) Bedienfeld. Dazu 
-wird es eine Platine und einen Bausatz geben.
+Echtzeit-Positionsanzeige mit LDC 16x2 auf einem (optionalen) Bedienfeld. 
+
+Zum Projekt wird es eine mit SMD-Teilen vorbestückte Platine geben, die 
+voraussichtlich Ende April 2017 lieferbar sein wird. Hinweise zur Bestellung finden Sie auf der
+[MaXYPosi-Projektseite](http://www.make-magazin.de/maxyposi).
+
 
 ### Grbl 1.1f2 Version for ATmega644(p) build 18.03.2017 
 
