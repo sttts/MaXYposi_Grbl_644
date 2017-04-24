@@ -3,9 +3,9 @@
 Derived from **Sanguino by Kristian Sloth Lauszus, 2012**, MaXYposi additions by -cm
 
 
-Nur für "jungfräuliche" Controller ohne installierten Bootloader!
+Nur fÃ¼r "jungfrÃ¤uliche" Controller ohne installierten Bootloader!
 
-Falls noch nicht vorhanden, kann mit einem ISP-Programmer (oder einem dazu umfunktionierten Arduino) dieser Bootloader auf den MaXYposi-Controller ATmega644P geflasht werden. Die Befehlszeilen für avrdude lauten etwa wie folgt (beachten Sie die Fuses-Settings):
+Falls noch nicht vorhanden, kann mit einem ISP-Programmer (oder einem dazu umfunktionierten Arduino) dieser Bootloader auf den MaXYposi-Controller ATmega644P geflasht werden. Die Befehlszeilen fÃ¼r avrdude lauten etwa wie folgt (beachten Sie die Fuses-Settings):
 
 avrdude.exe -C "avrdude.conf" -pm644p -cstk500v2 -B8 -P COM%1 -V -s -U lfuse:w:0xFF:m -U hfuse:w:0xDE:m -U efuse:w:0xFC:m -U lock:w:0xEF:m
 
