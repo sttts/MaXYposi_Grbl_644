@@ -8,8 +8,8 @@ Maker Media GmbH und c't, Heise Zeitschriften Verlag
 
 ![Picture](https://github.com/heise/MaXYposi_Grbl_644/blob/master/maxyposi_pcb/platine_ausschnitt.JPG)
 
-Natürlich ist als Bahnsteuerung auch ein normaler Arduino-328 mit dem Standard-
-GRBL geeignet. Wir haben unser 644-GRBL allerdings auf 4 Achsen erweitert und 32 
+Natürlich wäre als Bahnsteuerung auch ein normaler Arduino-328 mit dem Standard-
+GRBL geeignet - wir haben unser 644-GRBL allerdings auf 4 Achsen erweitert und 32 
 I/Os hinzugefügt, außerdem einen Handrad- und Joystick-Jog-Anschluss sowie eine 
 Echtzeit-Positionsanzeige mit LDC 16x2 auf einem (optionalen) Bedienfeld. 
 
