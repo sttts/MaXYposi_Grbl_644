@@ -6,7 +6,7 @@ Maker Media GmbH und c't, Heise Zeitschriften Verlag
 
 ### MaXYposi-Schrittmotorsteuerung, Stückliste
 
-In diesem Repository finden Sie die Stücklisten, Fotos, Schalt- bestückungspläne 
+In diesem Unterverzeichnis finden Sie die Stücklisten, Fotos, Schalt- und Bestückungspläne 
 zur MaXYposi-Schrittmotorsteuerung.
 
 Die mit allen SMD-Bauteilen vorbestückte Platine wird mit einem programmierten 
