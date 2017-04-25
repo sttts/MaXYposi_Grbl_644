@@ -6,7 +6,7 @@ Maker Media GmbH und c't, Heise Zeitschriften Verlag
 
 ### MaXYposi-Schrittmotorsteuerung 
 
-![Picture](https://github.com/heise/MaXYposi_Grbl_644/blob/master/platine_ausschnitt.JPG)
+![Picture](https://github.com/heise/MaXYposi_Grbl_644/blob/master/maxyposi_pcb/platine_ausschnitt.JPG)
 
 Natürlich wäre als Bahnsteuerung auch ein normaler Arduino-328 mit dem Standard-
 GRBL geeignet, wenn man sich auf 3 Achsen und eine Fernsteuerung über einen PC 

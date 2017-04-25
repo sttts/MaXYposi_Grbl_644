@@ -6,7 +6,7 @@ Maker Media GmbH und c't, Heise Zeitschriften Verlag
 
 ### MaXYposi-Schrittmotorsteuerung 
 
-![Picture](https://github.com/heise/MaXYposi_Grbl_644/blob/master/platine_ausschnitt.JPG)
+![Picture](https://github.com/heise/MaXYposi_Grbl_644/blob/master/maxyposi_pcb/platine_ausschnitt.JPG)
 
 Platinenlayout und Stückliste zu unserer [MaXYposi](https://github.com/heise/MaXYposi)-Schrittmotorsteuerung für 4 Achsen und mit vielen I/Os finden Sie im Verzeichnis **maxyposi_pcb**.
 
