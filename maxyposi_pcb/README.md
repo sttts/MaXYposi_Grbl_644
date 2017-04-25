@@ -44,13 +44,15 @@ angegeben:
     PSS 254/8G Wire-To-Board 8-pol. RM2,54  1   PL15                
     WSL 10                                  5   PL1 PL400 PL401 PL301 PL300
     WSL 16                                  1   PL501               
-    FL-B 64G4 Federleiste A-B DIN41612      2   CON1 CON2 (bei Bedarf)               
-    ATmega644P                              1   U1 (mitgeliefert)                 
+    FL-B 64G4 Federleiste A-B DIN41612      2   CON1 CON2 (bei Bedarf)
+    RND 205-00179                           1   SV Stromversorgung    
+    RND 205-00201 Stiftleiste 90°           1   SV Stromversorgung    
     220µ 63V RM5                            1   C18                 
     D-Sub 25-pol. Female Print              1   CON5               
     LM 317 TO92                             1   U500                
+    ATmega644PA-PU (DIL)                    1   U1 (mitgeliefert)                 
     SIL 9-8 10K R-Netzw. 8x 10k             2   RN300 RN301         
-    ULN 2803                                2   U402 U403           
+    ULN 2803A (DIL)                         2   U402 U403           
     Quarz 16 MHz HC49U                      1   XTAL1               
     GS 40P IC-Fassung 40pol DIL             1
     GS 18P IC-Fassung 18pol DIL             2
