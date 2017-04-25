@@ -25,15 +25,16 @@ Hauptseite](http://www.make-magazin.de/maxyposi)**.
 
 ### Stückliste
 
-Die bestückte Platine wird mit einem programmierten ATmega644P (Optiboot-
-Bootloader und GRBL 1.1f2) ausgeliefert. Es sind noch einige bedrahtete Bauteile 
-zu beschaffen und zu bestücken, unter anderem die Steckverbinder und IC-
-Fassungen. Wir haben hier die Reichelt-Bestellnummern angegeben.
+Die mit allen SMD-Bauteilen vorbestückte Platine wird mit einem programmierten 
+ATmega644P (Optiboot-Bootloader und GRBL 1.1f2) ausgeliefert. Es sind noch 
+einige bedrahtete Bauteile zu beschaffen und zu bestücken, unter anderem die 
+Steckverbinder und IC-Fassungen. Wir haben hier die Reichelt-Bestellnummern 
+angegeben:
 
     Bauteil                              Anzahl Name
     Jumper-Pfostenleiste 2-pol.             6   JP300 JP400 JP401 JP1 JP2 JP3
     Jumper-Pfostenleiste 3-pol.             1   JP5 
-    (1x SL 1x50G 2,54 bestellen und auf Länge kürzen)       
+    (SL 1x50G 2,54 bestellen und auf Länge kürzen)       
     
     PSS 254/2G Wire-To-Board 2-pol. RM2,54  2   PL7 PL9             
     PSS 254/3G Wire-To-Board 3-pol. RM2,54  1   PL4                 
@@ -54,10 +55,11 @@ Fassungen. Wir haben hier die Reichelt-Bestellnummern angegeben.
     GS 40P IC-Fassung 40pol DIL             1
     GS 18P IC-Fassung 18pol DIL             2
 
-Bitte denken Sie bei einer Bestellung auch an Zubehör wie Flachbandkabel, Steck- und Pfostenverbinder.
+Bitte denken Sie bei einer Bestellung auch an Zubehör wie Flachbandkabel, Steck-
+und Pfostenverbinder.
 
 Wer unbestückte Platinen fertigen (lassen) will, kann die Gerber- und 
 Bohrdateien "grbl_maxyposi_gerber.zip" herunterladen. Bitte beachten Sie: Das 
-Layout unterliegt unserem Copyright und darf nur für private Zwecke verwendet 
+Layout unterliegt unserem Copyright und darf **nur für private Zwecke** verwendet 
 werden. Für eine kommerzielle Nutzung [kontaktieren Sie bitte die 
 Redaktion](https://www.heise.de/make/kontakt/).
