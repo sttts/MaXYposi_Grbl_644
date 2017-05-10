@@ -6,27 +6,29 @@ Maker Media GmbH und c't, Heise Zeitschriften Verlag
 
 ### MaXYposi-Schrittmotorsteuerung 
 
+
 ![Picture](https://github.com/heise/MaXYposi_Grbl_644/blob/master/maxyposi_pcb/platine_ausschnitt.JPG)
 
-Natürlich wäre als Bahnsteuerung auch ein normaler Arduino-328 mit dem Standard-GRBL geeignet - wir haben unser 644-GRBL allerdings auf 4 Achsen erweitert und 32 
-I/Os hinzugefügt, außerdem einen Handrad- und Joystick-Jog-Anschluss sowie eine 
-Echtzeit-Positionsanzeige mit LDC 16x2 auf einem (optionalen) Bedienfeld. 
+Unser auf GRBL basirendes CNC-Steuerungs-Projekt für **4 Achsen und vielen 
+I/Os** auf einer speziell für CNC-Zwecke ausgelegten Platine. Natürlich wäre als 
+Bahnsteuerung auch ein normaler Arduino-328 mit dem Standard-GRBL geeignet - wir 
+haben unser 644-GRBL allerdings auf 4 Achsen erweitert und 32 I/Os hinzugefügt, 
+außerdem einen Handrad- und Joystick-Jog-Anschluss sowie eine Echtzeit-
+Positionsanzeige mit LDC 16x2 auf einem (optionalen) Bedienfeld. 
 
-Zum Projekt wird es eine mit SMD-Teilen vorbestückte Platine geben, die 
-voraussichtlich Ende April 2017 lieferbar sein wird. Hinweise zur Bestellung finden Sie auf der
-[MaXYPosi-Projektseite](http://www.make-magazin.de/maxyposi).
-
-Unser Steuerungs-Projekt für 4 Achsen und vielen I/Os auf einer speziell für 
-CNC-Zwecke ausgelegten Platine. Die Firmware für unser Steuerungs-Projekt 
-befindet sich zur Zeit in Entwicklung, ist aber schon in einem brauchbaren 
-Stadium. 
+Die mit allen SMD-Bauteilen vorbestückte Platine wird mit einem programmierten 
+ATmega644A (Optiboot-Bootloader und GRBL 1.1f2) angeboten, die 
+voraussichtlich Anfang Mai 2017 lieferbar sein wird. Hinweise zur Bestellung 
+finden Sie auf der [MaXYPosi-Projektseite](http://www.make-magazin.de/maxyposi). 
+Mitgeliefert wird ein mit unserem GRBL_644 und Bootoader programmierter 
+ATmega644A.
 
 Bitte beachten Sie unbedingt 
 
 * den Artikel in **[Make: 2/2017](https://shop.heise.de/katalog/make-2-2017)**
 * unsere **[MaXYPosi-Projektseite](http://www.make-magazin.de/maxyposi)**
 * die ständig aktualisierte **[FAQ-Seite](https://heise.de/-3676050)** und das zugehörige Forum.
-* die Hinweise zur Bestückung **[im Unterverzeichnis MaXYposy PCB](https://github.com/heise/MaXYposi_Grbl_644/tree/master/maxyposi_pcb)**
+* die Hinweise zur Bestückung der Platine **[im Unterverzeichnis MaXYposy PCB](https://github.com/heise/MaXYposi_Grbl_644/tree/master/maxyposi_pcb)**
 
 Der Sketch "grblUpload_644.ino" kompiliert GRBL-644 und lädt ihn auf die MaXYposi-Platine. Bitte 
 richten Sie die Arduino-IDE folgendermaßen ein:
@@ -39,10 +41,10 @@ richten Sie die Arduino-IDE folgendermaßen ein:
 * Wählen Sie im Menü "Werkzeuge:Prozessor" den Eintrag "ATmega644A" oder "ATmega644P", je nachdem, welche Variante Sie verwenden.
 
 Sie können nun GRBL mit der Arduino-IDE kompilieren und auch auf das Board 
-hochladen; die mit der Platine gelieferten prozessoren sind bereits mit einem 
+hochladen; die mit der Platine gelieferten Prozessoren sind bereits mit einem 
 Sanguino-Optiboot-kompatiblen Bootloader ausgestattet.
 
-### Grbl 1.1f2 Version for ATmega644(p) build 18.03.2017 
+### Grbl 1.1f2 Version for ATmega644(p) build 18.03.2017 (english)
 
 GRBL firmware with multiple additions, suited for MaXYposi board (german Make: magazine, issue 2/2017). Additions by Carsten Meyer, Make Magazin Deutschland.
 
