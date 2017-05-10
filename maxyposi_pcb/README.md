@@ -15,7 +15,8 @@ einige bedrahtete Bauteile zu beschaffen und zu bestücken, unter anderem die
 Steckverbinder und IC-Fassungen. Wir haben hier die Reichelt-Bestellnummern 
 angegeben:
 
-**    Bauteil                               Anzahl Name/Bemerkung**
+    Bauteil                               Anzahl Name/Bemerkung
+    =============================================================================
     Jumper-Pfostenleiste 2-pol.              6   JP300 JP400 JP401 JP1 JP2 JP3
     Jumper-Pfostenleiste 3-pol.              1   JP5 
     Pfostenleisten einreihig                 1   PL5, PL15, PL16 (falls benötigt) 
