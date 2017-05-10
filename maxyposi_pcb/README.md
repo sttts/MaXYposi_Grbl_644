@@ -10,15 +10,15 @@ In diesem Unterverzeichnis finden Sie die Stücklisten, Fotos, Schalt- und Best�
 zur MaXYposi-Schrittmotorsteuerung, Mainboard.
 
 Die mit allen SMD-Bauteilen vorbestückte Platine wird mit einem programmierten 
-ATmega644P (Optiboot-Bootloader und GRBL 1.1f2) ausgeliefert. Es sind noch 
+ATmega644A (Optiboot-Bootloader und GRBL 1.1f2) ausgeliefert. Es sind noch 
 einige bedrahtete Bauteile zu beschaffen und zu bestücken, unter anderem die 
 Steckverbinder und IC-Fassungen. Wir haben hier die Reichelt-Bestellnummern 
 angegeben:
 
-    Bauteil                              Anzahl Name/Bemerkung
-    Jumper-Pfostenleiste 2-pol.             6   JP300 JP400 JP401 JP1 JP2 JP3
-    Jumper-Pfostenleiste 3-pol.             1   JP5 
-    Pfostenleisten einreihig                1   PL5, PL15, PL16 (falls benötigt) 
+    **Bauteil                               Anzahl Name/Bemerkung**
+    Jumper-Pfostenleiste 2-pol.              6   JP300 JP400 JP401 JP1 JP2 JP3
+    Jumper-Pfostenleiste 3-pol.              1   JP5 
+    Pfostenleisten einreihig                 1   PL5, PL15, PL16 (falls benötigt) 
     (für diese Positionen SL 1x50G 2,54 bestellen und auf Länge kürzen)       
     
     PSS 254/2G, Wire-To-Board 2-pol. RM2,54  2   PL7 PL9             
