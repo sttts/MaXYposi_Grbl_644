@@ -621,8 +621,8 @@
 #define REPORT_G_M10X										// report M100..M107 states on $G command
 
 
-// #define USER_PANEL_SMALL  // 16 SR inputs and ADC7 used for manual jog (joystick, btns etc). SPI_SR needed.
-#define USER_PANEL_LARGE  // 32 SR inputs and ADC7 used for manual jog (joystick, btns etc). SPI_SR needed.
+#define USER_PANEL_SMALL  // 16 SR inputs and ADC7 used for manual jog (joystick, btns etc). SPI_SR needed.
+// #define USER_PANEL_LARGE  // 32 SR inputs and ADC7 used for manual jog (joystick, btns etc). SPI_SR needed.
 
 // Handwheel/Dial connection.
 // Dial needs USER_PANEL_xxx enabled.

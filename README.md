@@ -23,11 +23,24 @@ Stadium.
 
 Bitte beachten Sie unbedingt 
 
-- den Artikel in **[Make: 2/2017](https://shop.heise.de/katalog/make-2-2017)**
-- unsere **[MaXYPosi-Projektseite](http://www.make-magazin.de/maxyposi)**
-- die ständig aktualisierte **[FAQ-Seite](https://heise.de/-3676050)** und das zugehörige Forum.
-- die Hinweise zur Bestückung **[im Unterverzeichnis MaXYposy PCB](https://github.com/heise/MaXYposi_Grbl_644/tree/master/maxyposi_pcb)**
+* den Artikel in **[Make: 2/2017](https://shop.heise.de/katalog/make-2-2017)**
+* unsere **[MaXYPosi-Projektseite](http://www.make-magazin.de/maxyposi)**
+* die ständig aktualisierte **[FAQ-Seite](https://heise.de/-3676050)** und das zugehörige Forum.
+* die Hinweise zur Bestückung **[im Unterverzeichnis MaXYposy PCB](https://github.com/heise/MaXYposi_Grbl_644/tree/master/maxyposi_pcb)**
 
+Der Sketch "grblUpload_644.ino" kompiliert GRBL-644 und lädt ihn auf die MaXYposi-Platine. Bitte 
+richten Sie die Arduino-IDE folgendermaßen ein:
+
+* Verschieben Sie das Verzeichnis "grblUpload_644" vom Github-Download in Ihren "Arduino"-Sketch-Ordner.
+* Verschieben Sie das Verzeichnis "hardware" vom Github-Download in Ihren "Arduino"-Sketch-Ordner.
+* Verschieben Sie das Verzeichnis "libraries\grbl_644" vom Github-Download nach "Arduino\libraries\grbl_644".
+* Öffnen Sie den Sketch "..\Arduino\grblUpload_644\grblUpload_644.ino"
+* Wählen Sie im Menü "Werkzeuge:Board" den Eintrag "MaXYposi".
+* Wählen Sie im Menü "Werkzeuge:Prozessor" den Eintrag "ATmega644A" oder "ATmega644P", je nachdem, welche Variante Sie verwenden.
+
+Sie können nun GRBL mit der Arduino-IDE kompilieren und auch auf das Board 
+hochladen; die mit der Platine gelieferten prozessoren sind bereits mit einem 
+Sanguino-Optiboot-kompatiblen Bootloader ausgestattet.
 
 ### Grbl 1.1f2 Version for ATmega644(p) build 18.03.2017 
 
