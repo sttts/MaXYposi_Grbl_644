@@ -9,10 +9,10 @@ Maker Media GmbH und c't, Heise Zeitschriften Verlag
 
 ![Picture](https://github.com/heise/MaXYposi_Grbl_644/blob/master/maxyposi_pcb/platine_ausschnitt.JPG)
 
-Unser auf GRBL basirendes CNC-Steuerungs-Projekt für **4 Achsen und vielen 
+Unser auf GRBL basierendes CNC-Steuerungs-Projekt für **4 Achsen und vielen 
 I/Os** auf einer speziell für CNC-Zwecke ausgelegten Platine. Natürlich wäre als 
 Bahnsteuerung auch ein normaler Arduino-328 mit dem Standard-GRBL geeignet - wir 
-haben unser 644-GRBL allerdings auf 4 Achsen erweitert und 32 I/Os hinzugefügt, 
+haben unser GRBL-644 allerdings auf 4 Achsen erweitert und 32 I/Os hinzugefügt, 
 außerdem einen Handrad- und Joystick-Jog-Anschluss sowie eine Echtzeit-
 Positionsanzeige mit LDC 16x2 auf einem (optionalen) Bedienfeld. 
 
@@ -20,7 +20,7 @@ Die mit allen SMD-Bauteilen vorbestückte Platine wird mit einem programmierten
 ATmega644A (Optiboot-Bootloader und GRBL 1.1f2) angeboten, die 
 voraussichtlich Anfang Mai 2017 lieferbar sein wird. Hinweise zur Bestellung 
 finden Sie auf der [MaXYPosi-Projektseite](http://www.make-magazin.de/maxyposi). 
-Mitgeliefert wird ein mit unserem GRBL_644 und Bootoader programmierter 
+Mitgeliefert wird ein mit unserem GRBL-644 und Bootloader programmierter 
 ATmega644A.
 
 Bitte beachten Sie unbedingt 
@@ -33,6 +33,7 @@ Bitte beachten Sie unbedingt
 Der Sketch "grblUpload_644.ino" kompiliert GRBL-644 und lädt ihn auf die MaXYposi-Platine. Bitte 
 richten Sie die Arduino-IDE folgendermaßen ein:
 
+* Laden Sie sich das [GRBL-644-Repository](https://github.com/heise/MaXYposi_Grbl_644/archive/master.zip) herunter und entpacken sie es auf der lokalen Festplatte.
 * Verschieben Sie das Verzeichnis "grblUpload_644" vom Github-Download in Ihren "Arduino"-Sketch-Ordner.
 * Verschieben Sie das Verzeichnis "hardware" vom Github-Download in Ihren "Arduino"-Sketch-Ordner.
 * Verschieben Sie das Verzeichnis "libraries\grbl_644" vom Github-Download nach "Arduino\libraries\grbl_644".
