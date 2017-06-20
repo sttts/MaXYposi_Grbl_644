@@ -286,7 +286,11 @@
 // ACCESSORY_INP_SR: Buttons, wartet auf Loslassen
 // ----------------------------------------------------------------------------
 //
-#define ACCESSORY_INP_SR sr_inputs_1
+#ifdef USER_PANEL_SMALL
+  #define ACCESSORY_INP_SR sr_inputs_2
+#else
+  #define ACCESSORY_INP_SR sr_inputs_1
+#endif
 //
 #define SPINDLE_FASTER_SW 7		// Manual spindle override 
 #define SPINDLE_SLOWER_SW 6		// Manual spindle override
@@ -303,7 +307,11 @@
 // 
 // NOTE: Jog speed controlled by ADC7 value. Only one may be actice at a time.
 //
-#define JOY_INP_SR		sr_inputs_2  // Shift register used as joystick port
+#ifdef USER_PANEL_SMALL
+  #define JOY_INP_SR		sr_inputs_1  // Shift register used as joystick port
+#else
+  #define JOY_INP_SR		sr_inputs_2  // Shift register used as joystick port
+#endif
 
 #define REV_C_SW			7						 // Joystick momentary reverse switches
 #define FWD_C_SW			6						 // Joystick momentary forward switches
