@@ -45,6 +45,13 @@ Sie können nun GRBL mit der Arduino-IDE kompilieren und auch auf das Board
 hochladen; die mit der Platine gelieferten Prozessoren sind bereits mit einem 
 Sanguino-Optiboot-kompatiblen Bootloader ausgestattet.
 
+### Version history
+
+### Grbl 1.1f3 Version for ATmega644(p) build 20.06.2017 (english)
+
+ * Fixed pin assignment for SR inputs (joystick)
+ * Laser Mode disables Z homing (prevents alarm if no Z axis limit switch connected)
+
 ### Grbl 1.1f2 Version for ATmega644(p) build 18.03.2017 (english)
 
 GRBL firmware with multiple additions, suited for MaXYposi board (german Make: magazine, issue 2/2017). Additions by Carsten Meyer, Make Magazin Deutschland.
