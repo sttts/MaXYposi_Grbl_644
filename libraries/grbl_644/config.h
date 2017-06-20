@@ -109,6 +109,7 @@
 // on separate pin, but homed in one cycle. Also, it should be noted that the function of hard limits
 // will not be affected by pin sharing.
 // NOTE: Defaults are set for a traditional 3-axis CNC machine. Z-axis first to clear, followed by X & Y.
+// HOMING_CYCLE_0 (Z axis) not performed when Laser Mode ON -cm 
 #define HOMING_CYCLE_0 (1<<Z_AXIS)                // REQUIRED: First move Z to clear workspace.
 #define HOMING_CYCLE_1 ((1<<X_AXIS)|(1<<Y_AXIS))  // OPTIONAL: Then move X,Y at the same time.
 //#define HOMING_CYCLE_1 ((1<<X_AXIS)|(1<<Y_AXIS)|(1<<C_AXIS))  // OPTIONAL: Then move X,Y,C at the same time.
@@ -611,8 +612,8 @@
 
 #define PROC_NAME "AVR_644" 	// issued with $I command -cm
 
-#define GRBL_VERSION "1.1f2"	// issued with $I command -cm
-#define GRBL_VERSION_BUILD "18.03.2017"
+#define GRBL_VERSION "1.1f3"	// issued with $I command -cm
+#define GRBL_VERSION_BUILD "20.06.2017"
 
 #define SPI_SR    // SPI shift I/O registers 2..4x HC165 and 2x HC595
 #define SPI_DISP  // LC Display unit with own ATmega88/168/328 connected to SPI

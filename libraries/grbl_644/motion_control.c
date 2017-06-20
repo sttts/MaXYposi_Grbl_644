@@ -220,7 +220,10 @@ void mc_homing_cycle(uint8_t cycle_mask)
   #endif
   {
     // Search to engage all axes limit switches at faster homing seek rate.
-    limits_go_home(HOMING_CYCLE_0);  // Homing cycle 0
+    // only execute Z-axis homing when not in Laser Mode.
+    if (bit_isfalse(settings.flags,BITFLAG_LASER_MODE)) {
+      limits_go_home(HOMING_CYCLE_0);  // Homing cycle 0
+    }
     #ifdef HOMING_CYCLE_1
       limits_go_home(HOMING_CYCLE_1);  // Homing cycle 1
     #endif
