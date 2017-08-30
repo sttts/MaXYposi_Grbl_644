@@ -21,7 +21,7 @@ zur MaXYposi-Schrittmotorsteuerung, Kontrollpult.
     WSL 16, Wannenstecker                        1   PL5               
 
     Jumper 2pol. RM2.54                          1   JP1                 
-    14WP, Wannensteckverbinder (WSL16) RM 2.54   1   PL7                 
+    14WP, Zweireihige Pfostenleiste RM 2.54      1   PL7                 
     16WP                                         1   PL5                 
     74HC165 DIL                                  4   U4 U5 U6 U7         
     74LS595 DIL                                  2   U8 U9               
@@ -52,6 +52,8 @@ zur MaXYposi-Schrittmotorsteuerung, Kontrollpult.
 Beachten Sie die Hinweise im Artikel zu den LED-Vorwiderständen. Diese sind hier pauschal 
 mit 1k für blaue/weiße LEDs angegeben, müssen aber für eine ungefähr gleiche 
 Helligkeit der einzelnen Farben angepasst werden.
+
+PL7 kann alternativ für ein Display mit seitlichen 14pol. Anschluss verwendet werden und wird bei 16x2-Standard-Displays nicht benötigt.
 
 Bitte denken Sie bei einer Bestellung auch an Zubehör wie Flachbandkabel, Steck-
 und Pfostenverbinder.
