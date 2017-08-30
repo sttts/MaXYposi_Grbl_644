@@ -30,6 +30,7 @@ Bitte beachten Sie unbedingt:
 * die ständig aktualisierte **[FAQ-Seite](https://heise.de/-3676050)** und das zugehörige Forum.
 * die Hinweise zur Bestückung der Steuerungsplatine **[im Unterverzeichnis MaXYposy PCB](https://github.com/heise/MaXYposi_Grbl_644/tree/master/maxyposi_pcb)**
 * die Hinweise zur Bestückung der Kontrollpult-Platine **[im Unterverzeichnis MaXYpulti PCB](https://github.com/heise/MaXYposi_Grbl_644/tree/master/maxypulti_pcb)**
+* das Programm für den Kontrollpult-Display-Prozessor **[im Unterverzeichnis GRBL Display](https://github.com/heise/MaXYposi_Grbl_644/tree/master/grbl_display)**
 
 Optional:
 
