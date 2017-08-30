@@ -23,12 +23,19 @@ finden Sie auf der [MaXYPosi-Projektseite](http://www.make-magazin.de/maxyposi).
 Mitgeliefert wird ein mit unserem GRBL-644 und Bootloader programmierter 
 ATmega644A.
 
-Bitte beachten Sie unbedingt 
+Bitte beachten Sie unbedingt: 
 
 * den Artikel in **[Make: 2/2017](https://shop.heise.de/katalog/make-2-2017)**
 * unsere **[MaXYPosi-Projektseite](http://www.make-magazin.de/maxyposi)**
 * die ständig aktualisierte **[FAQ-Seite](https://heise.de/-3676050)** und das zugehörige Forum.
-* die Hinweise zur Bestückung der Platine **[im Unterverzeichnis MaXYposy PCB](https://github.com/heise/MaXYposi_Grbl_644/tree/master/maxyposi_pcb)**
+* die Hinweise zur Bestückung der Steuerungsplatine **[im Unterverzeichnis MaXYposy PCB](https://github.com/heise/MaXYposi_Grbl_644/tree/master/maxyposi_pcb)**
+* die Hinweise zur Bestückung der Kontrollpult-Platine **[im Unterverzeichnis MaXYpulti PCB](https://github.com/heise/MaXYposi_Grbl_644/tree/master/maxypulti_pcb)**
+
+Optional:
+
+* Sketch SD-Card-Sender für Arduino Uno/Nano **[im Unterverzeichnis SDcard Sender](https://github.com/heise/MaXYposi_Grbl_644/tree/master/sdcard_sender)**
+* Alter Schrittmotor als Dreh-Encoder/Handrad **[im Unterverzeichnis Step Encoder](https://github.com/heise/MaXYposi_Grbl_644/tree/master/step_encoder)**
+
 
 Der Sketch "grblUpload_644.ino" kompiliert GRBL-644 und lädt ihn auf die MaXYposi-Platine. Bitte 
 richten Sie die Arduino-IDE folgendermaßen ein:
