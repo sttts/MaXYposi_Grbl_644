@@ -4,7 +4,7 @@ Maker Media GmbH und c't, Heise Zeitschriften Verlag
 
 ***
 
-### MaXYposi-Schrittmotorsteuerung, Stückliste Kontollpult
+### MaXYposi-Schrittmotorsteuerung, Stückliste Kontrollpult
 
 In diesem Unterverzeichnis finden Sie die Stücklisten, Schalt- und Bestückungspläne 
 zur MaXYposi-Schrittmotorsteuerung, Kontrollpult.
@@ -49,13 +49,20 @@ zur MaXYposi-Schrittmotorsteuerung, Kontrollpult.
                   
 -------------------------------------------------------------------
 
-Beachten Sie die Hinweise im Artikel zu den LED-Vorwiderständen. Diese sind hier pauschal 
-mit 1k für blaue/weiße LEDs angegeben, müssen aber für eine ungefähr gleiche 
-Helligkeit der einzelnen Farben angepasst werden.
+Beachten Sie die Hinweise im Artikel zu den LED-Vorwiderständen. Diese sind hier 
+pauschal mit 1k für blaue/weiße LEDs angegeben, müssen aber für eine ungefähr 
+gleiche Helligkeit der einzelnen Farben angepasst werden.
 
-PL7 kann alternativ für ein Display mit seitlichen 14pol. Anschluss verwendet werden und wird bei 16x2-Standard-Displays nicht benötigt. Hierfür sollten Sie eine einreihige Pfostenleiste RM 2,54 mm mitbestellen.
+PL7 kann alternativ für ein Display mit seitlichem 14pol. Anschluss verwendet 
+werden und wird bei 16x2-Standard-Displays nicht benötigt. Hierfür sollten Sie 
+eine einreihige Pfostenleiste RM 2,54 mm mitbestellen.
 
-Die LEDs für die Taster sowie die Tastenkappen sind in der Stückliste NICHT aufgeführt. Wählen Sie die Farben nach persönlichem Gusto. Wir haben die Farben wie folgt gewählt: Blau = X (Kappe 1D00), Grün = Y (Kappe 1D02), Rot = Z (Kappe 1D08), Gelb = C-Achse (Kappe 1D04). Die transparenten Tastenkappen haben die Bezeichnung 1D16, die schwarzen heißen 1D09. beachten Sie zur Auswahl der Farben auch die Bilder im Artikel.
+Die LEDs für die Taster sowie die Tastenkappen sind in der Stückliste NICHT 
+aufgeführt. Wählen Sie die Farben nach persönlichem Gusto. Wir haben die Farben 
+wie folgt gewählt: Blau = X (Kappe 1D00), Grün = Y (Kappe 1D02), Rot = Z (Kappe 
+1D08), Gelb = C-Achse (Kappe 1D04). Die transparent-weißen Tastenkappen haben 
+die Bezeichnung 1D16, die schwarzen heißen 1D09. beachten Sie zur Auswahl der 
+Farben auch die Bilder im Artikel.
 
 [Flachkopf-LEDs von LED1.de](https://www.led1.de/shop/standard-leds/led-3mm-ultrahell-flat-top/)
 
@@ -69,7 +76,13 @@ Bitte denken Sie bei einer Bestellung auch an Zubehör wie Flachbandkabel, Steck
 und Pfostenverbinder.
 
 Wer unbestückte Platinen fertigen (lassen) will, kann die Gerber- und 
-Bohrdateien "maxypulti_gerber.zip" herunterladen. Bitte beachten Sie: Das 
-Layout unterliegt unserem Copyright und darf **nur für private Zwecke** verwendet 
+Bohrdateien "maxypulti_gerber.zip" herunterladen. Bitte beachten Sie: Das Layout 
+unterliegt unserem Copyright und darf **nur für private Zwecke** verwendet 
 werden. Für eine kommerzielle Nutzung [kontaktieren Sie bitte die 
 Redaktion](https://www.heise.de/make/kontakt/).
+
+Vorlagen für die Frontplatte liegen in zwei Versionen vor: Mit und ohne 
+Ausschnitt für ein CNC-Handrad (Dial), jeweils als DXF- und als CorelDraw-Datei. 
+Die Vorlagen eignen sich zum Plexiglas-Zuschnitt mit Beschriftung bei einem 
+Dienstleister Ihrer Wahl, z.B. www.formulor.de oder einem beliebigen  Fablab mit 
+Lasercutter.
