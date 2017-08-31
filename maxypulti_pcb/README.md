@@ -40,8 +40,8 @@ zur MaXYposi-Schrittmotorsteuerung, Kontrollpult.
     4k7                                          1   R19                 
     22k                                          1   R4                  
     100R                                         8   R12 R10 R11 R13 R14 R16 R17 R18
-    10k Netzwerk 8-fach. 9-pin                   4   RN3 RN4 RN5 RN6     
-    Print-Poti Alps, RK11K113-LIN10K             1   P1               
+    SIL 9-8 10k Netzwerk 8-fach, 9-pin           4   RN3 RN4 RN5 RN6     
+    Print-Poti Alps, RK11K113-LOG10K             1   P1  (auch RK11K113-LIN10K oder 50K möglich)     
     Trimmer 5mm, 2k5                             1   R1                  
     Taster Multimec 3FTH9                       30   SW1..SW34
     Taster Multimec 3ATH9                        4   SW3, SW6, SW8, SW9   
@@ -53,7 +53,17 @@ Beachten Sie die Hinweise im Artikel zu den LED-Vorwiderständen. Diese sind hie
 mit 1k für blaue/weiße LEDs angegeben, müssen aber für eine ungefähr gleiche 
 Helligkeit der einzelnen Farben angepasst werden.
 
-PL7 kann alternativ für ein Display mit seitlichen 14pol. Anschluss verwendet werden und wird bei 16x2-Standard-Displays nicht benötigt.
+PL7 kann alternativ für ein Display mit seitlichen 14pol. Anschluss verwendet werden und wird bei 16x2-Standard-Displays nicht benötigt. Hierfür sollten Sie eine einreihige Pfostenleiste RM 2,54 mm mitbestellen.
+
+Die LEDs für die Taster sowie die Tastenkappen sind in der Stückliste NICHT aufgeführt. Wählen Sie die Farben nach persönlichem Gusto. Wir haben die Farben wie folgt gewählt: Blau = X-, Grün = Y-, Rot = Z-, Gelb = C-Achse. 
+
+[Flachkopf-LEDs von LED1.de](https://www.led1.de/shop/standard-leds/led-3mm-ultrahell-flat-top/)
+
+[Tastenkappen Serie 1Dxx von MEC Switches, Beispielfarbe Rot](https://www.reichelt.de/Kurzhubtaster/KAPPE-1D08/3/index.html?ACTION=3&LA=517&ARTICLE=79710)
+
+[Tastenkappe Serie 1ZCxx von MEC Switches, Jogpad-Mittelkreis, Beispielfarbe Schwarz](https://www.reichelt.de/Kurzhubtaster/KAPPE-1ZC09/3/index.html?ACTION=3&LA=2&ARTICLE=79739)
+
+[Tastenkappen Serie 1ZBxx von MEC Switches, Jogpad-Außenkreis, Beispielfarbe Schwarz](https://www.reichelt.de/Kurzhubtaster/KAPPE-1ZB09/3/index.html?ACTION=3&LA=517&ARTICLE=79744)
 
 Bitte denken Sie bei einer Bestellung auch an Zubehör wie Flachbandkabel, Steck-
 und Pfostenverbinder.
