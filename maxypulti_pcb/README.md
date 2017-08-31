@@ -55,15 +55,15 @@ Helligkeit der einzelnen Farben angepasst werden.
 
 PL7 kann alternativ für ein Display mit seitlichen 14pol. Anschluss verwendet werden und wird bei 16x2-Standard-Displays nicht benötigt. Hierfür sollten Sie eine einreihige Pfostenleiste RM 2,54 mm mitbestellen.
 
-Die LEDs für die Taster sowie die Tastenkappen sind in der Stückliste NICHT aufgeführt. Wählen Sie die Farben nach persönlichem Gusto. Wir haben die Farben wie folgt gewählt: Blau = X-, Grün = Y-, Rot = Z-, Gelb = C-Achse. 
+Die LEDs für die Taster sowie die Tastenkappen sind in der Stückliste NICHT aufgeführt. Wählen Sie die Farben nach persönlichem Gusto. Wir haben die Farben wie folgt gewählt: Blau = X (Kappe 1D00), Grün = Y (Kappe 1D02), Rot = Z (Kappe 1D08), Gelb = C-Achse (Kappe 1D04). Die transparenten Tastenkappen haben die Bezeichnung 1D16, die schwarzen heißen 1D09. beachten Sie zur Auswahl der Farben auch die Bilder im Artikel.
 
 [Flachkopf-LEDs von LED1.de](https://www.led1.de/shop/standard-leds/led-3mm-ultrahell-flat-top/)
 
-[Tastenkappen Serie 1Dxx von MEC Switches, Beispielfarbe Rot](https://www.reichelt.de/Kurzhubtaster/KAPPE-1D08/3/index.html?ACTION=3&LA=517&ARTICLE=79710)
+[Tastenkappen Serie 1Dxx von MEC Switches, Beispielfarbe Rot, bei Reichelt](https://www.reichelt.de/Kurzhubtaster/KAPPE-1D08/3/index.html?ACTION=3&LA=3&ARTICLE=79710&GROUPID=7587&trstct=vrt_pdn)
 
-[Tastenkappe Serie 1ZCxx von MEC Switches, Jogpad-Mittelkreis, Beispielfarbe Schwarz](https://www.reichelt.de/Kurzhubtaster/KAPPE-1ZC09/3/index.html?ACTION=3&LA=2&ARTICLE=79739)
+[Tastenkappe Serie 1ZCxx von MEC Switches, Jogpad-Mittelkreis, Beispielfarbe Schwarz, bei Reichelt](https://www.reichelt.de/Kurzhubtaster/KAPPE-1ZC09/3/index.html?ACTION=3&LA=2&ARTICLE=79739)
 
-[Tastenkappen Serie 1ZBxx von MEC Switches, Jogpad-Außenkreis, Beispielfarbe Schwarz](https://www.reichelt.de/Kurzhubtaster/KAPPE-1ZB09/3/index.html?ACTION=3&LA=517&ARTICLE=79744)
+[Tastenkappen Serie 1ZBxx von MEC Switches, Jogpad-Außenkreis, Beispielfarbe Schwarz, bei Reichelt](https://www.reichelt.de/Kurzhubtaster/KAPPE-1ZB09/3/index.html?ACTION=3&LA=517&ARTICLE=79744)
 
 Bitte denken Sie bei einer Bestellung auch an Zubehör wie Flachbandkabel, Steck-
 und Pfostenverbinder.
