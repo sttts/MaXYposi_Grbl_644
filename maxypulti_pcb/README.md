@@ -15,17 +15,15 @@ zur MaXYposi-Schrittmotorsteuerung, Kontrollpult.
     
     PSS 254/4G, Wire-To-Board 4-pol. RM2,54      1   PL6
     PSS 254/5G, Wire-To-Board 4-pol. RM2,54      2   PL1 PL2
-    PSS 254/6G, Wire-To-Board 4-pol. RM2,54      2   PL1 PL4
-    
+    PSS 254/6G, Wire-To-Board 4-pol. RM2,54      2   PL1 PL4    
     Zweireihige Pfostenleiste RM 2.54            1   PL3                 
-    WSL 16, Wannenstecker                        1   PL5               
-
+    WSL 16, Wannenstecker 16pol.                 1   PL5               
     Jumper 2pol. RM2.54                          1   JP1                 
-    14WP, Zweireihige Pfostenleiste RM 2.54      1   PL7                 
-    16WP                                         1   PL5                 
+    14WP, Zweireihige Pfostenleiste RM 2.54      1   PL7 (siehe Text unten)                
+
     74HC165 DIL                                  4   U4 U5 U6 U7         
     74LS595 DIL                                  2   U8 U9               
-    ATmega328-DIL                                1   U3                  
+    ATmega328-DIL                                1   U3  (ggf. mit Bootloader)               
     DS26LS32CM DIL                               1   U1                  
     22p RM5                                      2   C3 C5               
     100n RM5                                     8   C6 C4 C1 C10 C11 C12 C13 C14           
@@ -72,6 +70,12 @@ Farben auch die Bilder im Artikel.
 
 [Tastenkappen Serie 1ZBxx von MEC Switches, Jogpad-Außenkreis, Beispielfarbe Schwarz, bei Reichelt](https://www.reichelt.de/Kurzhubtaster/KAPPE-1ZB09/3/index.html?ACTION=3&LA=517&ARTICLE=79744)
 
+Als Prozessor empfehlen wir einen ATmega328p mit bereits installiertem 
+Bootloader, erhältlich zum Beispiel bei [Watterott 
+electronic](http://www.watterott.com/de/ATmega328-Arduino-Bootloader); damit ist 
+das Flashen der GRBL-Display-Firmware über die Arduino-IDE möglich: Geben Sie als Board den Arduino Nano an und verwenden Sie einen USB-Seriell-Wandler mit FTDI-Chip. Ansonsten 
+benötigen Sie zum Flashen [einen ISP-Programmer](https://www.reichelt.de/Programmer-Entwicklungstools/DIAMEX-PROG-S2/3/index.html?ACTION=3&LA=446&ARTICLE=164172).
+
 Bitte denken Sie bei einer Bestellung auch an Zubehör wie Flachbandkabel, Steck-
 und Pfostenverbinder.
 
@@ -84,5 +88,5 @@ Redaktion](https://www.heise.de/make/kontakt/).
 Vorlagen für die Frontplatte liegen in zwei Versionen vor: Mit und ohne 
 Ausschnitt für ein CNC-Handrad (Dial), jeweils als DXF- und als CorelDraw-Datei. 
 Die Vorlagen eignen sich zum Plexiglas-Zuschnitt mit Beschriftung bei einem 
-Dienstleister Ihrer Wahl, z.B. www.formulor.de oder einem beliebigen  Fablab mit 
+Dienstleister Ihrer Wahl, z.B. www.formulor.de oder einem beliebigen Fablab mit 
 Lasercutter.
