@@ -73,7 +73,7 @@ Farben auch die Bilder im Artikel.
 Als Prozessor empfehlen wir einen ATmega328p mit bereits installiertem 
 Bootloader, erhältlich zum Beispiel bei [Watterott 
 electronic](http://www.watterott.com/de/ATmega328-Arduino-Bootloader); damit ist 
-das Flashen der GRBL-Display-Firmware über die Arduino-IDE möglich: Geben Sie als Board den Arduino Nano an und verwenden Sie einen USB-Seriell-Wandler mit FTDI-Chip. Ansonsten 
+das Flashen der GRBL-Display-Firmware über die Arduino-IDE möglich: Geben Sie als Board den Arduino Nano an und verwenden Sie einen USB-Seriell-Wandler mit FTDI-Chip zur . Ansonsten 
 benötigen Sie zum Flashen [einen ISP-Programmer](https://www.reichelt.de/Programmer-Entwicklungstools/DIAMEX-PROG-S2/3/index.html?ACTION=3&LA=446&ARTICLE=164172).
 
 Bitte denken Sie bei einer Bestellung auch an Zubehör wie Flachbandkabel, Steck-
