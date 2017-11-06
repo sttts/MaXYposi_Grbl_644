@@ -968,8 +968,7 @@ uint8_t gc_execute_line(char *line)
     if (gc_block.modal.coolant == COOLANT_DISABLE) { gc_state.modal.coolant = COOLANT_DISABLE; }
     else { gc_state.modal.coolant |= gc_block.modal.coolant; }
   }
-  pl_data->condition |= gc_state.modal.coolant; // Set condition flag for planner use.
-
+  pl_data->condition |= (gc_state.modal.coolant & COOLANT_MASK); // Set condition flag for planner use -cm 11/2017
   // [9. Override control ]: NOT SUPPORTED. Always enabled. Except for a Grbl-only parking control.
   #ifdef ENABLE_PARKING_OVERRIDE_CONTROL
     if (gc_state.modal.override != gc_block.modal.override) {

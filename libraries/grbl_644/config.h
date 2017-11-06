@@ -612,8 +612,8 @@
 
 #define PROC_NAME "AVR_644" 	// issued with $I command -cm
 
-#define GRBL_VERSION "1.1f3"	// issued with $I command -cm
-#define GRBL_VERSION_BUILD "20.06.2017"
+#define GRBL_VERSION "1.1f4"	// issued with $I command -cm
+#define GRBL_VERSION_BUILD "05.11.2017"
 
 #define SPI_SR    // SPI shift I/O registers 2..4x HC165 and 2x HC595
 #define SPI_DISP  // LC Display unit with own ATmega88/168/328 connected to SPI
