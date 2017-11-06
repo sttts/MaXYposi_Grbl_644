@@ -55,6 +55,11 @@ Sanguino-Optiboot-kompatiblen Bootloader ausgestattet.
 
 ### Version history
 
+### Grbl 1.1f4 Version for ATmega644(p) build 05.11.2017 (english)
+
+ * Fixed compile errors when C axis disabled
+ * Fixed erraneous behaviour when M10x commands are used
+ 
 ### Grbl 1.1f3 Version for ATmega644(p) build 20.06.2017 (english)
 
  * Fixed pin assignment for SR inputs (joystick)
