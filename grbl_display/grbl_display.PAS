@@ -27,7 +27,7 @@ program GRBL_DISPLAY;
 {$NOSHADOW}
 { $WG}                     {global Warnings off}
 
-Device = mega328p, VCC=5;
+Device = mega168, VCC=5;
 { $BOOTRST $07000}         {Reset Jump to $07000}
 
 Define_Fuses
