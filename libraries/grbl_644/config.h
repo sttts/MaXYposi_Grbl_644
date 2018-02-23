@@ -38,6 +38,15 @@
 #define CPU_MAP_644P_SR // Neue GRBL-Jog-Platine
 // #define CPU_MAP_644P_OLD // Alte GRBL-Jog-Platine - noch nicht implementiert
 
+#define PROC_NAME "AVR_644" 	// issued with $I command -cm
+
+#define GRBL_VERSION "1.1f5"	// issued with $I command -cm
+#define GRBL_VERSION_BUILD "02/23/2018"
+
+#define USER_PANEL_SMALL  // 16 SR inputs and ADC7 used for manual jog (joystick, btns etc). SPI_SR needed.
+//#define USER_PANEL_LARGE  // MaXYpulti - 32 SR inputs and ADC7 used for manual jog (joystick, btns etc). SPI_SR needed.
+
+
 // Serial baud rate
 // #define BAUD_RATE 230400
 #define BAUD_RATE 115200
@@ -610,20 +619,12 @@
 	See spi_sr.c for details.
 */
 
-#define PROC_NAME "AVR_644" 	// issued with $I command -cm
-
-#define GRBL_VERSION "1.1f4"	// issued with $I command -cm
-#define GRBL_VERSION_BUILD "05.11.2017"
-
 #define SPI_SR    // SPI shift I/O registers 2..4x HC165 and 2x HC595
 #define SPI_DISP  // LC Display unit with own ATmega88/168/328 connected to SPI
 // #define REPORT_FIELD_SR_INP_STATE    // enable "SRin:0,1,2,3" field in realtime report
 // #define REPORT_FIELD_SR_OUT_STATE    // enable "SRout:0,1" field in realtime report
 #define REPORT_G_M10X										// report M100..M107 states on $G command
 
-
-#define USER_PANEL_SMALL  // 16 SR inputs and ADC7 used for manual jog (joystick, btns etc). SPI_SR needed.
-// #define USER_PANEL_LARGE  // 32 SR inputs and ADC7 used for manual jog (joystick, btns etc). SPI_SR needed.
 
 // Handwheel/Dial connection.
 // Dial needs USER_PANEL_xxx enabled.

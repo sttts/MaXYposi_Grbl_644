@@ -14,13 +14,13 @@ I/Os** auf einer speziell für CNC-Zwecke ausgelegten Platine. Natürlich wäre 
 Bahnsteuerung auch ein normaler Arduino-328 mit dem Standard-GRBL geeignet - wir 
 haben unser GRBL-644 allerdings auf 4 Achsen erweitert und 32 I/Os hinzugefügt, 
 außerdem einen Handrad- und Joystick-Jog-Anschluss sowie eine Echtzeit-
-Positionsanzeige mit LDC 16x2 auf einem (optionalen) Bedienfeld. 
+Positionsanzeige mit LCD 16x2 auf einem (optionalen) Bedienfeld. 
 
 Die mit allen SMD-Bauteilen vorbestückte Platine wird mit einem programmierten 
 ATmega644A (Optiboot-Bootloader und GRBL 1.1f2) angeboten, die 
-voraussichtlich Anfang Mai 2017 lieferbar sein wird. Hinweise zur Bestellung 
+im [Heise Shop](https://shop.heise.de/sonstiges/make-projekte/maxyposi) bestellt werden kann. Weitere Hinweise
 finden Sie auf der [MaXYPosi-Projektseite](http://www.make-magazin.de/maxyposi). 
-Mitgeliefert wird ein mit unserem GRBL-644 und Bootloader programmierter 
+Mitgeliefert wird ein mit unserem GRBL-644 (Version ohne Kontrollpult) und Bootloader programmierter 
 ATmega644A.
 
 Bitte beachten Sie unbedingt: 
@@ -51,14 +51,20 @@ richten Sie die Arduino-IDE folgendermaßen ein:
 
 Sie können nun GRBL mit der Arduino-IDE kompilieren und auch auf das Board 
 hochladen; die mit der Platine gelieferten Prozessoren sind bereits mit einem 
-Sanguino-Optiboot-kompatiblen Bootloader ausgestattet.
+Sanguino-Optiboot-kompatiblen Bootloader ausgestattet. Die hier verfügbaren HEX-
+Dateien sind für einen ATmega644A (für den ausgelieferten Bausatz) kompiliert.
 
 ### Version history
+
+### Grbl 1.1f5 Version for ATmega644(p) build 23.02.2018 (english)
+
+ * Fixed issue with $I (GRBL info command)
+ * Added HEX binaries for version using MaXYpulti control panel
 
 ### Grbl 1.1f4 Version for ATmega644(p) build 05.11.2017 (english)
 
  * Fixed compile errors when C axis disabled
- * Fixed erraneous behaviour when M10x commands are used
+ * Fixed erraneous behaviour when M100 to M107 commands are used
  
 ### Grbl 1.1f3 Version for ATmega644(p) build 20.06.2017 (english)
 
@@ -90,9 +96,7 @@ Put in your Arduino Sketchbook folder and select board "MaXYposi" and CPU ATmega
 
 WORK IN PROGRESS. STAY TUNED.
 
-
-
-![GitHub Logo](https://github.com/gnea/grbl/blob/master/doc/media/Grbl%20Logo%20250px.png)
+![Grbl Logo](https://github.com/gnea/gnea-Media/blob/master/Grbl%20Logo/Grbl%20Logo%20250px.png?raw=true)
 
 * [Licensing](https://github.com/gnea/grbl/wiki/Licensing): Grbl is free software, released under the GPLv3 license.
 * For more information and help, check the Grbl **[Wiki pages!](https://github.com/gnea/grbl/wiki)**!
