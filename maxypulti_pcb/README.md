@@ -93,18 +93,21 @@ Lasercutter.
 
 Um das MaXYposi-GRBL mit unserem Kontrollpult einzusetzen, müssen Sie in der 
 Datei config.h die Zeilen
-
-  #define USER_PANEL_SMALL<br> 
-  // #define USER_PANEL_LARGE 
+```
+#define USER_PANEL_SMALL<br> 
+// #define USER_PANEL_LARGE 
+```
 
 ändern in
 
-   // #define USER_PANEL_SMALL<br> 
-   #define USER_PANEL_LARGE 
+```
+// #define USER_PANEL_SMALL<br> 
+#define USER_PANEL_LARGE 
+```
 
-und den Sketch grblUpload_644.ino neu kompilieren.
+und den Sketch `grblUpload_644.ino` neu kompilieren.
 
-Unser Leser '''[HorstBaerbel](https://github.com/HorstBaerbel)''' hat dankenswerterweise das 
+Unser Leser '''[HorstBaerbel](https://github.com/HorstBaerbel)''' hat dankenswerterweise :+1: das 
 Programmieren des HEX-Files für den Display-Prozessor genauer beschrieben - im 
 Heft wurde die Prozedur nur kurz angerissen. Außerdem hat er hier einige wichtige Hinweise zusammengetragen. Vielen Dank dafür!
 
