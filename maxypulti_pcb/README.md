@@ -90,3 +90,18 @@ Ausschnitt für ein CNC-Handrad (Dial), jeweils als DXF- und als CorelDraw-Datei
 Die Vorlagen eignen sich zum Plexiglas-Zuschnitt mit Beschriftung bei einem 
 Dienstleister Ihrer Wahl, z.B. www.formulor.de oder einem beliebigen Fablab mit 
 Lasercutter.
+
+Um das MaXYposi-GRBL mit unserem Kontrollpult einzusetzen, müssen Sie in der 
+Datei config.h die Zeilen
+
+  #define USER_PANEL_SMALL<br> 
+  // #define USER_PANEL_LARGE 
+
+ändern in
+
+   // #define USER_PANEL_SMALL<br> 
+   #define USER_PANEL_LARGE 
+
+und den Sketch grblUpload_644.ino neu kompilieren.
+
+
