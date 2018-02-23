@@ -70,16 +70,6 @@ Farben auch die Bilder im Artikel.
 
 [Tastenkappen Serie 1ZBxx von MEC Switches, Jogpad-Außenkreis, Beispielfarbe Schwarz, bei Reichelt](https://www.reichelt.de/Kurzhubtaster/KAPPE-1ZB09/3/index.html?ACTION=3&LA=517&ARTICLE=79744)
 
-Als Prozessor empfehlen wir einen ATmega328p mit bereits installiertem 
-Bootloader, erhältlich zum Beispiel bei [Watterott 
-electronic](http://www.watterott.com/de/ATmega328-Arduino-Bootloader); damit ist 
-das Flashen der GRBL-Display-Firmware über die Arduino-IDE möglich: Geben Sie 
-als Board den Arduino Nano an und verwenden Sie einen USB-Seriell-Wandler mit 
-FTDI-Chip. Ansonsten benötigen Sie zum Flashen [einen ISP-
-Programmer](https://www.reichelt.de/Programmer-Entwicklungstools/DIAMEX-PROG-
-S2/3/index.html?ACTION=3&LA=446&ARTICLE=164172). Beachten Sie auch die Leser-
-Anleitung unten auf dieser Seite.
-
 Bitte denken Sie bei einer Bestellung auch an Zubehör wie Flachbandkabel, Steck-
 und Pfostenverbinder.
 
@@ -95,21 +85,33 @@ Die Vorlagen eignen sich zum Plexiglas-Zuschnitt mit Beschriftung bei einem
 Dienstleister Ihrer Wahl, z.B. www.formulor.de oder einem beliebigen Fablab mit 
 Lasercutter.
 
+#### AVR-CPU für Display
+
+Als Prozessor empfehlen wir einen ATmega328p mit bereits installiertem 
+Bootloader, erhältlich zum Beispiel bei [Watterott 
+electronic](http://www.watterott.com/de/ATmega328-Arduino-Bootloader); damit ist 
+das Flashen der GRBL-Display-Firmware über die Arduino-IDE möglich: Geben Sie 
+als Board den Arduino Nano an und verwenden Sie einen USB-Seriell-Wandler mit 
+FTDI-Chip. Ansonsten benötigen Sie zum Flashen [einen ISP-
+Programmer](https://www.reichelt.de/Programmer-Entwicklungstools/DIAMEX-PROG-
+S2/3/index.html?ACTION=3&LA=446&ARTICLE=164172). Beachten Sie auch die Leser-Anleitung unten auf dieser Seite.
+
+#### GRBL-644 anpassen
+
 Um das MaXYposi-GRBL mit unserem Kontrollpult einzusetzen, müssen Sie in der 
 Datei config.h die Zeilen
 ```
 #define USER_PANEL_SMALL 
 // #define USER_PANEL_LARGE 
 ```
-
 ändern in
-
 ```
 // #define USER_PANEL_SMALL 
 #define USER_PANEL_LARGE 
 ```
+und den Sketch '''grblUpload_644.ino''' neu kompilieren.
 
-und den Sketch `grblUpload_644.ino` neu kompilieren.
+#### Weitere Tipps
 
 Unser Leser '''[HorstBaerbel](https://github.com/HorstBaerbel)''' hat dankenswerterweise :+1: das 
 Programmieren des HEX-Files für den Display-Prozessor genauer beschrieben - im 
