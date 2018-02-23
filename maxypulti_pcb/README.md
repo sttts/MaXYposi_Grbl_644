@@ -9,7 +9,6 @@ Maker Media GmbH und c't, Heise Zeitschriften Verlag
 In diesem Unterverzeichnis finden Sie die Stücklisten, Schalt- und Bestückungspläne 
 zur MaXYposi-Schrittmotorsteuerung, Kontrollpult (MaXYpulti).
 
-
     Bauteil                                   Anzahl Name/Bemerkung
     =============================================================================
     
@@ -24,7 +23,7 @@ zur MaXYposi-Schrittmotorsteuerung, Kontrollpult (MaXYpulti).
     74HC165 DIL                                  4   U4 U5 U6 U7         
     74HC595 DIL                                  2   U8 U9               
     ATmega328-DIL                                1   U3  (ggf. mit Bootloader)               
-    DS26LS32CM DIL                               1   U1                  
+    DS26LS32CM DIL                               1   U1  (oder AM26LS32ACN)                
     22p RM5                                      2   C3 C5               
     100n RM5                                     8   C6 C4 C1 C10 C11 C12 C13 C14           
     10µ 63V                                      4   C7 C9  C2 C8              
@@ -44,12 +43,13 @@ zur MaXYposi-Schrittmotorsteuerung, Kontrollpult (MaXYpulti).
     Taster Multimec 3FTH9                       30   SW1..SW34
     Taster Multimec 3ATH9                        4   SW3, SW6, SW8, SW9   
     Quartz 16 MHz HC49U                          1   XTAL1 
-                  
--------------------------------------------------------------------
+
+    =============================================================================
 
 Beachten Sie die Hinweise im Artikel zu den LED-Vorwiderständen. Diese sind hier 
 pauschal mit 1k für blaue/weiße LEDs angegeben, müssen aber für eine ungefähr 
-gleiche Helligkeit der einzelnen Farben angepasst werden.
+gleiche Helligkeit der einzelnen Farben angepasst werden. Der jeweilige 
+Vorwiderstand ist immer in der Nähe des zugehörige Tasters.
 
 PL7 kann alternativ für ein Display mit seitlichem 14pol. Anschluss verwendet 
 werden und wird bei 16x2-Standard-Displays nicht benötigt. Hierfür sollten Sie 
@@ -99,7 +99,7 @@ S2/3/index.html?ACTION=3&LA=446&ARTICLE=164172). Beachten Sie auch die Leser-Anl
 #### GRBL-644 anpassen
 
 Um das MaXYposi-GRBL mit unserem Kontrollpult einzusetzen, müssen Sie in der 
-Datei config.h die Zeilen
+Datei **config.h** die Zeilen
 ```
 #define USER_PANEL_SMALL 
 // #define USER_PANEL_LARGE 
@@ -109,13 +109,13 @@ Datei config.h die Zeilen
 // #define USER_PANEL_SMALL 
 #define USER_PANEL_LARGE 
 ```
-und den Sketch '''grblUpload_644.ino''' neu kompilieren.
+und den Sketch **grblUpload_644.ino** neu kompilieren.
 
 #### Weitere Tipps
 
-Unser Leser '''[HorstBaerbel](https://github.com/HorstBaerbel)''' hat dankenswerterweise :+1: das 
+Unser Leser **[HorstBaerbel](https://github.com/HorstBaerbel)** hat dankenswerterweisedas 
 Programmieren des HEX-Files für den Display-Prozessor genauer beschrieben - im 
-Heft wurde die Prozedur nur kurz angerissen. Außerdem hat er hier einige wichtige Hinweise zusammengetragen. Vielen Dank dafür!
+Heft wurde die Prozedur nur kurz angerissen. Außerdem hat er hier einige wichtige Hinweise zusammengetragen. Vielen Dank dafür! :+1: 
 
 * Das Label für C9 fehlt auf dem Bestückungsdruck.
 
