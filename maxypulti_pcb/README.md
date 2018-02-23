@@ -22,7 +22,7 @@ zur MaXYposi-Schrittmotorsteuerung, Kontrollpult.
     14WP, Zweireihige Pfostenleiste RM 2.54      1   PL7 (siehe Text unten)                
 
     74HC165 DIL                                  4   U4 U5 U6 U7         
-    74LS595 DIL                                  2   U8 U9               
+    74HC595 DIL                                  2   U8 U9               
     ATmega328-DIL                                1   U3  (ggf. mit Bootloader)               
     DS26LS32CM DIL                               1   U1                  
     22p RM5                                      2   C3 C5               
@@ -104,4 +104,45 @@ Datei config.h die Zeilen
 
 und den Sketch grblUpload_644.ino neu kompilieren.
 
+Unser Leser '''[HorstBaerbel](https://github.com/HorstBaerbel)''' hat dankenswerterweise das 
+Programmieren des HEX-Files für den Display-Prozessor genauer beschrieben - im 
+Heft wurde die Prozedur nur kurz angerissen. Außerdem hat er hier einige wichtige Hinweise zusammengetragen. Vielen Dank dafür!
+
+* Das Label für C9 fehlt auf dem Bestückungsdruck.
+
+* Bei allen anderen Tastern ist es egal, aber die vier speziellen Taster (Multimec 3ATH9) für das Jogpad MÜSSEN in der richtigen Orientierung eingebaut werden (grob umschrieben "Verriegellungsnasen innen")! Der "Strich" auf dem Bestückungsplan ist etwas irreführend da die MEC-Taster sowohl eine Kante, als auch einen solchen Strich haben. Ein Hinweis wäre praktisch, auslöten nervt nämlich ;)
+
+* Ich habe für P1 das Poti "RK11K113-LOG10K" von Reichelt bestellt. Leider ist die Achse etwas kurz, so dass ev. "RK09K113-LOG10K" besser wäre. Dort müsste man dann allerdings die Achse kürzen. Man kann das "RK11K113-LOG10K" aber auch, wie die Joypad-Taster, mit 1,5mm Abstand zur Platine einbauen um möglichst viel von der Achse zum klemmen übrig zu haben.
+
+* Der "DS26LS32CM" ist bei Reichelt nicht zu bekommen, aber der Ersatztyp "AM26LS32ACN".
+
+* Der "74LS595" ist bei Reichelt nicht zu bekommen, als Ersatz aber der "74HC595".
+
+* Die Teilenummer des 16MHz-Quartzes ist "16,0000-HC49U-S".
+
+* Der Drehencoder / Handrad ist z.B. bei Ebay sehr gut mit der Suche "100PPR hand wheel" zu finden.
+
+* Wer die lange Versandzeit nicht scheut bekommt einen ganzen Satz 
+verschiedenfarbige straw-hat-LEDs z.B. von Aliexpress. Man findet mit der Suche 
+"flat top led mix" einige Angebote für 5*20 LEDs (RGBYW) um die 3€...
+
+* Die Firmware mit einem Arduino als ISP auf den ATMEGA328P zu bringen ist nicht ganz einfach. Hier meine Anleitung (für Linux, sollte aber auch für andere OS gehen):
+
+** Nach dem Tutorial hier den Arduino mit einem ISP-Sketch versehen und mit dem MaxyPulti verbinden. Im Detail bei einem Arduino UNO oder Pro als ISP: (Arduino ISP->MaxyPulti PL3) ISP1->9, ISP2->2, ISP3->7, ISP4->1, ISP5->4 und Arduino Pin 10->5.
+
+** In den Arduino-IDE-Voreinstellungen "Ausführliche Ausgabe während ... Hochladen" aktivieren.
+
+** Als Board "Arduino/Genuino UNO" und als Programmer "Arduino as ISP" einstellen und auf "Bootloader brennen" klicken. Nun sollte der Bootloader installiert sein.
+
+** Die erste Kommandozeile aus dem Ausgabefenster kopieren (fett markierter Teil). Sie sollte in etwa so aussehen: "/home/USERNAME/.arduino15/packages/arduino/tools/avrdude/6.3.0-arduino9/bin/avrdude -C/home/USERNAME/.arduino15/packages/arduino/tools/avrdude/6.3.0-arduino9/etc/avrdude.conf -v -patmega328p -cstk500v1 -P/dev/ttyACM0 -b19200 -Uflash:w:/home/USERNAME/.arduino15/packages/arduino/hardware/avr/1.6.21/bootloaders/optiboot/optiboot_atmega328.hex:i -Ulock:w:0x0F:m". Hier ist USERNAME der Name des angemeldeten Benutzers.
+
+** Die Datei "grbl_display.hex" herunterladen. Terminal öffnen und in das Verzeichnis mit der Datei wechseln.
+
+** Kommandozeile für HEX-Upload zusammenbauen (oben kopierter Teil, plus fett markierter Teil): "/home/USERNAME/.arduino15/packages/arduino/tools/avrdude/6.3.0-arduino9/bin/avrdude -C/home/USERNAME/.arduino15/packages/arduino/tools/avrdude/6.3.0-arduino9/etc/avrdude.conf -v -patmega328p -cstk500v1 -P/dev/ttyACM0 -b19200 -Uflash:w:grbl_display.hex -D".
+
+** Nachdem der Upload fertig ist, sollte LED1 auf dem MaxyPulti rhythmisch blinken.
+
+
+
+* In der Frontplatte ist das Loch für P1 mmn zu groß; 7mm sollten laut Schieblehre für den "RK11K113-LOG10K" reichen.
 
