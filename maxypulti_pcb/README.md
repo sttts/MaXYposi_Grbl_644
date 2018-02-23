@@ -7,7 +7,7 @@ Maker Media GmbH und c't, Heise Zeitschriften Verlag
 ### MaXYposi-Schrittmotorsteuerung, Stückliste Kontrollpult
 
 In diesem Unterverzeichnis finden Sie die Stücklisten, Schalt- und Bestückungspläne 
-zur MaXYposi-Schrittmotorsteuerung, Kontrollpult.
+zur MaXYposi-Schrittmotorsteuerung, Kontrollpult (MaXYpulti).
 
 
     Bauteil                                   Anzahl Name/Bemerkung
