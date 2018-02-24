@@ -260,7 +260,8 @@ uint8_t gc_execute_line(char *line)
               case 5: gc_block.modal.spindle = SPINDLE_DISABLE; break;
             }
             break;
-          case 7:	case 8: case 9:	// added M6 -cm          
+          case 7:	case 8: case 9:	// added M100.. -cm          
+          case 100: case 101: case 102: case 103: case 104: case 105: case 106:  case 107: 
             word_bit = MODAL_GROUP_M8; 
             switch(int_value) {      
               #ifdef ENABLE_M7
@@ -268,11 +269,6 @@ uint8_t gc_execute_line(char *line)
               #endif
               case 8: gc_block.modal.coolant = COOLANT_FLOOD_ENABLE; break;
               case 9: gc_block.modal.coolant = COOLANT_DISABLE; break;
-            }
-            break;
-          case 100: case 101: case 102: case 103: case 104: case 105: case 106:  case 107: 
-            word_bit = MODAL_GROUP_M100; 
-            switch(int_value) {      
               case 100: gc_block.modal.coolant = ATC_ENABLE; break;	// added M100 group -cm
               case 101: gc_block.modal.coolant = AUX1_ENABLE; break;
               case 102: gc_block.modal.coolant = AUX2_ENABLE; break;
@@ -965,10 +961,14 @@ uint8_t gc_execute_line(char *line)
     // NOTE: Coolant M-codes are modal. Only one command per line is allowed. But, multiple states
     // can exist at the same time, while coolant disable clears all states.
     coolant_sync(gc_block.modal.coolant);
-    if (gc_block.modal.coolant == COOLANT_DISABLE) { gc_state.modal.coolant = COOLANT_DISABLE; }
-    else { gc_state.modal.coolant |= gc_block.modal.coolant; }
+    // if (gc_block.modal.coolant == COOLANT_DISABLE) { gc_state.modal.coolant = COOLANT_DISABLE; }
+    // else { 
+    //   gc_state.modal.coolant |= gc_block.modal.coolant;  // Default verODERn -cm	  
+    // }
+   	gc_state.modal.coolant = gc_block.modal.coolant;  // erledigt -cm	  
   }
   pl_data->condition |= (gc_state.modal.coolant & COOLANT_MASK); // Set condition flag for planner use -cm 11/2017
+  
   // [9. Override control ]: NOT SUPPORTED. Always enabled. Except for a Grbl-only parking control.
   #ifdef ENABLE_PARKING_OVERRIDE_CONTROL
     if (gc_state.modal.override != gc_block.modal.override) {

@@ -41,10 +41,10 @@
 #define PROC_NAME "AVR_644" 	// issued with $I command -cm
 
 #define GRBL_VERSION "1.1f5"	// issued with $I command -cm
-#define GRBL_VERSION_BUILD "02/23/2018"
+#define GRBL_VERSION_BUILD "02/24/2018"
 
-#define USER_PANEL_SMALL  // 16 SR inputs and ADC7 used for manual jog (joystick, btns etc). SPI_SR needed.
-//#define USER_PANEL_LARGE  // MaXYpulti - 32 SR inputs and ADC7 used for manual jog (joystick, btns etc). SPI_SR needed.
+//#define USER_PANEL_SMALL  // 16 SR inputs and ADC7 used for manual jog (joystick, btns etc). SPI_SR needed.
+#define USER_PANEL_LARGE  // MaXYpulti - 32 SR inputs and ADC7 used for manual jog (joystick, btns etc). SPI_SR needed.
 
 
 // Serial baud rate

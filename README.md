@@ -56,10 +56,12 @@ Dateien sind für einen ATmega644A (für den ausgelieferten Bausatz) kompiliert.
 
 ### Version history
 
-### Grbl 1.1f5 Version for ATmega644(p) build 23.02.2018 (english)
+### Grbl 1.1f5 Version for ATmega644(p) build 02/24/2018 (english)
 
- * Fixed issue with $I (GRBL info command)
- * Added HEX binaries for version using MaXYpulti control panel
+ * Fixed issue with $I (GRBL info command; additional info separated with ":"), build date format now VERSION.MM/DD/YYYY
+ * Fixed "Jog crash after G38.2 Probing" bug
+ * Fixed "M104..M107 not accepted while running" bug (build 02/24/2018)
+ * MaXYpulti control panel defined in **config.h** by default
 
 ### Grbl 1.1f4 Version for ATmega644(p) build 05.11.2017 (english)
 

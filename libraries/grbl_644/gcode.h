@@ -43,8 +43,7 @@
 
 #define MODAL_GROUP_M4 11  // [M0,M1,M2,M30] Stopping
 #define MODAL_GROUP_M7 12 // [M3,M4,M5] Spindle turning
-#define MODAL_GROUP_M8 13 // [M7,M8,M9] Coolant control
-#define MODAL_GROUP_M100 14 // [M6,M7,M8,M9] Coolant control -- added M6 -cm
+#define MODAL_GROUP_M8 13 // [M7,M8,M9] Coolant control & AUX/ATC Ports
 #define MODAL_GROUP_M9 15 // [M56] Override control
 
 // Define command actions for within execution-type modal groups (motion, stopping, non-modal). Used

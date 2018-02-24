@@ -127,7 +127,7 @@ void coolant_set_state(uint8_t mode)
   } else if (mode == AUX2_ENABLE) {
     MACHINE_OUT_SR |= (1 << AUX2_SR);	// -cm
     aux2_on = true;	// track for panel buttons
- } else if (mode == AUX2_DISABLE) {
+  } else if (mode == AUX2_DISABLE) {
     MACHINE_OUT_SR &= ~(1 << AUX2_SR);	// -cm    
     aux2_on = false;	// track for panel buttons
   } else if (mode == AUX3_ENABLE) {

@@ -92,9 +92,9 @@ Bootloader, erhältlich zum Beispiel bei [Watterott
 electronic](http://www.watterott.com/de/ATmega328-Arduino-Bootloader); damit ist 
 das Flashen der GRBL-Display-Firmware über die Arduino-IDE möglich: Geben Sie 
 als Board den Arduino Nano an und verwenden Sie einen USB-Seriell-Wandler mit 
-FTDI-Chip. Ansonsten benötigen Sie zum Flashen [einen ISP-
-Programmer](https://www.reichelt.de/Programmer-Entwicklungstools/DIAMEX-PROG-
-S2/3/index.html?ACTION=3&LA=446&ARTICLE=164172). Beachten Sie auch die Leser-Anleitung unten auf dieser Seite.
+FTDI-Chip. Ansonsten benötigen Sie zum Flashen
+[einen ISP-Programmer](https://www.reichelt.de/Programmer-Entwicklungstools/DIAMEX-PROG-S2/3/index.html?ACTION=3&LA=446&ARTICLE=164172). 
+Beachten Sie auch die Leser-Anleitung unten auf dieser Seite.
 
 #### GRBL-644 anpassen
 
