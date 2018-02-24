@@ -80,7 +80,7 @@ werden. Für eine kommerzielle Nutzung [kontaktieren Sie bitte die
 Redaktion](https://www.heise.de/make/kontakt/).
 
 Vorlagen für die Frontplatte liegen in zwei Versionen vor: Mit und ohne 
-Ausschnitt für ein CNC-Handrad (Dial), jeweils als DXF- und als CorelDraw-Datei. 
+Ausschnitt für ein CNC-Handrad (Dial), jeweils als DXF-, SVG- und CorelDraw-Datei. 
 Die Vorlagen eignen sich zum Plexiglas-Zuschnitt mit Beschriftung bei einem 
 Dienstleister Ihrer Wahl, z.B. www.formulor.de oder einem beliebigen Fablab mit 
 Lasercutter.
