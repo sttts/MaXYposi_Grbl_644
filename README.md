@@ -21,8 +21,8 @@ ATmega644A (Optiboot-Bootloader und GRBL 1.1f4 ohne Kontrollpult-Unterstützung)
 im [Heise Shop](https://shop.heise.de/sonstiges/make-projekte/maxyposi) bestellt werden. Weitere Hinweise
 finden Sie auf der [MaXYPosi-Projektseite](http://www.make-magazin.de/maxyposi). 
 
-**Wichtig:** Für den Einsatz des MaXYpulti-Kontrollpults müssen Sie den Arduino-Sketch neu kompilieren und hochladen (Hinweise dazu 
-**[im Unterverzeichnis MaXYpulti PCB](https://github.com/heise/MaXYposi_Grbl_644/tree/master/maxypulti_pcb)**.
+**Wichtig:** Für den Einsatz des MaXYpulti-Kontrollpults müssen Sie den Arduino-Sketch neu kompilieren und hochladen 
+(Hinweise dazu im Unterverzeichnis **[MaXYpulti PCB](https://github.com/heise/MaXYposi_Grbl_644/tree/master/maxypulti_pcb)**).
 
 Bitte beachten Sie unbedingt: 
 

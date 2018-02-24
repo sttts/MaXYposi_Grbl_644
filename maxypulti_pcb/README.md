@@ -113,9 +113,10 @@ und den Sketch **grblUpload_644.ino** neu kompilieren.
 
 #### Weitere Tipps
 
-Unser Leser **[HorstBaerbel](https://github.com/HorstBaerbel)** hat dankenswerterweisedas 
-Programmieren des HEX-Files für den Display-Prozessor genauer beschrieben - im 
-Heft wurde die Prozedur nur kurz angerissen. Außerdem hat er hier einige wichtige Hinweise zusammengetragen. Vielen Dank dafür! :+1: 
+Unser Leser **[HorstBaerbel](https://github.com/HorstBaerbel)** hat 
+dankenswerterweise das Programmieren des HEX-Files für den Display-Prozessor 
+genauer beschrieben - im Heft wurde die Prozedur nur kurz angerissen. Außerdem 
+hat er hier einige wichtige Hinweise zusammengetragen. Vielen Dank dafür! :+1: 
 
 * Das Label für C9 fehlt auf dem Bestückungsdruck.
 
