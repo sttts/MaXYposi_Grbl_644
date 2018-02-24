@@ -17,11 +17,12 @@ außerdem einen Handrad- und Joystick-Jog-Anschluss sowie eine Echtzeit-
 Positionsanzeige mit LCD 16x2 auf einem (optionalen) Bedienfeld. 
 
 Die mit allen SMD-Bauteilen vorbestückte Platine wird mit einem programmierten 
-ATmega644A (Optiboot-Bootloader und GRBL 1.1f2) angeboten, die 
-im [Heise Shop](https://shop.heise.de/sonstiges/make-projekte/maxyposi) bestellt werden kann. Weitere Hinweise
+ATmega644A (Optiboot-Bootloader und GRBL 1.1f4 ohne Kontrollpult-Unterstützung) geliefert und kann 
+im [Heise Shop](https://shop.heise.de/sonstiges/make-projekte/maxyposi) bestellt werden. Weitere Hinweise
 finden Sie auf der [MaXYPosi-Projektseite](http://www.make-magazin.de/maxyposi). 
-Mitgeliefert wird ein mit unserem GRBL-644 (Version ohne Kontrollpult) und Bootloader programmierter 
-ATmega644A.
+
+**Wichtig:** Für den Einsatz des MaXYpulti-Kontrollpults müssen Sie den Arduino-Sketch neu kompilieren und hochladen (Hinweise dazu 
+**[im Unterverzeichnis MaXYpulti PCB](https://github.com/heise/MaXYposi_Grbl_644/tree/master/maxypulti_pcb)**.
 
 Bitte beachten Sie unbedingt: 
 
