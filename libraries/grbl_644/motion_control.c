@@ -299,7 +299,11 @@ uint8_t mc_probe_cycle(float *target, plan_line_data_t *pl_data, uint8_t parser_
   probe_configure_invert_mask(false); // Re-initialize invert mask.
   protocol_execute_realtime();   // Check and execute run-time commands
 
-  // Reset the stepper and planner buffers to remove the remainder of the probe motion.
+  // Bugfix (Jog nach Probing)
+  // siehe https://www.heise.de/forum/Make/Heft-Projekte/MaXYposi/Software-Bug-Bedienung-mit-Jogpad-nach-PROBE-G38-2-funktioniert-nicht/posting-31466975/show/
+  sys.step_control = STEP_CONTROL_NORMAL_OP; 
+
+  // Reset the stepper and planner buffers to remove the remainder of the probe motion.  
   st_reset(); // Reset step segment buffer.
   plan_reset(); // Reset planner buffer. Zero planner positions. Ensure probing motion is cleared.
   plan_sync_position(); // Sync planner position to current machine position.
