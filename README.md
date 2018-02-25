@@ -24,6 +24,8 @@ finden Sie auf der [MaXYPosi-Projektseite](http://www.make-magazin.de/maxyposi).
 **Wichtig:** Für den Einsatz des MaXYpulti-Kontrollpults müssen Sie den Arduino-Sketch neu kompilieren und hochladen 
 (Hinweise dazu im Unterverzeichnis **[MaXYpulti PCB](https://github.com/heise/MaXYposi_Grbl_644/tree/master/maxypulti_pcb)**).
 
+Dokumentationen zu verschiedenen Treiberkarten finden Sie im **[TB6560-BOARDS-Repository](https://github.com/heise/TB6560-BOARDS)**. 
+
 Bitte beachten Sie unbedingt: 
 
 * den Artikel in **[Make: 2/2017](https://shop.heise.de/katalog/make-2-2017)**
