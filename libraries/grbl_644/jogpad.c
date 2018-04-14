@@ -142,7 +142,7 @@ void jogpad_init() {
 
 void set_led_disp_status() {
 // LEDs des Bedienpanels setzen
-	uint8_t status_temp = 0;
+	//uint8_t status_temp = 0; // currently unused
 	uint8_t leds_temp;
 	blink_count++;
 
