@@ -317,8 +317,8 @@
 #define FWD_C_SW			6						 // Joystick momentary forward switches
 #define REV_Z_SW			5
 #define FWD_Z_SW			4
-#define REV_Y_SW			3
-#define FWD_Y_SW			2
+#define REV_Y_SW			2 // sttts: reversed
+#define FWD_Y_SW			3 // sttts: reversed
 #define REV_X_SW			1
 #define FWD_X_SW			0
 
