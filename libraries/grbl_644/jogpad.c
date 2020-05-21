@@ -175,7 +175,7 @@ void set_led_disp_status() {
 		}
 	}
   #ifdef LED_HOLD
-		if (sys.state & STATE_HOLD) {
+		if (sys.state & (STATE_HOLD | STATE_SAFETY_DOOR)) {
 			leds_temp |= (1 << LED_HOLD);
 		}
 	#endif
